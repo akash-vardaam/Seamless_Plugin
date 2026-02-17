@@ -7,31 +7,22 @@ interface CardProps {
   layout?: 'list' | 'grid';
 }
 
-// const formatDateOnly = (dateString: string): string => {
-//   try {
-//     const date = new Date(dateString);
-//     return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-//   } catch {
-//     return dateString;
-//   }
-// };
-
 const formatDateRange = (startDate: string, endDate: string): string => {
   try {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
+
     // If same date, just return formatted date once
     if (start.toDateString() === end.toDateString()) {
       return start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     }
-    
+
     // Different dates - show range
     const startDay = start.toLocaleDateString('en-US', { weekday: 'long' });
     const endDay = end.toLocaleDateString('en-US', { weekday: 'long' });
     const startDateStr = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
     const endDateStr = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    
+
     return `${startDay} - ${endDay}, ${startDateStr} - ${endDateStr}`;
   } catch {
     return startDate;
@@ -88,28 +79,28 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
             />
           )}
         </div>
-        
+
         {/* Item Details */}
         <div className="seamless-card-content">
           {/* Title */}
-          <a 
+          <a
             href={getItemLink(item)}
             className="seamless-card-title"
             style={{ fontFamily: 'Merriweather' }}
           >
             {item.title}
           </a>
-          
+
           {/* Date Range */}
           <p className="seamless-card-date">
             {formatDateRange(item.start_date, item.end_date || item.start_date)}
           </p>
-          
+
           {/* Time */}
           <p className="seamless-card-time">
             {formatTimeRange(item.start_date, item.end_date || item.start_date)}
           </p>
-          
+
           {/* SEE DETAILS Button */}
           <a
             href={getItemLink(item)}
@@ -146,7 +137,7 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
         {/* Item Details */}
         <div className="seamless-card-list-details">
           {/* Title */}
-          <a 
+          <a
             href={getItemLink(item)}
             className="seamless-card-list-title"
             style={{ fontFamily: 'Merriweather' }}

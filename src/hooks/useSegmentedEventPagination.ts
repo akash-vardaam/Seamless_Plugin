@@ -3,10 +3,6 @@ import axios from 'axios';
 import api from '../services/api';
 import type { Event, FilterState, PaginationMeta } from '../types/event';
 
-// ─── Date helpers ───────────────────────────────────────────────
-const isUpcoming = (e: Event): boolean => new Date(e.start_date) >= new Date();
-const isPast = (e: Event): boolean => new Date(e.start_date) < new Date();
-
 // ─── Error formatter ────────────────────────────────────────────
 function formatError(err: unknown): string {
     if (axios.isAxiosError(err)) {
@@ -73,32 +69,31 @@ export const useSegmentedEventPagination = (
             setLoading(true);
             setError(null);
 
+            const params = buildParams();
+            const cacheKey = `seamless_events_${JSON.stringify(params)}_${uiPage}`;
+
+            // 1. Check Cache
             try {
-                const params = buildParams();
-                let apiPage: number;
-
-                if (mode === 'upcoming') {
-                    // ── REVERSE mapping: UI page 1 → API last page ──
-                    if (lastPageRef.current === null) {
-                        const discovery = await api.get<any>('/events', {
-                            params: { ...params, page: 1 }
-                        });
-                        if (cancelled) return;
-                        const meta = discovery.data.data?.pagination as PaginationMeta;
-                        lastPageRef.current = meta?.last_page || 1;
-
-                        // Set totals from discovery
-                        setTotalApiEvents(meta?.total || 0);
-                        setTotalPages(Math.ceil((meta?.total || 0) / PER_PAGE) || 1);
+                const cached = sessionStorage.getItem(cacheKey);
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    setEvents(data.events);
+                    setTotalPages(data.totalPages);
+                    setTotalApiEvents(data.totalApiEvents);
+                    if (data.lastPageRef) {
+                        lastPageRef.current = data.lastPageRef;
                     }
-                    apiPage = Math.max(1, lastPageRef.current - uiPage + 1);
-                } else {
-                    // ── FORWARD: UI page N → API page N ──
-                    apiPage = uiPage;
+                    setLoading(false);
+                    return;
                 }
+            } catch (e) {
+                console.log(e);
+            }
+
+            try {
 
                 const response = await api.get<any>('/events', {
-                    params: { ...params, page: apiPage }
+                    params: { ...params, page: uiPage }
                 });
 
                 if (cancelled) return;
@@ -106,25 +101,38 @@ export const useSegmentedEventPagination = (
                 const rawEvents = (response.data.data?.events || []) as Event[];
                 const meta = response.data.data?.pagination as PaginationMeta;
 
-                // Update totals
-                setTotalApiEvents(meta?.total || 0);
-                setTotalPages(Math.ceil((meta?.total || 0) / PER_PAGE) || 1);
+                // Update totals directly from API
+                const newTotalEvents = meta?.total || 0;
+                // Use last_page if available, otherwise calculate
+                const newTotalPages = meta?.last_page || Math.ceil(newTotalEvents / PER_PAGE) || 1;
 
-                if (meta?.last_page && mode !== 'upcoming') {
-                    // Start or End? For past/default, last_page likely matches API
+                setTotalApiEvents(newTotalEvents);
+                setTotalPages(newTotalPages);
+
+                // Cache the last_page if needed for other refs, though simplified now
+                if (meta?.last_page) {
                     lastPageRef.current = meta.last_page;
                 }
 
                 // Sorting
                 if (mode === 'upcoming') {
-                    // API returns Descending (Apr -> Mar). We want Ascending (Mar -> Apr).
-                    // Since we fetched from the end (Reverse Mapping), we just need to reverse the *page* content.
                     rawEvents.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
-                } else {
-                    // Past: API returns Newest -> Oldest. Keep it.
+                }
+                setEvents(rawEvents);
+
+                // 2. Save to Cache
+                try {
+                    const dataToCache = {
+                        events: rawEvents,
+                        totalPages: newTotalPages,
+                        totalApiEvents: newTotalEvents,
+                        lastPageRef: lastPageRef.current
+                    };
+                    sessionStorage.setItem(cacheKey, JSON.stringify(dataToCache));
+                } catch (e) {
+                    console.log(e);
                 }
 
-                setEvents(rawEvents);
             } catch (err) {
                 if (!cancelled) {
                     setError(formatError(err));

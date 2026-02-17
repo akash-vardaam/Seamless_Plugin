@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useData } from '../hooks/useData';
+import { useSegmentedEventPagination } from '../hooks/useSegmentedEventPagination';
 import { useCategories } from '../hooks/useCategories';
 import { useFilterState, useClientFilters } from '../hooks/useFilters';
 import { FilterBar } from './FilterBar';
@@ -24,11 +24,10 @@ const ItemsPage: React.FC = () => {
 
   // 4. Data — fetches one API page at a time (per_page=8)
   const {
-    items, loading: itemsLoading, error, totalPages, totalApiEvents
-  } = useData(filters, currentPage);
+    events: items, loading: itemsLoading, error, totalPages, totalApiEvents
+  } = useSegmentedEventPagination(filters, currentPage);
 
   // 5. Client-side filtering (Year fallback — though backend pagination might miss events if status/category filters don't cover it)
-  //    (User chose Backend Pagination over perfect Year filtering, so we filter the resulting page.)
   const eventsData = (items || []) as Event[];
 
   // Note: useClientFilters handles "Year" filtering which API cannot do.
@@ -48,10 +47,18 @@ const ItemsPage: React.FC = () => {
     return () => window.removeEventListener('resize', onResize);
   }, [currentView]);
 
-  // Reset to page 1 when any filter changes
+  // Reset to page 1 when any filter changes OR view changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters.search, filters.status, filters.audience, filters.focus, filters.localChapter, filters.year]);
+  }, [
+    filters.search,
+    filters.status,
+    filters.audience,
+    filters.focus,
+    filters.localChapter,
+    filters.year,
+    currentView // Reset on view change
+  ]);
 
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view);

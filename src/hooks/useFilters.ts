@@ -81,7 +81,6 @@ export const useClientFilters = (events: Event[], filters: FilterState): Event[]
   }, [events, filters]);
 };
 
-// Deprecated, but keeping for compatibility if referenced elsewhere (unlikely based on my search)
 // We will replace usage in ItemsPage
 export const useFilters = (events: Event[]) => {
   const { filters, updateFilter, resetFilters } = useFilterState();
