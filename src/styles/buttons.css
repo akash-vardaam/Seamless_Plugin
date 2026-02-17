@@ -1,0 +1,167 @@
+/* ============================================
+   SEAMLESS EVENT DISPLAY - BUTTON STYLES
+   ============================================ */
+
+.seamless-button {
+  min-height: 44px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-size: var(--seamless-font-size-sm) !important;
+  font-weight: 700 !important;
+  line-height: 1.5 !important;
+  border-radius: var(--seamless-radius-full) !important;
+  transition: all var(--seamless-transition-normal) !important;
+  cursor: pointer !important;
+  font-family: var(--seamless-font-family-montserrat) !important;
+  border: 2px solid transparent !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Primary button */
+.seamless-button-primary {
+  background-color: var(--seamless-color-primary) !important;
+  color: var(--seamless-color-white) !important;
+  border-color: var(--seamless-color-primary) !important;
+}
+
+.seamless-button-primary:hover {
+  background-color: var(--seamless-color-secondary) !important;
+  border-color: var(--seamless-color-secondary) !important;
+  transform: translateY(-2px) !important;
+}
+
+.seamless-button-primary:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(15, 55, 89, 0.2) !important;
+}
+
+.seamless-button-primary:active {
+  transform: scale(0.98) !important;
+}
+
+/* Secondary button */
+.seamless-button-secondary {
+  background-color: var(--seamless-color-secondary) !important;
+  color: var(--seamless-color-white) !important;
+  border: 2px solid var(--seamless-color-secondary) !important;
+}
+
+.seamless-button-secondary:hover {
+  background-color: var(--seamless-color-primary) !important;
+  border-color: var(--seamless-color-primary) !important;
+}
+
+.seamless-button-secondary:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0, 178, 202, 0.1) !important;
+}
+
+/* Small button */
+.seamless-button-small {
+  padding: var(--seamless-spacing-2) var(--seamless-spacing-4) !important;
+  font-size: var(--seamless-font-size-sm) !important;
+}
+
+/* Full width button */
+.seamless-button-full {
+  width: 100% !important;
+  display: flex !important;
+}
+
+/* Disabled state */
+.seamless-button:disabled {
+  background-color: var(--seamless-color-gray-200) !important;
+  color: var(--seamless-color-gray-400) !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+/* Pagination buttons */
+.seamless-pagination-button {
+  padding: var(--seamless-spacing-2) var(--seamless-spacing-4) !important;
+  border-radius: var(--seamless-radius-md) !important;
+  font-weight: 600 !important;
+  font-size: var(--seamless-font-size-sm) !important;
+  transition: all var(--seamless-transition-normal) !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.seamless-pagination-button-active {
+  background-color: var(--seamless-color-primary) !important;
+  color: var(--seamless-color-white) !important;
+}
+
+.seamless-pagination-button-inactive {
+  background-color: var(--seamless-color-gray-100) !important;
+  color: var(--seamless-color-gray-700) !important;
+}
+
+.seamless-pagination-button-inactive:hover {
+  background-color: var(--seamless-color-gray-200) !important;
+}
+
+.seamless-pagination-button:disabled {
+  background-color: var(--seamless-color-gray-200) !important;
+  color: var(--seamless-color-gray-400) !important;
+  cursor: not-allowed !important;
+}
+
+/* View switcher buttons */
+.seamless-view-button {
+  padding: var(--seamless-spacing-2) var(--seamless-spacing-4) !important;
+  border-radius: var(--seamless-radius-lg) !important;
+  font-size: var(--seamless-font-size-sm) !important;
+  font-weight: 500 !important;
+  transition: all var(--seamless-transition-normal) !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.seamless-view-button-active {
+  background-color: var(--seamless-color-primary) !important;
+  color: var(--seamless-color-white) !important;
+}
+
+.seamless-view-button-inactive {
+  background-color: var(--seamless-color-gray-100) !important;
+  color: var(--seamless-color-gray-700) !important;
+}
+
+.seamless-view-button-inactive:hover {
+  background-color: var(--seamless-color-gray-200) !important;
+}
+
+@media (max-width: 640px) {
+  .seamless-view-button-hidden-mobile {
+    display: none !important;
+  }
+}
+
+/* Calendar navigation buttons */
+.seamless-calendar-nav-button {
+  padding: var(--seamless-spacing-2) var(--seamless-spacing-4) !important;
+  background-color: var(--seamless-color-secondary) !important;
+  color: var(--seamless-color-white) !important;
+  border-radius: var(--seamless-radius-md) !important;
+  font-weight: 600 !important;
+  font-size: var(--seamless-font-size-sm) !important;
+  transition: background-color var(--seamless-transition-normal) !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.seamless-calendar-nav-button:hover {
+  background-color: var(--seamless-color-primary) !important;
+}
+
+@media (min-width: 640px) {
+  .seamless-calendar-nav-button {
+    padding: var(--seamless-spacing-2) var(--seamless-spacing-4) !important;
+    font-size: var(--seamless-font-size-base) !important;
+  }
+}

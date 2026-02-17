@@ -1,0 +1,946 @@
+/* CSS from restriction.css */
+.seamless-blurred-content {
+    filter: blur(30px);
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: filter .3s ease
+}
+
+.seamless-restriction-wrapper {
+    max-width: 800px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem auto
+}
+
+.seamless-restriction-overlay {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--seamless-font-family, "DM Sans", sans-serif);
+    padding: 20px
+}
+
+.seamless-restriction-container {
+    max-width: 800px;
+    margin: 100px auto;
+    border-radius: 20px
+}
+
+.seamless-restriction-backdrop {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0
+}
+
+.seamless-restriction-modal {
+    background: var(--seamless-background-color, #fff);
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, .25), 0 0 0 1px rgba(255, 255, 255, .1);
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    animation: seamlessModalSlideIn .4s ease-out;
+    border: 2px solid var(--seamless-primary-color);
+}
+
+@keyframes seamlessModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(.95)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+    }
+}
+
+.seamless-restriction-content {
+    padding: 50px 40px;
+    text-align: center;
+    position: relative;
+    z-index: 3
+}
+
+.seamless-restriction-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    background: var(--seamless-primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px var(--seamless-primary-color), 0 0 0 4px #a9a2f1;
+    animation: seamlessIconPulse 2s ease-in-out infinite
+}
+
+@keyframes seamlessIconPulse {
+
+    0%,
+    100% {
+        transform: scale(1)
+    }
+
+    50% {
+        transform: scale(1.05)
+    }
+}
+
+.seamless-restriction-header .seamless-restriction-icon svg {
+    width: 40px;
+    height: 40px;
+    color: var(--seamless-background-color, #fff)
+}
+
+.seamless-restriction-header .seamless-restriction-title {
+    font-size: 36px !important;
+    font-weight: 800;
+    margin: 0 0 12px;
+    line-height: 50px;
+    background: var(--seamless-primary-color);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: var(--seamless-primary-color)
+}
+
+.seamless-restriction-subtitle {
+    font-size: 1.2rem;
+    color: var(--seamless-muted-text-color, #666);
+    margin: 0;
+    font-weight: 500;
+    line-height: 1.5
+}
+
+.seamless-restriction-message {
+    margin: 30px 0;
+    padding: 25px;
+    background: var(--seamless-light-background-color, #f8fafc);
+    border-radius: 16px;
+    border-left: 4px solid var(--seamless-primary-color);
+}
+
+.seamless-restriction-message p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
+    color: var(--seamless-text-color, #444)
+}
+
+.seamless-restriction-plans {
+    margin: 40px 0
+}
+
+.seamless-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 30px
+}
+
+.seamless-plan-card {
+    background: var(--seamless-background-color, #fff);
+    border: 2px solid var(--seamless-light-border-color, #eee);
+    border-radius: 20px;
+    padding: 30px 25px;
+    transition: all .3s ease;
+    position: relative;
+    overflow: hidden
+}
+
+.seamless-plan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px #cfcbec, -2px -2px 25px rgba(38, 51, 122, .1);
+    border-color: #6c5ce7
+}
+
+.seamless-plan-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #6c5ce7
+}
+
+.seamless-plan-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--seamless-light-border-color, #eee)
+}
+
+.seamless-plan-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--seamless-dark-text-color, #111)
+}
+
+.seamless-plan-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #6c5ce7;
+    margin: 0
+}
+
+.seamless-plan-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--seamless-muted-text-color, #666);
+    margin: 20px 0
+}
+
+.seamless-plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 30px
+}
+
+.seamless-plan-features li {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+    font-size: 1rem;
+    color: var(--seamless-text-color, #444)
+}
+
+.seamless-check-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--seamless-success-color, #48bb78);
+    margin-right: 12px;
+    flex-shrink: 0
+}
+
+.seamless-premium-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all .3s ease;
+    border: none;
+    cursor: pointer;
+    min-width: 200px;
+    position: relative;
+    overflow: hidden
+}
+
+.seamless-premium-btn.seamless-login-btn {
+    background: var(--seamless-primary-color);
+    color: var(--seamless-background-color, #fff);
+    text-decoration: none
+}
+
+.seamless-premium-btn.seamless-upgrade-btn {
+    background: var(--seamless-primary-color);
+    color: var(--seamless-background-color, #fff);
+    width: 100%;
+    margin-top: 20px;
+    text-decoration: none
+}
+
+.seamless-premium-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, .2)
+}
+
+.seamless-premium-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent);
+    transition: left .6s
+}
+
+.seamless-premium-btn:hover::before {
+    left: 100%
+}
+
+.seamless-restriction-info {
+    padding-top: 30px;
+    border-top: 1px solid var(--seamless-light-border-color, #eee)
+}
+
+.seamless-restriction-info p {
+    font-size: 1rem;
+    color: var(--seamless-muted-text-color, #666);
+    margin: 0;
+    line-height: 1.6
+}
+
+.seamless-restriction-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: .1
+}
+
+.seamless-decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--seamless-secondary-color, #06b6d4), var(--seamless-primary-color, #26337a));
+    opacity: .15
+}
+
+.seamless-circle-1 {
+    width: 100px;
+    height: 100px;
+    top: -50px;
+    right: -50px;
+    animation: float 6s ease-in-out infinite
+}
+
+.seamless-circle-2 {
+    width: 60px;
+    height: 60px;
+    bottom: -30px;
+    left: -30px;
+    animation: float 4s ease-in-out infinite reverse
+}
+
+.seamless-circle-3 {
+    width: 80px;
+    height: 80px;
+    top: 50%;
+    right: -40px;
+    animation: float 8s ease-in-out infinite
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-20px)
+    }
+}
+
+@media (max-width:768px) {
+    .seamless-restriction-overlay {
+        padding: 15px
+    }
+
+    .seamless-restriction-modal {
+        max-width: 95vw;
+        margin: 0;
+        border-radius: 20px
+    }
+
+    .seamless-restriction-content {
+        padding: 35px 25px
+    }
+
+    .seamless-restriction-title {
+        font-size: 1.8rem
+    }
+
+    .seamless-restriction-subtitle {
+        font-size: 1rem
+    }
+
+    .seamless-plans-grid {
+        grid-template-columns: 1fr;
+        gap: 16px
+    }
+
+    .seamless-plan-card {
+        padding: 20px 18px
+    }
+
+    .seamless-plan-name {
+        font-size: 1.2rem
+    }
+
+    .seamless-plan-price {
+        font-size: 1.5rem
+    }
+
+    .seamless-premium-btn {
+        padding: 12px 24px;
+        font-size: .95rem;
+        min-width: 160px
+    }
+
+    .seamless-restriction-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px
+    }
+
+    .seamless-restriction-icon svg {
+        width: 30px;
+        height: 30px
+    }
+
+    .seamless-restriction-header {
+        margin-bottom: 25px
+    }
+
+    .seamless-restriction-message {
+        margin: 20px 0;
+        padding: 20px
+    }
+
+    .seamless-restriction-plans,
+    .seamless-restriction-actions {
+        margin: 25px 0
+    }
+}
+
+.seamless-authentication-required {
+    color: #ff2121;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.seamless-authentication-required p {
+    margin: 0;
+    padding: 5px 0;
+}
+
+/* CSS from tpl-user-dashboard.php */
+.seamless-user-dashboard {
+    font-family: var(--seamless-font-family);
+    color: var(--seamless-text-color);
+    background: var(--seamless-background-color);
+    /* border: 1px solid var(--seamless-light-border-color);
+    border-radius: 16px; */
+    /* box-shadow: 0 6px 20px rgba(0, 0, 0, .06); */
+    padding: 0px;
+    margin: 50px auto;
+}
+
+.seamless-user-dashboard .sud-header h2 {
+    margin: 0 0 4px;
+    color: var(--seamless-primary-color)
+}
+
+.seamless-user-dashboard .sud-sub {
+    margin: 0;
+    color: var(--seamless-muted-text-color)
+}
+
+.seamless-user-dashboard .sud-tabs {
+    display: flex;
+    gap: 8px;
+    margin: 18px 0 0;
+    flex-wrap: wrap
+}
+
+.seamless-user-dashboard .sud-tab {
+    background: #fff;
+    border: 1px solid var(--seamless-light-border-color);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #334155;
+    transition: .2s ease
+}
+
+.seamless-user-dashboard .sud-tab.active {
+    background: var(--seamless-primary-tint, #f1f5ff);
+    border-color: var(--seamless-primary-color);
+    color: var(--seamless-primary-color)
+}
+
+.seamless-user-dashboard .sud-tab:hover {
+    background: #f8fafc
+}
+
+.seamless-user-dashboard .sud-panels {
+    background: #fff;
+    border: 1px solid var(--seamless-light-border-color);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 12px;
+}
+
+.seamless-user-dashboard .sud-panel {
+    display: none;
+}
+
+.seamless-user-dashboard .sud-panel.active {
+    display: block;
+}
+
+.sud-cards {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.sud-meta {
+    margin-bottom: 10px;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sud-count-pill {
+    display: inline-block;
+    min-width: 26px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 999px;
+    background: #e5f9ef;
+    color: #065f46;
+    font-weight: 600;
+}
+
+.sud-count-pill-expired {
+    display: inline-block;
+    min-width: 26px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 999px;
+    background: #fbeaea;
+    color: #c1121f;
+    font-weight: 600;
+}
+
+.sud-card {
+    border: 1px solid var(--seamless-light-border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff
+}
+
+.sud-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--seamless-light-border-color)
+}
+
+.sud-card-header-colored .sud-badge {
+    background: rgba(255, 255, 255, .9);
+    color: #111827
+}
+
+h3.sud-card-title {
+    margin: 0;
+    font-size: 20px;
+    color: var(--seamless-background-color)
+}
+
+.sud-badge {
+    font-size: 11px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    display: inline-block
+}
+
+.sud-badge-active {
+    background: #e6f8ee;
+    color: #2e7d32
+}
+
+.sud-badge-inactive {
+    background: #f2f4f7;
+    color: #344054;
+    border: 1px solid #e5e7eb
+}
+
+.sud-badge-expired {
+    background: #fbeaea;
+    color: #c1121f
+}
+
+.sud-card-body {
+    padding: 12px 14px
+}
+
+.sud-card-body p {
+    font-size: 14px
+}
+
+.sud-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+
+.sud-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--seamless-light-border-color);
+    border-radius: 10px;
+    padding: 12px;
+    background: #fff
+}
+
+.sud-list-title {
+    font-weight: 600;
+    color: var(--seamless-dark-text-color)
+}
+
+.sud-list-meta {
+    color: var(--seamless-muted-text-color);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.sud-dot {
+    width: 4px;
+    height: 4px;
+    background: #d1d5db;
+    border-radius: 50%;
+    display: inline-block
+}
+
+.sud-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px
+}
+
+.sud-profile-grid>div {
+    border: 1px solid var(--seamless-light-border-color);
+    border-radius: 10px;
+    padding: 12px;
+    background: #f9fafb
+}
+
+.sud-profile-grid strong {
+    display: block;
+    color: var(--seamless-muted-text-color);
+    font-size: 12px;
+    margin-bottom: 6px
+}
+
+.sud-table-wrapper {
+    width: 100%;
+    overflow: auto
+}
+
+.sud-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px
+}
+
+.sud-order-header {
+    display: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #64748b;
+    padding: 0 12px;
+    gap: 16px
+}
+
+.sud-order-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--seamless-light-border-color);
+    border-radius: 10px;
+    padding: 12px;
+    gap: 16px;
+    transition: .2s ease
+}
+
+.sud-order-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .07);
+    border-color: var(--seamless-primary-color);
+    transform: translateY(-2px)
+}
+
+.sud-order-header>div,
+.sud-order-card>div {
+    flex: 1 1 0;
+    padding: 0 4px
+}
+
+.sud-col-customer {
+    flex-basis: 15%
+}
+
+.sud-col-items {
+    flex-basis: 5%;
+    text-align: center
+}
+
+.sud-col-products {
+    flex-basis: 30%
+}
+
+.sud-col-status {
+    flex-basis: 10%
+}
+
+.sud-col-total {
+    flex-basis: 15%;
+    text-align: right
+}
+
+.sud-col-date {
+    flex-basis: 15%;
+    text-align: right
+}
+
+.sud-col-action {
+    flex-basis: 10%;
+    text-align: right
+}
+
+@media (min-width:768px) {
+    .sud-order-header {
+        display: flex
+    }
+}
+
+@media (max-width:767px) {
+    .sud-order-card {
+        flex-direction: column;
+        align-items: flex-start
+    }
+
+    .sud-order-card>div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        text-align: left !important;
+        padding: 4px 0
+    }
+
+    .sud-order-card>div::before {
+        content: attr(data-label);
+        font-weight: 700;
+        margin-right: 1em;
+        color: #334155
+    }
+
+    .sud-col-total,
+    .sud-col-date,
+    .sud-col-action {
+        justify-content: flex-end
+    }
+}
+
+.sud-ellipsis {
+    max-width: 420px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+
+.sud-count-badge {
+    display: inline-block;
+    min-width: 24px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #6c5ce7;
+    font-weight: 600
+}
+
+.sud-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 12px
+}
+
+.sud-chip-success {
+    background: #e6f8ee;
+    color: #2e7d32
+}
+
+.sud-chip-warning {
+    background: #fff7ed;
+    color: #b45309
+}
+
+.sud-chip-danger {
+    background: #fbeaea;
+    color: #c1121f
+}
+
+.sud-chip-neutral {
+    background: #f2f4f7;
+    color: #344054;
+    border: 1px solid #e5e7eb
+}
+
+.sud-muted {
+    color: #64748b
+}
+
+.sud-panel .sud-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px
+}
+
+.sud-col-action .sud-btn-invoice {
+    background: #eef2ff;
+    color: #6c5ce7;
+    border: 1px solid #e5e7eb;
+    text-decoration: none;
+}
+
+.sud-col-action .sud-btn-invoice:hover {
+    background: #6c5ce7;
+    color: #fff;
+}
+
+.sud-strike {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.sud-amount-green {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.sud-refunded {
+    color: #b91c1c;
+    font-size: 13px;
+}
+
+.sud-profile-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px
+}
+
+.sud-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.sud-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #6c5ce7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800
+}
+
+.sud-profile-name {
+    font-weight: 600;
+    color: #0f172a
+}
+
+.sud-profile-email {
+    color: #64748b
+}
+
+.sud-section {
+    border: 1px dashed #e5e7eb;
+    border-radius: 10px;
+    padding: 12px
+}
+
+.sud-section-title {
+    font-weight: 500;
+    margin-bottom: 10px
+}
+
+.sud-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px
+}
+
+.sud-label {
+    display: block;
+    color: #64748b;
+    font-size: 12px
+}
+
+.sud-value {
+    display: block;
+    color: #0f172a
+}
+
+.sud-footer-actions {
+    display: flex;
+    justify-content: flex-start
+}
+
+.sud-btn-logout {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    text-decoration: none;
+}
+
+.sud-btn-logout:hover {
+    background: #b91c1c;
+    color: #fff;
+}
+
+/* CSS for AMS content */
+#seamless-ams-content-wrapper {
+    max-width: 1300px;
+    margin: 0 auto;
+}

@@ -1,0 +1,237 @@
+/* ============================================
+   SEAMLESS EVENT DISPLAY - MAIN STYLESHEET
+   ============================================
+   This is the main CSS file that imports all
+   component-specific stylesheets.
+   
+   Import order is important for cascading.
+   ============================================ */
+
+/* 1. CSS Variables and configuration */
+@import './variables.css';
+
+/* 2. Reset and base styles */
+@import './reset.css';
+
+/* 3. Layout components */
+@import './layout.css';
+
+/* 4. Form elements (inputs, dropdowns, selects) */
+@import './forms.css';
+
+/* 5. Filter bar styles */
+@import './filter-bar.css';
+
+/* 6. Card styles */
+@import './card.css';
+
+/* 7. Button styles */
+@import './buttons.css';
+
+/* 8. Pagination styles */
+@import './pagination.css';
+
+/* 9. Calendar styles */
+@import './calendar.css';
+
+/* 10. View switcher styles */
+@import './view-switcher.css';
+
+/* ============================================
+   GLOBAL UTILITIES
+   ============================================ */
+
+/* Utility class for text truncation */
+.seamless-line-clamp-1 {
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.seamless-line-clamp-2 {
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.seamless-line-clamp-3 {
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+/* Responsive utility classes */
+.seamless-hidden-mobile {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .seamless-hidden-mobile {
+    display: block !important;
+  }
+
+  .seamless-hidden-desktop {
+    display: none !important;
+  }
+}
+
+/* Flex utilities */
+.seamless-flex {
+  display: flex !important;
+}
+
+.seamless-flex-between {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.seamless-flex-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.seamless-flex-col {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.seamless-flex-wrap {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+/* Spacing utilities */
+.seamless-mb-4 {
+  margin-bottom: var(--seamless-spacing-4) !important;
+}
+
+.seamless-mb-6 {
+  margin-bottom: var(--seamless-spacing-6) !important;
+}
+
+.seamless-mb-8 {
+  margin-bottom: var(--seamless-spacing-8) !important;
+}
+
+.seamless-mt-4 {
+  margin-top: var(--seamless-spacing-4) !important;
+}
+
+.seamless-mt-6 {
+  margin-top: var(--seamless-spacing-6) !important;
+}
+
+.seamless-gap-4 {
+  gap: var(--seamless-spacing-4) !important;
+}
+
+.seamless-gap-6 {
+  gap: var(--seamless-spacing-6) !important;
+}
+
+/* Display utilities */
+.seamless-block {
+  display: block !important;
+}
+
+.seamless-inline-block {
+  display: inline-block !important;
+}
+
+.seamless-hidden {
+  display: none !important;
+}
+
+/* Width utilities */
+.seamless-w-full {
+  width: 100% !important;
+}
+
+.seamless-w-32 {
+  width: 8rem !important;
+}
+
+/* Text utilities */
+.seamless-text-center {
+  text-align: center !important;
+}
+
+.seamless-font-bold {
+  font-weight: 700 !important;
+}
+
+.seamless-font-semibold {
+  font-weight: 600 !important;
+}
+
+.seamless-text-gray-600 {
+  color: var(--seamless-color-gray-600) !important;
+}
+
+.seamless-text-primary {
+  color: var(--seamless-color-primary) !important;
+}
+
+.seamless-text-secondary {
+  color: var(--seamless-color-secondary) !important;
+}
+
+/* Rounded utilities */
+.seamless-rounded-lg {
+  border-radius: var(--seamless-radius-lg) !important;
+}
+
+.seamless-rounded-full {
+  border-radius: var(--seamless-radius-full) !important;
+}
+
+/* Shadow utilities */
+.seamless-shadow-md {
+  box-shadow: var(--seamless-shadow-md) !important;
+}
+
+.seamless-shadow-lg {
+  box-shadow: var(--seamless-shadow-lg) !important;
+}
+
+/* Transition utilities */
+.seamless-transition-colors {
+  transition: color var(--seamless-transition-normal), background-color var(--seamless-transition-normal) !important;
+}
+
+.seamless-transition-all {
+  transition: all var(--seamless-transition-normal) !important;
+}
+
+/* ============================================
+   ACCESSIBILITY UTILITIES
+   ============================================ */
+
+.seamless-sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+/* Focus visible for keyboard navigation */
+.seamless-focus-visible:focus-visible {
+  outline: 2px solid var(--seamless-color-secondary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Print utilities */
+@media print {
+  .seamless-no-print {
+    display: none !important;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "actualize-studio/seamless",
+  "description": "Editable endpoints and shortcodes for events/Memberships with authentication.",
+  "type": "wordpress-plugin",
+  "autoload": {
+    "psr-4": {
+      "Seamless\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "htmlburger/carbon-fields": "^3.6"
+  }
+}

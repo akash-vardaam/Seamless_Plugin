@@ -1,0 +1,50 @@
+/* ============================================
+   SEAMLESS EVENT DISPLAY - RESET & BASE STYLES
+   ============================================ */
+
+#seamless-event-container * {
+  box-sizing: border-box !important;
+}
+
+#seamless-event-container {
+  min-height: 100vh !important;
+  font-family: var(--seamless-font-family-default) !important;
+  background-color: var(--seamless-color-white) !important;
+  color: #333 !important;
+  font-size: var(--seamless-font-size-base) !important;
+  line-height: 1.5 !important;
+}
+
+#seamless-event-container a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+#seamless-event-container button {
+  font-family: inherit !important;
+  cursor: pointer !important;
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#seamless-event-container input,
+#seamless-event-container select,
+#seamless-event-container textarea {
+  font-family: inherit !important;
+  font-size: inherit !important;
+}
+
+#seamless-event-container p {
+  margin: 0 !important;
+}
+
+#seamless-event-container h1,
+#seamless-event-container h2,
+#seamless-event-container h3,
+#seamless-event-container h4,
+#seamless-event-container h5,
+#seamless-event-container h6 {
+  margin: 0 !important;
+}

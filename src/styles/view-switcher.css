@@ -1,0 +1,56 @@
+/* ============================================
+   SEAMLESS EVENT DISPLAY - VIEW SWITCHER STYLES
+   ============================================ */
+
+.seamless-view-switcher {
+  display: flex !important;
+  gap: var(--seamless-spacing-3) !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+}
+
+.seamless-view-switcher-button {
+  min-height: 40px !important;
+  padding: 0.5rem 1.25rem !important;
+  border-radius: var(--seamless-radius-lg) !important;
+  font-size: var(--seamless-font-size-sm) !important;
+  font-weight: 600 !important;
+  transition: all var(--seamless-transition-normal) !important;
+  cursor: pointer !important;
+  border: 2px solid transparent !important;
+  text-transform: capitalize !important;
+  letter-spacing: 0.3px !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.seamless-view-switcher-button-active {
+  background-color: var(--seamless-color-primary) !important;
+  color: var(--seamless-color-white) !important;
+  border-color: var(--seamless-color-primary) !important;
+}
+
+.seamless-view-switcher-button-inactive {
+  background-color: var(--seamless-color-gray-100) !important;
+  color: var(--seamless-color-gray-700) !important;
+  border-color: var(--seamless-color-gray-300) !important;
+}
+
+.seamless-view-switcher-button-inactive:hover {
+  background-color: var(--seamless-color-gray-200) !important;
+  border-color: var(--seamless-color-gray-400) !important;
+}
+
+.seamless-view-switcher-button:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0, 178, 202, 0.1) !important;
+}
+
+/* Hide list view button on mobile */
+@media (max-width: 767px) {
+  .seamless-view-switcher-button-list {
+    display: none !important;
+  }
+}

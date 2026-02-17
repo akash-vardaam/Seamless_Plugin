@@ -1,0 +1,3096 @@
+<?php
+
+namespace Seamless\Admin;
+
+use Seamless\Operations\Events;
+use Seamless\Operations\Donations;
+use Seamless\Operations\Membership;
+use Seamless\Auth\SeamlessAuth as Auth;
+use Seamless\Auth\SeamlessSSO as SSO;
+
+class SettingsPage
+{
+	private Auth $auth;
+	private SSO $sso;
+
+	public function __construct()
+	{
+		$this->auth = new Auth();
+		$this->sso = new SSO();
+
+		add_action('admin_menu', [$this, 'add_menu_page']);
+		add_action('admin_menu', [$this, 'add_submenu_pages']);
+		add_action('admin_init', [$this, 'register_settings']);
+		add_action('updated_option', [$this, 'maybe_flush_permalinks'], 10, 3);
+		add_action('update_option_seamless_event_list_endpoint', [$this, 'schedule_rewrite_flush']);
+		add_action('update_option_seamless_single_event_endpoint', [$this, 'schedule_rewrite_flush']);
+		add_action('update_option_seamless_ams_content_endpoint', [$this, 'schedule_rewrite_flush']);
+		// add_action('update_option_seamless_single_donation_endpoint', [$this, 'schedule_rewrite_flush']);
+		// add_action('update_option_seamless_membership_list_endpoint', [$this, 'schedule_rewrite_flush']);
+		// add_action('update_option_seamless_single_membership_endpoint', [$this, 'schedule_rewrite_flush']);
+		add_action('update_option_seamless_client_domain', [$this, 'handle_domain_change'], 10, 3);
+		add_action('wp_ajax_seamless_connect', [$this, 'handle_connect']);
+		add_action('wp_ajax_seamless_disconnect', [$this, 'handle_disconnect']);
+		add_action('wp_ajax_seamless_fetch_latest_events', [$this, 'handle_fetch_latest_events']);
+		add_action('wp_ajax_seamless_fetch_latest_membership_data', [$this, 'handle_fetch_latest_membership_data']);
+		add_action('admin_init', [$this, 'maybe_flush_rewrite_rules']);
+	}
+
+	public function flush_permalinks(): void
+	{
+		flush_rewrite_rules();
+	}
+
+	public function add_menu_page(): void
+	{
+		add_menu_page(
+			esc_html__('Seamless', 'seamless'),
+			esc_html__('Seamless', 'seamless'),
+			'manage_options',
+			'seamless',
+			[$this, 'render_admin_page'],
+			'dashicons-admin-generic',
+			60
+		);
+	}
+
+	public function add_submenu_pages(): void
+	{
+		// Remove the first submenu item (duplicate of main menu)
+		remove_submenu_page('seamless', 'seamless');
+	}
+
+	public function register_settings(): void
+	{
+		register_setting('seamless_auth_group', 'seamless_client_id', [
+			'sanitize_callback' => 'sanitize_text_field'
+		]);
+		register_setting('seamless_auth_group', 'seamless_client_secret', [
+			'sanitize_callback' => 'sanitize_text_field'
+		]);
+		register_setting('seamless_auth_group', 'seamless_client_domain', [
+			'sanitize_callback' => 'sanitize_text_field'
+		]);
+		register_setting('seamless_auth_group', 'seamless_redirect_url', [
+			'sanitize_callback' => 'sanitize_text_field'
+		]);
+		register_setting('seamless_endpoints_group', 'seamless_event_list_endpoint', [
+			'sanitize_callback' => 'sanitize_title_with_dashes'
+		]);
+		register_setting('seamless_endpoints_group', 'seamless_single_event_endpoint', [
+			'sanitize_callback' => 'sanitize_title_with_dashes'
+		]);
+		register_setting('seamless_endpoints_group', 'seamless_ams_content_endpoint', [
+			'sanitize_callback' => 'sanitize_title_with_dashes'
+		]);
+
+		// register_setting('seamless_endpoints_group', 'seamless_membership_list_endpoint', [
+		// 	'sanitize_callback' => 'sanitize_title_with_dashes'
+		// ]);
+		// register_setting('seamless_endpoints_group', 'seamless_single_membership_endpoint', [
+		// 	'sanitize_callback' => 'sanitize_title_with_dashes'
+		// ]);
+
+		// Content restriction settings
+		register_setting('seamless_content_restriction_group', 'seamless_protected_post_types', [
+			'sanitize_callback' => 'sanitize_text_field',
+			'type' => 'string'
+		]);
+
+		register_setting('seamless_content_restriction_group', 'seamless_restriction_message', [
+			'sanitize_callback' => 'wp_kses_post',
+			'type' => 'string'
+		]);
+		register_setting('seamless_content_restriction_group', 'seamless_sso_endpoint', [
+			'sanitize_callback' => 'sanitize_text_field'
+		]);
+
+		// --- New Content Restriction Section ---
+		add_settings_section(
+			'seamless_content_restriction_section',
+			'Content Restriction Settings',
+			'__return_empty_string',
+			'seamless-settings-page'
+		);
+
+		register_setting('seamless_content_restriction_group', 'seamless_protected_post_types', [
+			'type' => 'string',
+			'sanitize_callback' => 'sanitize_text_field',
+			'default' => 'post,page',
+		]);
+
+		add_settings_field(
+			'seamless_protected_post_types',
+			'Protected Post Types',
+			[$this, 'render_protected_post_types_field'],
+			'seamless-settings-page',
+			'seamless_content_restriction_section'
+		);
+
+		register_setting('seamless_content_restriction_group', 'seamless_membership_purchase_url', [
+			'type' => 'string',
+			'sanitize_callback' => 'esc_url_raw',
+			'default' => home_url('/memberships'),
+		]);
+
+		add_settings_field(
+			'seamless_membership_purchase_url',
+			'Membership Purchase URL',
+			[$this, 'render_membership_purchase_url_field'],
+			'seamless-settings-page',
+			'seamless_content_restriction_section'
+		);
+
+		// Advanced settings
+		register_setting('seamless_advanced_group', 'seamless_color_scheme', [
+			'sanitize_callback' => 'sanitize_text_field',
+			'default'           => 'theme',
+		]);
+		register_setting('seamless_advanced_group', 'seamless_primary_color', [
+			'sanitize_callback' => 'sanitize_hex_color',
+			'default'           => '#26337a',
+		]);
+		register_setting('seamless_advanced_group', 'seamless_secondary_color', [
+			'sanitize_callback' => 'sanitize_hex_color',
+			'default'           => '#06b6d4',
+		]);
+		register_setting('seamless_advanced_group', 'seamless_list_view_layout', [
+			'sanitize_callback' => 'sanitize_text_field',
+			'default'           => 'option_1',
+		]);
+
+		// SSO settings
+		register_setting('seamless_sso_settings_group', 'seamless_sso_enabled', [
+			'sanitize_callback' => 'absint',
+			'default' => 0
+		]);
+
+		// New settings for SSO client credentials
+		register_setting('seamless_sso_settings_group', 'seamless_sso_client_id', [
+			'sanitize_callback' => 'sanitize_text_field',
+		]);
+
+		// Store redirect URI when SSO is configured
+		$redirect_uri = rest_url('seamless-oauth/v1/callback');
+		update_option('seamless_redirect_uri', $redirect_uri);
+	}
+
+	public function render_admin_page(): void
+	{
+		$this->remove_all_notices();
+		$active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'authentication';
+		$is_authenticated = $this->auth->is_authenticated();
+
+		if (isset($_GET['settings-updated'])) {
+			add_settings_error('seamless_messages', 'seamless_message', __('Settings Saved', 'seamless'), 'updated');
+		}
+
+		if (isset($_GET['auth_success'])) {
+			add_settings_error('seamless_messages', 'seamless_auth_success', __('Authentication successful!', 'seamless'), 'updated');
+		}
+
+		if (isset($_GET['auth_error'])) {
+			$error_message = sanitize_text_field($_GET['auth_error']);
+			add_settings_error('seamless_messages', 'seamless_auth_error', __('Authentication failed: ', 'seamless') . $error_message, 'error');
+		}
+
+		if (isset($_GET['disconnected'])) {
+			add_settings_error('seamless_messages', 'seamless_disconnected', __('Disconnected successfully!', 'seamless'), 'updated');
+		}
+?>
+		<?php settings_errors('seamless_messages'); ?>
+		<div class="wrap seamless-admin-wrap">
+			<nav class="nav-tab-wrapper">
+				<a href="?page=seamless-settings&tab=authentication" class="nav-tab <?php if ($active_tab == 'authentication') echo 'nav-tab-active'; ?>">
+					<span class="dashicons dashicons-admin-network"></span> Authentication
+				</a>
+				<a href="?page=seamless-settings&tab=endpoints" class="nav-tab <?php if ($active_tab == 'endpoints') echo 'nav-tab-active'; ?>">
+					<span class="dashicons dashicons-admin-links"></span> Endpoints
+				</a>
+				<a href="?page=seamless-settings&tab=events" class="nav-tab <?php if ($active_tab == 'events') echo 'nav-tab-active'; ?>">
+					<span class="dashicons dashicons-calendar"></span> Events
+				</a>
+				<a href="?page=seamless-settings&tab=membership" class="nav-tab <?php if ($active_tab == 'membership') echo 'nav-tab-active'; ?>">
+					<span class="dashicons dashicons-groups"></span> Membership
+				</a>
+				<?php if ($is_authenticated): ?>
+					<a href="?page=seamless-settings&tab=sso" class="nav-tab <?php if ($active_tab == 'sso') echo 'nav-tab-active'; ?>">
+						<span class="dashicons dashicons-admin-users"></span> SSO Login
+					</a>
+				<?php endif; ?>
+				<?php if ($is_authenticated): ?>
+					<a href="?page=seamless-settings&tab=restriction" class="nav-tab <?php if ($active_tab == 'restriction') echo 'nav-tab-active'; ?>">
+						<span class="dashicons dashicons-lock"></span> Content Restriction
+					</a>
+				<?php endif; ?>
+				<a href="?page=seamless-settings&tab=advanced" class="nav-tab <?php if ($active_tab == 'advanced') echo 'nav-tab-active'; ?>">
+					<span class="dashicons dashicons-admin-generic"></span> Advanced
+				</a>
+				<?php
+				// Allow addons to add custom tabs
+				$custom_tabs = apply_filters('seamless_settings_tabs', []);
+				foreach ($custom_tabs as $tab_key => $tab_data) {
+					$tab_label = $tab_data['label'] ?? ucfirst($tab_key);
+					$tab_icon = $tab_data['icon'] ?? 'dashicons-admin-generic';
+					$tab_url = add_query_arg(['page' => 'seamless-settings', 'tab' => $tab_key], admin_url('admin.php'));
+					$is_active = ($active_tab === $tab_key) ? 'nav-tab-active' : '';
+					printf(
+						'<a href="%s" class="nav-tab %s"><span class="dashicons %s"></span> %s</a>',
+						esc_url($tab_url),
+						esc_attr($is_active),
+						esc_attr($tab_icon),
+						esc_html($tab_label)
+					);
+				}
+				?>
+			</nav>
+
+			<div class="seamless-tab-content">
+				<div class="seamless-card">
+					<?php
+					switch ($active_tab) {
+						case 'authentication':
+							$this->render_auth_tab();
+							break;
+						case 'sso':
+							if ($is_authenticated) {
+								$this->render_sso_tab();
+							} else {
+								echo '<p>Please authenticate first to access SSO settings.</p>';
+							}
+							break;
+						case 'restriction':
+							if ($is_authenticated) {
+								$this->render_restriction_tab();
+							} else {
+								echo '<p>Please authenticate first to access content restriction settings.</p>';
+							}
+							break;
+						case 'advanced':
+							$this->render_advanced_tab();
+							break;
+						case 'events':
+							$this->render_events_tab();
+							break;
+						case 'membership':
+							$this->render_membership_tab();
+							break;
+						default:
+							// Handle endpoints tab or allow addons to render custom tab content
+							if ($active_tab === 'endpoints') {
+								$this->render_endpoints_tab();
+							} else {
+								do_action('seamless_settings_tab_content_' . $active_tab);
+							}
+							break;
+					}
+					?>
+				</div>
+			</div>
+		</div>
+	<?php
+		$this->admin_css();
+		$this->admin_js();
+	}
+
+	public function render_welcome_page(): void
+	{
+		$welcome_page = new WelcomePage();
+		$welcome_page->render();
+	}
+
+	/**
+	 * Render settings content without wrapper (for embedding in WelcomePage)
+	 */
+	public function render_settings_content(): void
+	{
+		$active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'authentication';
+		$is_authenticated = $this->auth->is_authenticated();
+
+		if (isset($_GET['settings-updated'])) {
+			add_settings_error('seamless_messages', 'seamless_message', __('Settings Saved', 'seamless'), 'updated');
+		}
+
+		if (isset($_GET['auth_success'])) {
+			add_settings_error('seamless_messages', 'seamless_auth_success', __('Authentication successful!', 'seamless'), 'updated');
+		}
+
+		if (isset($_GET['auth_error'])) {
+			$error_message = sanitize_text_field($_GET['auth_error']);
+			add_settings_error('seamless_messages', 'seamless_auth_error', __('Authentication failed: ', 'seamless') . $error_message, 'error');
+		}
+
+		if (isset($_GET['disconnected'])) {
+			add_settings_error('seamless_messages', 'seamless_disconnected', __('Disconnected successfully!', 'seamless'), 'updated');
+		}
+	?>
+		<?php settings_errors('seamless_messages'); ?>
+
+		<nav class="nav-tab-wrapper">
+			<a href="?page=seamless&view=settings&tab=authentication" class="nav-tab <?php if ($active_tab == 'authentication') echo 'nav-tab-active'; ?>">
+				<span class="dashicons dashicons-admin-network"></span> Authentication
+			</a>
+			<a href="?page=seamless&view=settings&tab=endpoints" class="nav-tab <?php if ($active_tab == 'endpoints') echo 'nav-tab-active'; ?>">
+				<span class="dashicons dashicons-admin-links"></span> Endpoints
+			</a>
+			<a href="?page=seamless&view=settings&tab=events" class="nav-tab <?php if ($active_tab == 'events') echo 'nav-tab-active'; ?>">
+				<span class="dashicons dashicons-calendar"></span> Events
+			</a>
+			<a href="?page=seamless&view=settings&tab=membership" class="nav-tab <?php if ($active_tab == 'membership') echo 'nav-tab-active'; ?>">
+				<span class="dashicons dashicons-groups"></span> Membership
+			</a>
+			<?php if ($is_authenticated): ?>
+				<a href="?page=seamless&view=settings&tab=sso" class="nav-tab <?php if ($active_tab == 'sso') echo 'nav-tab-active'; ?>">
+					<span class="dashicons dashicons-admin-users"></span> SSO Login
+				</a>
+			<?php endif; ?>
+			<?php if ($is_authenticated): ?>
+				<a href="?page=seamless&view=settings&tab=restriction" class="nav-tab <?php if ($active_tab == 'restriction') echo 'nav-tab-active'; ?>">
+					<span class="dashicons dashicons-lock"></span> Content Restriction
+				</a>
+			<?php endif; ?>
+			<a href="?page=seamless&view=settings&tab=advanced" class="nav-tab <?php if ($active_tab == 'advanced') echo 'nav-tab-active'; ?>">
+				<span class="dashicons dashicons-admin-generic"></span> Advanced
+			</a>
+			<?php
+			// Allow addons to add custom tabs
+			$custom_tabs = apply_filters('seamless_settings_tabs', []);
+			foreach ($custom_tabs as $tab_key => $tab_data) {
+				$tab_label = $tab_data['label'] ?? ucfirst($tab_key);
+				$tab_icon = $tab_data['icon'] ?? 'dashicons-admin-generic';
+				$tab_url = add_query_arg(['page' => 'seamless', 'view' => 'settings', 'tab' => $tab_key], admin_url('admin.php'));
+				$is_active = ($active_tab === $tab_key) ? 'nav-tab-active' : '';
+				printf(
+					'<a href="%s" class="nav-tab %s"><span class="dashicons %s"></span> %s</a>',
+					esc_url($tab_url),
+					esc_attr($is_active),
+					esc_attr($tab_icon),
+					esc_html($tab_label)
+				);
+			}
+			?>
+		</nav>
+
+		<div class="seamless-tab-content">
+			<div class="seamless-card">
+				<?php
+				switch ($active_tab) {
+					case 'authentication':
+						$this->render_auth_tab();
+						break;
+					case 'sso':
+						if ($is_authenticated) {
+							$this->render_sso_tab();
+						} else {
+							echo '<p>Please authenticate first to access SSO settings.</p>';
+						}
+						break;
+					case 'restriction':
+						if ($is_authenticated) {
+							$this->render_restriction_tab();
+						} else {
+							echo '<p>Please authenticate first to access content restriction settings.</p>';
+						}
+						break;
+					case 'advanced':
+						$this->render_advanced_tab();
+						break;
+					case 'events':
+						$this->render_events_tab();
+						break;
+					case 'membership':
+						$this->render_membership_tab();
+						break;
+					case 'endpoints':
+						$this->render_endpoints_tab();
+						break;
+					default:
+						// Allow addons to render custom tab content
+						do_action('seamless_settings_tab_content_' . $active_tab);
+						break;
+				}
+				?>
+			</div>
+		</div>
+	<?php
+		$this->admin_css();
+		$this->admin_js();
+	}
+
+	public function render_auth_tab(): void
+	{
+		$is_authenticated = $this->auth->is_authenticated();
+		$client_domain = get_option('seamless_client_domain', '');
+		$client_id = get_option('seamless_client_id', '');
+		$client_secret = get_option('seamless_client_secret', '');
+		$is_sso_enabled = get_option('seamless_sso_enabled');
+
+		$has_credentials = !empty($client_domain) && !empty($client_id) && !empty($client_secret);
+
+	?>
+		<div class="seamless-auth-container">
+			<div class="seamless-content-header">
+				<h2>Authentication</h2>
+				<p>Provide your Seamless client credentials. These will be used for both API authentication and optional SSO.</p>
+			</div>
+
+			<?php if (!$is_authenticated): ?>
+				<!-- Configuration Health Check Card -->
+				<div class="seamless-health-check-card">
+					<div class="seamless-health-header">
+						<h3><span class="dashicons dashicons-admin-tools"></span> Configuration Health Check</h3>
+						<div class="seamless-health-status needs-attention">
+							<span class="dashicons dashicons-warning"></span>
+							<span>Needs Attention</span>
+							<button class="seamless-close-btn" type="button">×</button>
+						</div>
+					</div>
+					<div class="seamless-health-subtitle">
+						<span>Seamless Configuration Status</span>
+					</div>
+
+					<div class="seamless-health-items">
+						<div class="seamless-health-item">
+							<span class="seamless-health-label">Client ID</span>
+							<div class="seamless-health-value">
+								<?php if (!empty($client_id)): ?>
+									<span class="seamless-status-badge rfc-compliant">
+										<span class="dashicons dashicons-yes-alt"></span>
+										Configured
+									</span>
+								<?php else: ?>
+									<span class="seamless-status-badge not-configured">
+										<span class="dashicons dashicons-no-alt"></span>
+										Not Configured
+									</span>
+								<?php endif; ?>
+							</div>
+						</div>
+
+						<div class="seamless-health-item">
+							<span class="seamless-health-label">Client Secret</span>
+							<div class="seamless-health-value">
+								<?php if (!empty($client_secret)): ?>
+									<span class="seamless-status-badge rfc-compliant">
+										<span class="dashicons dashicons-yes-alt"></span>
+										Configured
+									</span>
+								<?php else: ?>
+									<span class="seamless-status-badge not-configured">
+										<span class="dashicons dashicons-no-alt"></span>
+										Not Configured
+									</span>
+								<?php endif; ?>
+							</div>
+						</div>
+
+						<div class="seamless-health-item">
+							<span class="seamless-health-label">Events Sync</span>
+							<div class="seamless-health-value">
+								<span class="seamless-status-badge inactive">
+									<span class="dashicons dashicons-no-alt"></span>
+									Inactive
+								</span>
+							</div>
+						</div>
+
+						<div class="seamless-health-item">
+							<span class="seamless-health-label">Authentication Endpoints</span>
+							<div class="seamless-health-value">
+								<span class="seamless-status-badge inactive">
+									<span class="dashicons dashicons-no-alt"></span>
+									Inactive
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="seamless-auth-section">
+					<div class="seamless-auth-setup">
+						<h3><span class="dashicons dashicons-admin-settings"></span> Client Credentials Setup</h3>
+						<form method="post" action="options.php">
+							<?php settings_fields('seamless_auth_group'); ?>
+							<table class="form-table">
+								<tr>
+									<th scope="row">
+										<label for="seamless_client_id">Client ID</label>
+									</th>
+									<td>
+										<input type="text"
+											id="seamless_client_id"
+											name="seamless_client_id"
+											value="<?php echo esc_attr(get_option('seamless_client_id', '')); ?>"
+											class="regular-text"
+											placeholder="Enter your client ID"
+											required />
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<label for="seamless_client_secret">Client Secret</label>
+									</th>
+									<td>
+										<div class="seamless-password-field">
+											<input type="password"
+												id="seamless_client_secret"
+												name="seamless_client_secret"
+												value="<?php echo esc_attr(get_option('seamless_client_secret', '')); ?>"
+												class="regular-text"
+												placeholder="Enter your client secret"
+												autocomplete="off"
+												required />
+											<button type="button" class="seamless-toggle-password" title="Toggle password visibility">
+												<span class="dashicons dashicons-visibility"></span>
+											</button>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th scope="row">
+										<label for="seamless_client_domain">Client Domain</label>
+									</th>
+									<td>
+										<input type="url"
+											id="seamless_client_domain"
+											name="seamless_client_domain"
+											value="<?php echo esc_attr(get_option('seamless_client_domain', '')); ?>"
+											class="regular-text"
+											placeholder="https://yourdomain.com"
+											required />
+										<p class="description">Enter the base domain for API requests</p>
+									</td>
+								</tr>
+							</table>
+
+							<div class="seamless-form-actions">
+								<?php submit_button('Save Credentials', 'primary seamless-btn-primary', 'submit', false); ?>
+							</div>
+						</form>
+
+						<?php if ($has_credentials && !$is_authenticated): ?>
+							<div class="seamless-test-connection">
+								<div class="seamless-connection-divider">
+									<span>Connect</span>
+								</div>
+								<div class="seamless-connection-content">
+									<h4><span class="dashicons dashicons-admin-network"></span> Connect to Seamless</h4>
+									<p>Click below to test your credentials and establish connection:</p>
+									<button type="button" class="seamless-btn seamless-btn-success" id="seamless-connect-btn">
+										<span class="dashicons dashicons-admin-network"></span>
+										<span>Connect Now</span>
+									</button>
+								</div>
+							</div>
+						<?php endif; ?>
+					</div>
+				</div>
+			<?php else: ?>
+				<!-- Connected State -->
+				<div class="seamless-auth-section">
+					<div class="seamless-auth-connected">
+						<div class="seamless-connection-success">
+							<div class="seamless-success-icon">
+								<span class="dashicons dashicons-yes-alt"></span>
+							</div>
+							<div class="seamless-success-content">
+								<h3>Successfully Connected!</h3>
+								<p>Connected to <strong><?php echo esc_html($client_domain); ?></strong></p>
+							</div>
+						</div>
+
+						<div class="seamless-connection-details">
+							<div class="seamless-detail-item">
+								<span class="seamless-detail-label">
+									<span class="dashicons dashicons-admin-network"></span>
+									Connection Status
+								</span>
+								<span class="seamless-status-badge connected">
+									<span class="dashicons dashicons-yes-alt"></span>
+									Connected
+								</span>
+							</div>
+
+							<div class="seamless-detail-item">
+								<span class="seamless-detail-label">
+									<span class="dashicons dashicons-admin-users"></span>
+									Client ID
+								</span>
+								<span class="seamless-detail-value"><?php echo esc_html($client_id); ?></span>
+							</div>
+
+							<div class="seamless-detail-item">
+								<span class="seamless-detail-label">
+									<span class="dashicons dashicons-admin-site-alt3"></span>
+									Domain
+								</span>
+								<span class="seamless-detail-value"><?php echo esc_html($client_domain); ?></span>
+							</div>
+						</div>
+
+						<div class="seamless-connection-actions">
+							<button type="button" class="seamless-btn seamless-btn-danger" id="seamless-disconnect-btn">
+								<span class="dashicons dashicons-no"></span>
+								<span>Disconnect</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			<?php endif; ?>
+		</div>
+	<?php
+	}
+
+	public function render_sso_tab(): void
+	{
+		$sso_client_id = get_option('seamless_sso_client_id', '');
+		$redirect_uri = rest_url('seamless-oauth/v1/callback');
+		$has_sso_credentials = !empty($sso_client_id);
+	?>
+		<div class="seamless-content-header">
+			<h2>Single Sign-On (SSO) Settings</h2>
+			<p>Enable SSO to allow users to log in to your WordPress site using their Seamless account credentials.</p>
+		</div>
+		<div class="seamless-sso-section">
+			<form method="post" action="options.php">
+				<?php settings_fields('seamless_sso_settings_group'); ?>
+				<div class="seamless-sso-config">
+					<h3>SSO Configuration</h3>
+					<table class="form-table">
+						<tr>
+							<th scope="row">Client ID</th>
+							<td>
+								<input type="text" name="seamless_sso_client_id"
+									value="<?php echo esc_attr($sso_client_id); ?>"
+									class="regular-text" required />
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">OAuth Redirect URI</th>
+							<td>
+								<code class="seamless-code-block"><?php echo esc_html($redirect_uri); ?></code>
+								<p class="description">Add this exact URI to your Seamless OAuth application settings.</p>
+							</td>
+						</tr>
+					</table>
+					<?php submit_button('Save SSO Credentials'); ?>
+				</div>
+			</form>
+			<?php if ($has_sso_credentials): ?>
+				<div class="seamless-sso-shortcode-section">
+					<h3>SSO Login Button</h3>
+					<p>Use this shortcode to add a login button anywhere on your site:</p>
+					<div class="shortcode-container">
+						<?php $sso_shortcode = '[seamless_login_button]'; ?>
+						<code class="shortcode-text seamless-code-block"><?php echo esc_html($sso_shortcode); ?></code>
+						<button type="button" class="copy-shortcode-btn" title="Copy shortcode" data-shortcode="<?php echo esc_attr($sso_shortcode); ?>">
+							<span class="dashicons dashicons-admin-page"></span>
+						</button>
+					</div>
+				</div>
+
+				<div class="seamless-sso-shortcode-section">
+					<h3>User Dashboard</h3>
+					<p>Add the user dashboard to any page. It displays the logged-in user's membership, membership history, orders and profile.</p>
+					<div class="shortcode-container">
+						<?php $dashboard_shortcode = '[seamless_user_dashboard]'; ?>
+						<code class="shortcode-text seamless-code-block"><?php echo esc_html($dashboard_shortcode); ?></code>
+						<button type="button" class="copy-shortcode-btn" title="Copy shortcode" data-shortcode="<?php echo esc_attr($dashboard_shortcode); ?>">
+							<span class="dashicons dashicons-admin-page"></span>
+						</button>
+					</div>
+				</div>
+			<?php endif; ?>
+		</div>
+	<?php
+	}
+
+	public function render_restriction_tab(): void
+	{
+		$protected_post_types = get_option('seamless_protected_post_types', '');
+		$custom_message = get_option('seamless_restriction_message', 'You must have an active membership to view this content.');
+		$sso_endpoint = get_option('seamless_sso_endpoint', '');
+
+		$public_post_types = get_post_types(['public' => true], 'objects');
+		$protected_types_array = array_map('trim', explode(',', $protected_post_types));
+	?>
+		<div class="seamless-content-header">
+			<h2>Content Restriction Settings</h2>
+			<p>Restrict access to specific post types based on a user's active membership plan.</p>
+		</div>
+		<form method="post" action="options.php">
+			<?php settings_fields('seamless_content_restriction_group'); ?>
+			<table class="form-table">
+				<tr>
+					<th scope="row">Protected Post Types</th>
+					<td>
+						<p class="description">Select the post types that require an active membership.</p>
+						<?php foreach ($public_post_types as $post_type_obj):
+							$checked = in_array($post_type_obj->name, $protected_types_array);
+							if ($post_type_obj->name !== 'attachment'): // Exclude attachments
+						?>
+								<label>
+									<input type="checkbox" name="seamless_protected_post_types_checkbox[]" value="<?php echo esc_attr($post_type_obj->name); ?>" <?php checked($checked); ?> />
+									<?php echo esc_html($post_type_obj->labels->singular_name); ?>
+								</label><br>
+						<?php endif;
+						endforeach; ?>
+						<input type="hidden" name="seamless_protected_post_types" id="seamless-protected-post-types" value="<?php echo esc_attr($protected_post_types); ?>">
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Custom Restriction Message</th>
+					<td>
+						<textarea name="seamless_restriction_message" rows="5" cols="50" class="large-text"><?php echo esc_textarea($custom_message); ?></textarea>
+						<p class="description">This message will be displayed to users who do not have a required membership.</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Membership Page URL</th>
+					<td>
+						<input type="url" name="seamless_sso_endpoint" value="<?php echo esc_attr($sso_endpoint); ?>" class="regular-text" placeholder="e.g., https://yourdomain.com/memberships" />
+						<p class="description">The URL where users can purchase or view membership plans.</p>
+					</td>
+				</tr>
+			</table>
+			<?php submit_button('Save Restrictions'); ?>
+		</form>
+		<script>
+			jQuery(document).ready(function($) {
+				$('input[name="seamless_protected_post_types_checkbox[]"]').on('change', function() {
+					var selectedTypes = [];
+					$('input[name="seamless_protected_post_types_checkbox[]"]:checked').each(function() {
+						selectedTypes.push($(this).val());
+					});
+					$('#seamless-protected-post-types').val(selectedTypes.join(','));
+				});
+			});
+		</script>
+	<?php
+	}
+
+	public function handle_disconnect(): void
+	{
+		if (!wp_verify_nonce($_POST['nonce'] ?? '', 'seamless_disconnect')) {
+			wp_send_json_error('Invalid nonce');
+		}
+
+		if (!current_user_can('manage_options')) {
+			wp_send_json_error('Insufficient permissions');
+		}
+
+		// Disconnect and clear auth
+		$this->auth->disconnect();
+
+		// Also disable SSO when disconnecting
+		update_option('seamless_sso_enabled', 0);
+
+		wp_send_json_success('Disconnected successfully');
+	}
+
+	public function render_advanced_tab(): void
+	{
+		wp_enqueue_style('wp-color-picker');
+		wp_enqueue_script('wp-color-picker');
+	?>
+		<div class="seamless-content-header">
+			<h2>Advanced Settings</h2>
+			<p>Customize the appearance and behavior of the plugin.</p>
+		</div>
+		<form method="post" action="options.php">
+			<?php settings_fields('seamless_advanced_group'); ?>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row">Color Scheme</th>
+					<td>
+						<fieldset>
+							<p>
+								<label class="seamless-radio-label">
+									<input type="radio" name="seamless_color_scheme" value="theme" <?php checked(get_option('seamless_color_scheme', 'theme'), 'theme'); ?> />
+									<span>Use active theme's colors</span>
+								</label>
+							<p class="description">Automatically inherit colors from your WordPress theme for a consistent look.</p>
+							</p>
+							<p>
+								<label class="seamless-radio-label">
+									<input type="radio" name="seamless_color_scheme" value="plugin" <?php checked(get_option('seamless_color_scheme'), 'plugin'); ?> />
+									<span>Use plugin's default colors</span>
+								</label>
+							<p class="description">Use the default color scheme that comes with the Seamless plugin.</p>
+							</p>
+						</fieldset>
+					</td>
+				</tr>
+				<tr valign="top" class="plugin-color-settings" style="display: none;">
+					<th scope="row">Primary Color</th>
+					<td>
+						<input type="text" name="seamless_primary_color" value="<?php echo esc_attr(get_option('seamless_primary_color', '#26337a')); ?>" class="seamless-color-picker" />
+						<p class="description">Main color for headings and important elements.</p>
+					</td>
+				</tr>
+				<tr valign="top" class="plugin-color-settings" style="display: none;">
+					<th scope="row">Secondary Color</th>
+					<td>
+						<input type="text" name="seamless_secondary_color" value="<?php echo esc_attr(get_option('seamless_secondary_color', '#06b6d4')); ?>" class="seamless-color-picker" />
+						<p class="description">Color for links, buttons, and accents.</p>
+					</td>
+				</tr>
+				</tr>
+				<tr valign="top">
+					<th scope="row">List View Layout</th>
+					<td>
+						<fieldset>
+							<p>
+								<label class="seamless-radio-label">
+									<input type="radio" name="seamless_list_view_layout" value="option_1" <?php checked(get_option('seamless_list_view_layout', 'option_1'), 'option_1'); ?> />
+									<span>Classic</span>
+								</label>
+							</p>
+							<p>
+								<label class="seamless-radio-label">
+									<input type="radio" name="seamless_list_view_layout" value="option_2" <?php checked(get_option('seamless_list_view_layout'), 'option_2'); ?> />
+									<span>Modern Card</span>
+								</label>
+							</p>
+							<p class="description">Select the layout design for the event list view.</p>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
+			<?php submit_button('Save Advanced Settings'); ?>
+		</form>
+	<?php
+	}
+
+	public function render_endpoints_tab(): void
+	{
+	?>
+		<div class="seamless-content-header">
+			<h2>Endpoint Configuration</h2>
+			<p>Customize the URL endpoints for events and donations.</p>
+		</div>
+		<form method="post" action="options.php">
+			<?php settings_fields('seamless_endpoints_group'); ?>
+			<table class="form-table">
+				<tr>
+					<th scope="row">Event List Endpoint</th>
+					<td>
+						<code><?php echo esc_url(home_url('/')); ?></code>
+						<input type="text" name="seamless_event_list_endpoint"
+							value="<?php echo esc_attr(get_option('seamless_event_list_endpoint', 'events')); ?>"
+							class="regular-text" />
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Single Event Endpoint</th>
+					<td>
+						<code><?php echo esc_url(home_url('/')); ?></code>
+						<input type="text" name="seamless_single_event_endpoint"
+							value="<?php echo esc_attr(get_option('seamless_single_event_endpoint', 'event')); ?>"
+							class="regular-text" />
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Seamless AMS Content Endpoint</th>
+					<td>
+						<code><?php echo esc_url(home_url('/')); ?></code>
+						<input type="text" name="seamless_ams_content_endpoint"
+							value="<?php echo esc_attr(get_option('seamless_ams_content_endpoint', 'ams-content')); ?>"
+							class="regular-text" />
+						<p class="description">URL endpoint for displaying AMS content</p>
+					</td>
+				</tr>
+				<!-- <tr>
+					<th scope="row">Single Donation Endpoint</th>
+					<td>
+						<code><?php // echo esc_url(home_url('/')); 
+								?></code>
+						<input type="text" name="seamless_single_donation_endpoint"
+							value="<?php //echo esc_attr(get_option('seamless_single_donation_endpoint', 'donation')); 
+									?>"
+							class="regular-text" />
+					</td>
+				</tr> -->
+				<!-- <tr>
+					<th scope="row">Membership List Endpoint</th>
+					<td>
+						<code><?php //echo esc_url(home_url('/')); 
+								?></code>
+						<input type="text" name="seamless_membership_list_endpoint"
+							value="<?php //echo esc_attr(get_option('seamless_membership_list_endpoint', 'memberships')); 
+									?>"
+							class="regular-text" />
+					</td>
+				</tr> -->
+				<!-- <tr>
+					<th scope="row">Single Membership Endpoint</th>
+					<td>
+						<code><?php //echo esc_url(home_url('/')); 
+								?></code>
+						<input type="text" name="seamless_single_membership_endpoint"
+							value="<?php //echo esc_attr(get_option('seamless_single_membership_endpoint', 'membership')); 
+									?>"
+							class="regular-text" />
+					</td>
+				</tr> -->
+			</table>
+			<?php submit_button('Save Endpoint Settings'); ?>
+		</form>
+	<?php
+	}
+
+	public function render_events_tab(): void
+	{
+		$page_param = isset($_GET['view']) ? 'seamless&view=settings' : 'seamless-settings';
+	?>
+		<div class="seamless-content-header">
+			<h2>Shortcodes</h2>
+		</div>
+
+		<div class="seamless-section-container">
+			<ul class="seamless-shortcodes-list">
+				<li><strong>Events with Filter:</strong> <code>[seamless_event_list]</code></li>
+				<li><strong>Event List View:</strong> <code>[seamless_events view="list"]</code></li>
+				<li><strong>Event Grid View:</strong> <code>[seamless_events view="grid"]</code></li>
+				<li><strong>Single Event:</strong> <code>[seamless_single_event slug="my-event-slug"]</code></li>
+				<!-- <li><strong>Single Donation:</strong> <code>[seamless_single_donation id="1"]</code></li> -->
+			</ul>
+		</div>
+
+		<div class="seamless-tabs-actions-bar">
+			<nav class="nav-tab-wrapper">
+				<a href="?page=<?php echo $page_param; ?>&tab=events&show=events"
+					class="nav-tab <?php if (!isset($_GET['show']) || $_GET['show'] == 'events') echo 'nav-tab-active'; ?>">Events</a>
+				<a href="?page=<?php echo $page_param; ?>&tab=events&show=group_events"
+					class="nav-tab <?php if (isset($_GET['show']) && $_GET['show'] == 'group_events') echo 'nav-tab-active'; ?>">Group Events</a>
+			</nav>
+			<?php if ($this->auth->is_authenticated()): ?>
+				<button type="button" class="button button-secondary" id="fetch-latest-events-btn">
+					<span class="dashicons dashicons-update"></span>
+					Fetch Latest Events
+				</button>
+			<?php endif; ?>
+		</div>
+		<?php
+		$show = $_GET['show'] ?? 'events';
+		if ($show === 'group_events') {
+			$this->render_items_table('group_event');
+		} else {
+			$this->render_items_table('event');
+		}
+	}
+
+	public function render_items_table($type = 'event'): void
+	{
+		if (!$this->auth->is_authenticated()) {
+			$this->render_authenticate_to_fetch_data($type === 'group_event' ? 6 : 5);
+			return;
+		}
+
+		$search = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+		$paged  = isset($_GET['paged']) ? max(1, (int)$_GET['paged']) : 1;
+
+		$events_handler = new Events();
+		if ($type === 'group_event') {
+			$apiResult = $events_handler->get_group_events($paged, [], $search);
+			$item_name = 'group event';
+			$item_plural_name = 'group events';
+		} else {
+			$apiResult = $events_handler->get_events($paged, [], $search);
+			$item_name = 'event';
+			$item_plural_name = 'events';
+		}
+
+		$events     = [];
+		$pagination = [
+			'current_page'   => 1,
+			'per_page'       => 10,
+			'total'          => 0,
+			'last_page'      => 1,
+			'has_more_pages' => false,
+		];
+
+		if (is_array($apiResult) && ($apiResult['success'] ?? false)) {
+			$events     = $apiResult['data']['events'] ?? [];
+			$events = array_values(array_filter($events, function ($e) {
+				return strtolower($e['status'] ?? '') === 'published';
+			}));
+			// Sort events by date descending (latest first)
+			usort($events, function ($a, $b) {
+				$dateA = $a['event_date_range']['start'] ?? $a['formatted_start_date'] ?? $a['start_date'] ?? '';
+				$dateB = $b['event_date_range']['start'] ?? $b['formatted_start_date'] ?? $b['start_date'] ?? '';
+				return strtotime($dateB) - strtotime($dateA);
+			});
+			$pagination = array_merge($pagination, $apiResult['data']['pagination'] ?? []);
+
+			// Recalculate pagination based on filtered published events
+			$per_page = $pagination['per_page'] ?? 10;
+			$all_events_from_api = $apiResult['data']['events'] ?? [];
+			$published_count = count(array_filter($all_events_from_api, function ($e) {
+				return strtolower($e['status'] ?? '') === 'published';
+			}));
+			$pagination['total'] = $published_count;
+			$pagination['last_page'] = max(1, ceil($published_count / $per_page));
+			$pagination['has_more_pages'] = $paged < $pagination['last_page'];
+		}
+		?>
+		<form method="get" class="seamless-search-bar">
+			<?php
+			$page_value = isset($_GET['view']) ? 'seamless' : 'seamless-settings';
+			$has_view = isset($_GET['view']);
+			?>
+			<input type="hidden" name="page" value="<?php echo esc_attr($page_value); ?>" />
+			<?php if ($has_view): ?>
+				<input type="hidden" name="view" value="settings" />
+			<?php endif; ?>
+			<input type="hidden" name="tab" value="events" />
+			<input type="hidden" name="show" value="<?php echo esc_attr($type === 'group_event' ? 'group_events' : 'events'); ?>" />
+			<div class="seamless-search-input">
+				<span class="dashicons dashicons-search"></span>
+				<input type="search" name="search" placeholder="Search by title..." value="<?php echo esc_attr($search); ?>" class="seamless-search-field" />
+			</div>
+			<button type="submit" class="button button-primary seamless-search-button">
+				Search
+			</button>
+			<button type="button" class="button seamless-search-reset">Reset</button>
+		</form>
+
+		<div class="seamless-table-area">
+			<table class="wp-list-table widefat striped seamless-table">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>Title</th>
+						<th>Start Date</th>
+						<th>End Date</th>
+						<?php if ($type === 'group_event'): ?>
+							<th>Associated Events</th>
+						<?php endif; ?>
+						<th>Shortcode</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if (empty($events)): ?>
+						<tr>
+							<td colspan="<?php echo $type === 'group_event' ? '6' : '5'; ?>" style="text-align:center;">No <?php echo esc_html($item_plural_name); ?> found.</td>
+						</tr>
+					<?php else: ?>
+						<?php foreach ($events as $i => $event): ?>
+							<tr>
+								<td><?php echo (($pagination['current_page'] - 1) * $pagination['per_page']) + $i + 1; ?></td>
+								<td><?php echo esc_html($event['title'] ?? 'Untitled'); ?></td>
+								<td>
+									<?php
+									if (!empty($event['event_date_range']['start'])) {
+										echo esc_html(date('M d, Y g:i A', strtotime($event['event_date_range']['start'])));
+									} elseif (!empty($event['formatted_start_date'])) {
+										echo esc_html($event['formatted_start_date']);
+									} elseif (!empty($event['start_date'])) {
+										echo esc_html(date('M d, Y g:i A', strtotime($event['start_date'])));
+									} else {
+										echo '-';
+									}
+									?>
+								</td>
+								<td>
+									<?php
+									if (!empty($event['event_date_range']['end'])) {
+										echo esc_html(date('M d, Y g:i A', strtotime($event['event_date_range']['end'])));
+									} elseif (!empty($event['formatted_end_date'])) {
+										echo esc_html($event['formatted_end_date']);
+									} elseif (!empty($event['end_date'])) {
+										echo esc_html(date('M d, Y g:i A', strtotime($event['end_date'])));
+									} else {
+										echo '-';
+									}
+									?>
+								</td>
+								<?php if ($type === 'group_event'): ?>
+									<td>
+										<?php
+										if (!empty($event['associated_events']) && is_array($event['associated_events'])) {
+											foreach ($event['associated_events'] as $assoc) {
+												echo '<div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #eee;">';
+												echo '<strong>' . esc_html($assoc['title'] ?? 'Untitled') . '</strong>';
+												if (!empty($assoc['start_date'])) {
+													echo '<br>' . esc_html(date('M d, Y g:i A', strtotime($assoc['start_date']))) . ' - ' . esc_html(date('M d, Y g:i A', strtotime($assoc['end_date']))) . '</small>';
+												}
+												echo '</div>';
+											}
+										} else {
+											echo '-';
+										}
+										?>
+									</td>
+								<?php endif; ?>
+								<td>
+									<div class="shortcode-container">
+										<code class="seamless-code-block">[seamless_single_event slug="<?php echo esc_attr($event['slug'] ?? ''); ?>" ]</code>
+										<button type="button" class="copy-shortcode-btn" title="Copy shortcode" data-shortcode="[seamless_single_event slug=&quot;<?php echo esc_attr($event['slug'] ?? ''); ?>&quot;]">
+											<span class="dashicons dashicons-admin-page"></span>
+										</button>
+									</div>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</tbody>
+			</table>
+			<?php
+			if ($pagination['last_page'] > 1) {
+				echo '<div class="seamless-pagination-wrapper">';
+				echo paginate_links([
+					'base'      => add_query_arg(array_merge($_GET, ['paged' => '%#%'])),
+					'format'    => '',
+					'current'   => $pagination['current_page'],
+					'total'     => $pagination['last_page'],
+					'prev_text' => __('« Prev'),
+					'next_text' => __('Next »'),
+					'type'      => 'plain',
+				]);
+				echo '</div>';
+			}
+			?>
+		<?php
+	}
+
+	public function render_membership_tab(): void
+	{
+		$page_param = isset($_GET['view']) ? 'seamless&view=settings' : 'seamless-settings';
+		?>
+			<div class="seamless-content-header">
+				<h2>Shortcodes</h2>
+			</div>
+			<div class="seamless-section-container">
+				<ul class="seamless-shortcodes-list">
+					<li><strong>Membership List:</strong> <code>[seamless_membership_list]</code></li>
+					<li><strong>Single Membership:</strong> <code>[seamless_single_membership id="1"]</code></li>
+					<!-- <li><strong>Single Donation:</strong> <code>[seamless_single_donation id="1"]</code></li> -->
+				</ul>
+			</div>
+			<div class="seamless-tabs-actions-bar">
+				<nav class="nav-tab-wrapper">
+					<a href="?page=<?php echo $page_param; ?>&tab=membership&show=plans"
+						class="nav-tab <?php if (!isset($_GET['show']) || $_GET['show'] == 'plans') echo 'nav-tab-active'; ?>">Membership Plans</a>
+					<!-- <a href="?page=<?php echo $page_param; ?>&tab=membership&show=donations"
+						class="nav-tab <?php //if (isset($_GET['show']) && $_GET['show'] == 'donations') echo 'nav-tab-active'; 
+										?>">Donations</a> -->
+				</nav>
+				<?php if ($this->auth->is_authenticated()): ?>
+					<button type="button" class="button button-secondary" id="fetch-latest-membership-data-btn">
+						<span class="dashicons dashicons-update"></span>
+						Fetch Latest Data
+					</button>
+				<?php endif; ?>
+			</div>
+		<?php
+		$show = $_GET['show'] ?? 'plans';
+		// if ($show === 'donations') {
+		// 	$this->render_donation_items_table();
+		// } else {
+		$this->render_membership_plans_table();
+		// }
+	}
+
+	private function render_membership_plans_table(): void
+	{
+		if (!$this->auth->is_authenticated()) {
+			$this->render_authenticate_to_fetch_data(9);
+			return;
+		}
+
+		$search = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+		$paged  = isset($_GET['paged']) ? max(1, (int)$_GET['paged']) : 1;
+
+
+		$membership_handler = new Membership();
+		$apiResult = $membership_handler->get_membership_plans($paged, $search);
+
+		$plans     = [];
+		$pagination = [
+			'current_page'   => 1,
+			'per_page'       => 15,
+			'total'          => 0,
+			'last_page'      => 1,
+		];
+
+		if (is_array($apiResult) && ($apiResult['success'] ?? false)) {
+			$plans  = $apiResult['data'] ?? [];
+			$pagination = array_merge($pagination, $apiResult['pagination'] ?? []);
+		}
+		?>
+			<form method="get" class="seamless-search-bar">
+				<?php
+				$page_value = isset($_GET['view']) ? 'seamless' : 'seamless-settings';
+				$has_view = isset($_GET['view']);
+				?>
+				<input type="hidden" name="page" value="<?php echo esc_attr($page_value); ?>" />
+				<?php if ($has_view): ?>
+					<input type="hidden" name="view" value="settings" />
+				<?php endif; ?>
+				<input type="hidden" name="tab" value="membership" />
+				<input type="hidden" name="show" value="plans" />
+				<div class="seamless-search-input">
+					<span class="dashicons dashicons-search"></span>
+					<input type="search" name="search" placeholder="Search by label..." value="<?php echo esc_attr($search); ?>" class="seamless-search-field" />
+				</div>
+				<button type="submit" class="button button-primary seamless-search-button">
+					Search
+				</button>
+				<button type="button" class="button seamless-search-reset">Reset</button>
+			</form>
+
+			<div class="seamless-table-area">
+				<table class="wp-list-table widefat striped seamless-table">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Label</th>
+							<th>SKU</th>
+							<th>Price</th>
+							<th>Billing Cycle</th>
+							<th>Trial Days</th>
+							<th>Status</th>
+							<th>Shortcode</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if (empty($plans)): ?>
+							<tr>
+								<td colspan="8" style="text-align:center;">No membership plans found.</td>
+							</tr>
+						<?php else: ?>
+							<?php
+							$per_page = $pagination['per_page'] ?? 15;
+							$current_page = $pagination['current_page'] ?? 1;
+							?>
+							<?php foreach ($plans as $i => $plan): ?>
+								<tr>
+									<td><?php echo (($current_page - 1) * $per_page) + $i + 1; ?></td>
+									<td><?php echo esc_html($plan['label'] ?? 'Untitled'); ?></td>
+									<td><?php echo esc_html($plan['sku'] ?? '-'); ?></td>
+									<td>$<?php echo esc_html(number_format((float)($plan['price'] ?? 0), 2)); ?></td>
+									<td><?php echo esc_html($plan['billing_cycle_display'] ?? '-'); ?></td>
+									<td><?php echo esc_html($plan['trial_days'] ?? '0'); ?></td>
+									<td>
+										<?php if (!empty($plan['is_active'])): ?>
+											<span style="color: #16a34a; background-color: #f0fdf4; padding: 5px; border-radius: 5px; font-weight: bold; font-size: 12px;">Active</span>
+										<?php else: ?>
+											<span style="color: #d63638; background-color: #fbeaea; padding: 5px; border-radius: 5px; font-weight: bold; font-size: 12px;">Inactive</span>
+										<?php endif; ?>
+									</td>
+									<td>
+										<div class="shortcode-container">
+											<?php $shortcode = '[seamless_single_membership id="' . esc_attr($plan['id'] ?? '') . '"]'; ?>
+											<code class="seamless-code-block"><?php echo esc_html($shortcode); ?></code>
+											<button type="button" class="copy-shortcode-btn" title="Copy shortcode" data-shortcode="<?php echo esc_attr($shortcode); ?>">
+												<span class="dashicons dashicons-admin-page"></span>
+											</button>
+										</div>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div>
+			<?php
+			if ($pagination['last_page'] > 1) {
+				echo '<div class="seamless-pagination-wrapper">';
+				echo paginate_links([
+					'base'      => add_query_arg(array_merge($_GET, ['paged' => '%#%'])),
+					'format'    => '',
+					'current'   => $pagination['current_page'],
+					'total'     => $pagination['last_page'],
+					'prev_text' => __('« Prev'),
+					'next_text' => __('Next »'),
+					'type'      => 'plain',
+				]);
+				echo '</div>';
+			}
+		}
+
+		public function admin_js()
+		{
+			?>
+			<script>
+				jQuery(document).ready(function($) {
+					// Run tab-specific JS
+					var activeTab = new URLSearchParams(window.location.search).get('tab');
+
+					// Advanced Tab JS
+					if (activeTab === 'advanced') {
+						if ($('.seamless-color-picker').length) {
+							$('.seamless-color-picker').wpColorPicker();
+						}
+
+						var color_scheme_radio = $('input[name="seamless_color_scheme"]');
+						if (color_scheme_radio.length) {
+							var plugin_color_settings = $('.plugin-color-settings');
+
+							function toggle_color_settings() {
+								if (color_scheme_radio.filter(':checked').val() === 'plugin') {
+									plugin_color_settings.show();
+								} else {
+									plugin_color_settings.hide();
+								}
+							}
+
+							toggle_color_settings();
+							color_scheme_radio.on('change', toggle_color_settings);
+						}
+					}
+
+					// Scoped loader overlay helpers for table areas
+					function ensureScopedLoaders() {
+						$('.seamless-table-area').each(function() {
+							var $area = $(this);
+							if ($area.find('.seamless-admin-loader').length === 0) {
+								$area.append('<div class="seamless-admin-loader hidden"><div class="seamless-admin-spinner"></div><div class="seamless-admin-loading-text">Loading latest data...</div></div>');
+							}
+							// Ensure the area can contain an absolutely positioned overlay
+							if ($area.css('position') === 'static') {
+								$area.css('position', 'relative');
+							}
+						});
+					}
+
+					function showScopedLoading() {
+						ensureScopedLoaders();
+						$('.seamless-table-area .seamless-admin-loader').removeClass('hidden');
+					}
+
+					function hideScopedLoading() {
+						$('.seamless-table-area .seamless-admin-loader').addClass('hidden');
+					}
+
+					// If a previous action triggered a reload with loading intent, keep showing overlay until window load
+					ensureScopedLoaders();
+					if (sessionStorage.getItem('seamless_loading') === '1') {
+						showScopedLoading();
+						$(window).on('load', function() {
+							hideScopedLoading();
+							sessionStorage.removeItem('seamless_loading');
+						});
+					}
+
+					// Search reset buttons - remove search & paged params and reload
+					$('.seamless-card, .seamless-settings-content').on('click', '.seamless-search-reset', function(e) {
+						e.preventDefault();
+						var $form = $(this).closest('form');
+						var url = new URL(window.location.href);
+						url.searchParams.delete('search');
+						url.searchParams.delete('paged');
+						var page = $form.find('input[name="page"]').val() || 'seamless';
+						var view = $form.find('input[name="view"]').val();
+						var tab = $form.find('input[name="tab"]').val();
+						var show = $form.find('input[name="show"]').val();
+						url.searchParams.set('page', page);
+						if (view) url.searchParams.set('view', view);
+						if (tab) url.searchParams.set('tab', tab);
+						if (show) url.searchParams.set('show', show);
+						window.location.replace(url.toString());
+					});
+
+					// Shortcodes Tab JS - Use event delegation on a stable parent
+					$('.seamless-card, .seamless-settings-content').on('click', '.copy-shortcode-btn', function(e) {
+						e.preventDefault();
+						var shortcode = $(this).data('shortcode');
+						var button = $(this);
+
+						if (navigator.clipboard && window.isSecureContext) {
+							navigator.clipboard.writeText(shortcode).then(function() {
+								show_copied_feedback(button);
+							});
+						} else {
+							// Fallback for non-secure contexts
+							var textarea = $('<textarea>');
+							$('body').append(textarea);
+							textarea.val(shortcode).select();
+							document.execCommand('copy');
+							textarea.remove();
+							show_copied_feedback(button);
+						}
+					});
+
+					$('.seamless-card, .seamless-settings-content').on('click', '.seamless-code-block', function() {
+						$(this).siblings('.copy-shortcode-btn').click();
+					});
+
+					function show_copied_feedback(button) {
+						var originalTitle = button.attr('title');
+						button.attr('title', 'Copied!');
+						button.addClass('copied');
+
+						setTimeout(function() {
+							button.attr('title', originalTitle);
+							button.removeClass('copied');
+						}, 2000);
+					}
+
+					// Shortcodes Tab JS - Fetch Latest Events functionality
+					$('#fetch-latest-events-btn').on('click', function(e) {
+						e.preventDefault();
+
+						var button = $(this);
+						var originalText = button.html();
+						button.html('<span class="dashicons dashicons-update spin"></span> Fetching...').prop('disabled', true);
+						showScopedLoading();
+
+						$.post(ajaxurl, {
+							action: 'seamless_fetch_latest_events',
+							nonce: '<?php echo wp_create_nonce('seamless_fetch_events'); ?>'
+						}).done(function(response) {
+							if (response.success) {
+								// Persist loading state across the reload so the overlay shows while the new page renders
+								sessionStorage.setItem('seamless_loading', '1');
+								var url = new URL(window.location.href);
+								url.searchParams.set('refetch', '1');
+								window.location.replace(url.toString());
+							} else {
+								alert('Failed to fetch latest events: ' + (response.data || 'Unknown error'));
+								button.html(originalText).prop('disabled', false);
+								hideScopedLoading();
+							}
+						}).fail(function() {
+							alert('Failed to fetch latest events. Please try again.');
+							button.html(originalText).prop('disabled', false);
+							hideScopedLoading();
+						});
+					});
+
+					// Authentication Tab JS - Connect functionality
+					$('#seamless-connect-btn').on('click', function(e) {
+						e.preventDefault();
+
+						var button = $(this);
+						var originalText = button.html();
+						button.html('<span class="dashicons dashicons-update spin"></span> Connecting...').prop('disabled', true);
+
+						$.post(ajaxurl, {
+							action: 'seamless_connect',
+							nonce: '<?php echo wp_create_nonce('seamless_connect'); ?>'
+						}).done(function(response) {
+							if (response.success) {
+								var redirectUrl = window.location.href.includes('view=settings') ?
+									'?page=seamless&view=settings&tab=authentication&auth_success=1' :
+									'?page=seamless-settings&tab=authentication&auth_success=1';
+								window.location.href = redirectUrl;
+							} else {
+								alert('Failed to connect: ' + (response.data || 'Unknown error'));
+								button.html(originalText).prop('disabled', false);
+							}
+						}).fail(function() {
+							alert('Failed to connect. Please try again.');
+							button.html(originalText).prop('disabled', false);
+						});
+					});
+
+					// Authentication Tab JS - Disconnect functionality
+					$('#seamless-disconnect-btn').on('click', function(e) {
+						e.preventDefault();
+
+						if (!confirm('Are you sure you want to disconnect from Seamless? You will need to re-authenticate to access your data.')) {
+							return;
+						}
+
+						var button = $(this);
+						var originalText = button.html();
+						button.html('<span class="dashicons dashicons-update spin"></span> Disconnecting...').prop('disabled', true);
+
+						$.post(ajaxurl, {
+							action: 'seamless_disconnect',
+							nonce: '<?php echo wp_create_nonce('seamless_disconnect'); ?>'
+						}).done(function(response) {
+							if (response.success) {
+								var redirectUrl = window.location.href.includes('view=settings') ?
+									'?page=seamless&view=settings&tab=authentication&disconnected=1' :
+									'?page=seamless-settings&tab=authentication&disconnected=1';
+								window.location.href = redirectUrl;
+							} else {
+								alert('Failed to disconnect: ' + (response.data || 'Unknown error'));
+								button.html(originalText).prop('disabled', false);
+							}
+						}).fail(function() {
+							alert('Failed to disconnect. Please try again.');
+							button.html(originalText).prop('disabled', false);
+						});
+					});
+
+					// Password toggle functionality
+					$('.seamless-toggle-password').on('click', function(e) {
+						e.preventDefault();
+						var input = $(this).siblings('input');
+						var icon = $(this).find('.dashicons');
+
+						if (input.attr('type') === 'password') {
+							input.attr('type', 'text');
+							icon.removeClass('dashicons-visibility').addClass('dashicons-hidden');
+						} else {
+							input.attr('type', 'password');
+							icon.removeClass('dashicons-hidden').addClass('dashicons-visibility');
+						}
+					});
+
+					// Membership Tab JS - Fetch Latest Membership Data functionality
+					$('#fetch-latest-membership-data-btn').on('click', function(e) {
+						e.preventDefault();
+
+						var button = $(this);
+						var originalText = button.html();
+						button.html('<span class="dashicons dashicons-update spin"></span> Fetching...').prop('disabled', true);
+						showScopedLoading();
+
+						$.post(ajaxurl, {
+							action: 'seamless_fetch_latest_membership_data',
+							nonce: '<?php echo wp_create_nonce('seamless_fetch_membership_data'); ?>'
+						}).done(function(response) {
+							if (response.success) {
+								// Persist loading state across the reload so the overlay shows while the new page renders
+								sessionStorage.setItem('seamless_loading', '1');
+								var url = new URL(window.location.href);
+								url.searchParams.set('refetch', '1');
+								window.location.replace(url.toString());
+							} else {
+								alert('Failed to fetch latest membership data: ' + (response.data || 'Unknown error'));
+								button.html(originalText).prop('disabled', false);
+								hideScopedLoading();
+							}
+						}).fail(function() {
+							alert('Failed to fetch latest membership data. Please try again.');
+							button.html(originalText).prop('disabled', false);
+							hideScopedLoading();
+						});
+					});
+
+					// Close health check card
+					$('.seamless-close-btn').on('click', function(e) {
+						e.preventDefault();
+						$(this).closest('.seamless-health-check-card').fadeOut();
+					});
+				});
+			</script>
+		<?php
+		}
+
+		public function admin_css()
+		{
+		?>
+			<style>
+				/* Hide other plugin notices */
+				.seamless-dashboard-container .notice:not(.seamless-notice),
+				.seamless-header .notice:not(.seamless-notice),
+				.seamless-card .notice:not(.seamless-notice) {
+					display: none !important;
+				}
+
+				.seamless-dashboard-wrapper a:active,
+				.seamless-dashboard-wrapper a:hover {
+					color: #6c5ce7;
+				}
+
+				/* General Wrapper */
+				.seamless-admin-wrap {
+					margin-top: 20px;
+				}
+
+				/* Header */
+				.seamless-header {
+					background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+					color: white;
+					padding: 30px;
+					margin-bottom: 20px;
+					border-radius: 12px;
+					box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+				}
+
+				.seamless-header h1 {
+					font-size: 28px;
+					margin: 0 0 8px 0;
+					font-weight: 600;
+				}
+
+				.seamless-header p {
+					font-size: 16px;
+					opacity: 0.9;
+					margin: 0;
+				}
+
+				/* Enhanced Tabs */
+				.nav-tab-wrapper {
+					border-bottom: 2px solid #e1e5e9;
+					padding: 0;
+					margin-bottom: 0;
+					background: #f8f9fa;
+					border-radius: 12px 12px 0 0;
+					overflow: hidden;
+				}
+
+				.nav-tab {
+					display: inline-flex;
+					align-items: center;
+					font-size: 14px;
+					font-weight: 500;
+					padding: 14px 20px;
+					background: transparent;
+					border: none;
+					border-bottom: 3px solid transparent;
+					margin: 0;
+					color: #6c757d;
+					text-decoration: none;
+					transition: all 0.2s ease;
+					position: relative;
+				}
+
+				.nav-tab .dashicons {
+					margin-right: 8px;
+					font-size: 16px;
+					width: 16px;
+					height: 16px;
+				}
+
+				.nav-tab:hover {
+					background: rgba(108, 92, 231, 0.08);
+					color: #6c5ce7;
+					border-bottom-color: rgba(108, 92, 231, 0.3);
+				}
+
+				.nav-tab-active {
+					background: #fff;
+					color: #6c5ce7;
+					border-bottom-color: #6c5ce7;
+					font-weight: 600;
+				}
+
+				.nav-tab-active:hover {
+					border-bottom: 3px solid #6c5ce7;
+				}
+
+				.nav-tab:focus {
+					outline: none;
+					box-shadow: none;
+				}
+
+
+				/* Shortcodes Section & Tabs Alignment */
+				.seamless-section-container {
+					margin: 20px;
+					background: #fff;
+					border: 1px solid #e1e5e9;
+					border-radius: 8px;
+					padding: 20px;
+				}
+
+				.seamless-shortcodes-list {
+					margin: 0 0 0 20px;
+					list-style-type: disc;
+					color: #4a5568;
+				}
+
+				.seamless-shortcodes-list li {
+					margin-bottom: 8px;
+					line-height: 1.5;
+				}
+
+				.seamless-shortcodes-list code {
+					background: #f1f5f9;
+					padding: 2px 6px;
+					border-radius: 4px;
+					color: #e11d48;
+					font-size: 13px;
+					margin-left: 8px;
+				}
+
+				.seamless-tabs-actions-bar {
+					display: flex;
+					justify-content: space-between;
+					align-items: flex-end;
+					margin-top: 30px;
+					border-bottom: 2px solid #e1e5e9;
+					padding-bottom: 0;
+				}
+
+				.seamless-tabs-actions-bar .nav-tab-wrapper {
+					border-bottom: none;
+					padding: 0;
+					margin: 0;
+					background: transparent;
+					border-radius: 0;
+				}
+
+				.seamless-tabs-actions-bar .button {
+					margin-bottom: 5px;
+					margin-right: 5px;
+				}
+
+				/* Enhanced Card */
+				.seamless-card {
+					background: #fff;
+					border: 1px solid #e1e5e9;
+					box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+					padding: 0;
+					margin-top: -1px;
+					border-radius: 0 0 12px 12px;
+					overflow: hidden;
+				}
+
+				.seamless-card>* {
+					padding: 20px;
+				}
+
+				.seamless-card h2 {
+					margin: 0 0 20px 0;
+					font-size: 20px;
+					color: #2d3748;
+					font-weight: 600;
+					display: flex;
+					align-items: center;
+					gap: 10px;
+				}
+
+				.seamless-card h2 .dashicons {
+					color: #6c5ce7;
+					font-size: 20px;
+				}
+
+				.seamless-card p {
+					font-size: 14px;
+					color: #4a5568;
+					line-height: 1.6;
+				}
+
+				.seamless-card h3 {
+					font-size: 16px;
+					font-weight: 600;
+					color: #2d3748;
+					margin: 0 0 16px 0;
+				}
+
+				/* Authentication Container */
+				.seamless-auth-container {
+					padding: 0;
+				}
+
+				.seamless-content-header {
+					background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+					padding: 20px;
+					border-bottom: 1px solid #e1e5e9;
+				}
+
+				.seamless-content-header h2 {
+					margin: 0px;
+					font-size: 21px;
+					color: #2d3748;
+					display: flex;
+					align-items: center;
+					gap: 12px;
+					background: none;
+					border: none;
+					padding: 0;
+				}
+
+				.seamless-content-header p {
+					margin: 8px 0px 0px 0px;
+					color: #4a5568;
+					font-size: 16px;
+				}
+
+				/* Health Check Card */
+				.seamless-health-check-card {
+					background: #fff;
+					border: 1px solid #e1e5e9;
+					border-radius: 8px;
+					margin: 20px;
+					box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+				}
+
+				.seamless-health-header {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 16px 20px;
+					border-bottom: 1px solid #e1e5e9;
+				}
+
+				.seamless-health-header h3 {
+					margin: 0;
+					font-size: 16px;
+					font-weight: 600;
+					color: #2d3748;
+					display: flex;
+					align-items: center;
+					gap: 8px;
+				}
+
+				.seamless-health-status {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					padding: 8px 16px;
+					border-radius: 20px;
+					font-size: 14px;
+					font-weight: 500;
+				}
+
+				.seamless-health-status.needs-attention {
+					background: #fef5e7;
+					color: #d69e2e;
+					border: 1px solid #f6e05e;
+				}
+
+				.seamless-close-btn {
+					background: none;
+					border: none;
+					font-size: 18px;
+					cursor: pointer;
+					color: #a0aec0;
+					margin-left: 8px;
+				}
+
+				.seamless-health-subtitle {
+					padding: 12px 20px 0;
+					color: #718096;
+					font-size: 13px;
+					font-weight: 500;
+				}
+
+				.seamless-health-items {
+					padding: 12px 20px 20px;
+				}
+
+				.seamless-health-item {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 12px 0;
+					border-bottom: 1px solid #f7fafc;
+				}
+
+				.seamless-health-item:last-child {
+					border-bottom: none;
+				}
+
+				.seamless-health-label {
+					font-size: 14px;
+					color: #4a5568;
+					font-weight: 500;
+				}
+
+				.seamless-auth-section {
+					margin: 20px;
+				}
+
+				/* Status Badges */
+				.seamless-status-badge {
+					display: inline-flex;
+					align-items: center;
+					gap: 6px;
+					padding: 6px 12px;
+					border-radius: 20px;
+					font-size: 12px;
+					font-weight: 600;
+				}
+
+				.seamless-status-badge.not-configured {
+					background: #fee2e2;
+					color: #dc2626;
+					border: 1px solid #fecaca;
+				}
+
+				.seamless-status-badge.disabled {
+					background: #fef5e7;
+					color: #d69e2e;
+					border: 1px solid #f6e05e;
+				}
+
+				.seamless-status-badge.inactive {
+					background: #fee2e2;
+					color: #dc2626;
+					border: 1px solid #fecaca;
+				}
+
+				.seamless-status-badge.rfc-compliant {
+					background: #d1fae5;
+					color: #065f46;
+					border: 1px solid #a7f3d0;
+				}
+
+				/* Form Table */
+				.form-table {
+					margin-top: 0;
+				}
+
+				.form-table th {
+					width: 200px;
+					font-weight: 600;
+				}
+
+				.form-table td {
+					padding-top: 10px;
+					padding-bottom: 10px;
+				}
+
+				.form-table input[type="text"],
+				.form-table input[type="password"],
+				.form-table input[type="url"] {
+					width: 100%;
+					max-width: 400px;
+					padding: 8px 12px;
+					border: 1px solid #e1e5e9;
+					border-radius: 6px;
+					font-size: 14px;
+					transition: border-color 0.2s ease;
+				}
+
+				.form-table input[type="text"]:focus,
+				.form-table input[type="password"]:focus,
+				.form-table input[type="url"]:focus {
+					border-color: #6c5ce7;
+					outline: none;
+					box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+				}
+
+				.form-table .description {
+					font-size: 13px;
+					color: #666;
+					margin-top: 6px;
+				}
+
+				.form-table code {
+					padding: 3px 6px;
+					border-radius: 6px;
+				}
+
+				.form-table textarea {
+					width: 100%;
+					max-width: 600px;
+					padding: 10px 12px;
+					border: 1px solid #e1e5e9;
+					border-radius: 6px;
+					font-size: 14px;
+					font-family: inherit;
+					transition: border-color 0.2s ease;
+				}
+
+				.form-table textarea:focus {
+					border-color: #6c5ce7;
+					outline: none;
+					box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+				}
+
+				/* Radio Buttons */
+				.seamless-radio-label {
+					display: flex;
+					align-items: center;
+					margin-bottom: 5px;
+				}
+
+				.seamless-radio-label input {
+					margin-right: 10px;
+				}
+
+				/* Submit Button */
+				.submit .button-primary,
+				.button-primary.seamless-btn-primary {
+					background: #6c5ce7 !important;
+					border-color: #6c5ce7 !important;
+					box-shadow: none !important;
+					text-shadow: none !important;
+					padding: 10px 24px !important;
+					height: auto !important;
+					font-size: 14px !important;
+					font-weight: 500 !important;
+					border-radius: 6px !important;
+					transition: all 0.2s ease !important;
+					display: inline-flex !important;
+					align-items: center !important;
+					gap: 8px !important;
+					line-height: 20px !important;
+				}
+
+				.submit .button-primary:hover,
+				.button-primary.seamless-btn-primary:hover {
+					background: #5849c3 !important;
+					border-color: #5849c3 !important;
+				}
+
+				/* Button Styles */
+				.seamless-btn {
+					display: inline-flex !important;
+					align-items: center !important;
+					gap: 8px !important;
+					padding: 10px 24px !important;
+					border-radius: 6px !important;
+					font-size: 14px !important;
+					font-weight: 500 !important;
+					border: none !important;
+					cursor: pointer !important;
+					transition: all 0.2s ease !important;
+					text-decoration: none !important;
+					box-shadow: none !important;
+					text-shadow: none !important;
+					height: auto !important;
+				}
+
+				.seamless-btn .dashicons {
+					font-size: 18px;
+					width: 18px;
+					height: 18px;
+				}
+
+				.seamless-btn-success {
+					background: #10b981 !important;
+					color: #fff !important;
+					border-color: #10b981 !important;
+				}
+
+				.seamless-btn-success:hover {
+					background: #059669 !important;
+					border-color: #059669 !important;
+				}
+
+				.seamless-btn-danger {
+					background: #ef4444 !important;
+					color: #fff !important;
+					border-color: #ef4444 !important;
+				}
+
+				.seamless-btn-danger:hover {
+					background: #dc2626 !important;
+					border-color: #dc2626 !important;
+				}
+
+				.seamless-blur-message .seamless-btn {
+					color: #6c5ce7;
+				}
+
+				#seamless-disconnect-btn {
+					color: #fff !important;
+					background: #ef4444 !important;
+					border-color: #ef4444 !important;
+					box-shadow: none !important;
+					text-shadow: none !important;
+					padding: 10px 24px !important;
+					height: auto !important;
+					font-size: 14px !important;
+					font-weight: 500 !important;
+					border-radius: 6px !important;
+					transition: all 0.2s ease !important;
+					display: inline-flex !important;
+					align-items: center !important;
+					gap: 8px !important;
+				}
+
+				#seamless-disconnect-btn:hover {
+					background: #dc2626 !important;
+					border-color: #dc2626 !important;
+				}
+
+				#seamless-connect-btn {
+					color: #fff !important;
+					background: #10b981 !important;
+					border-color: #10b981 !important;
+					box-shadow: none !important;
+					text-shadow: none !important;
+					padding: 10px 24px !important;
+					height: auto !important;
+					font-size: 14px !important;
+					font-weight: 500 !important;
+					border-radius: 6px !important;
+					transition: all 0.2s ease !important;
+					display: inline-flex !important;
+					align-items: center !important;
+					gap: 8px !important;
+				}
+
+				#seamless-connect-btn:hover {
+					background: #059669 !important;
+					border-color: #059669 !important;
+				}
+
+				span.dashicons.dashicons-no,
+				span.dashicons.dashicons-admin-network {
+					font-size: 18px;
+					width: 18px;
+					height: 18px;
+				}
+
+				/* Shortcodes Tab */
+				.seamless-tab-content ul {
+					list-style: none;
+					padding: 0;
+					margin: 0px;
+				}
+
+				.seamless-tab-content li {
+					padding: 12px 16px;
+					background: #f7fafc;
+					border-radius: 6px;
+					border-left: 3px solid #6c5ce7;
+				}
+
+				.seamless-tab-content li:not(:last-child) {
+					margin-bottom: 12px;
+				}
+
+				.seamless-tab-content li strong {
+					color: #2d3748;
+					font-weight: 600;
+				}
+
+				.seamless-tab-content li code {
+					background: #fff;
+					padding: 4px 8px;
+					border-radius: 4px;
+					border: 1px solid #e1e5e9;
+					font-size: 13px;
+					color: #6c5ce7;
+				}
+
+				/* Shortcode Container */
+				.shortcode-container {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+				}
+
+				.copy-shortcode-btn {
+					background: #f1f1f1;
+					border: 1px solid #ccc;
+					border-radius: 3px;
+					padding: 4px 6px;
+					cursor: pointer;
+					transition: all 0.2s ease;
+					font-size: 12px;
+				}
+
+				.copy-shortcode-btn:hover {
+					background: #e8e8e8;
+					border-color: #999;
+				}
+
+				.copy-shortcode-btn.copied {
+					background: #46b450;
+					border-color: #46b450;
+					color: white;
+				}
+
+				.copy-shortcode-btn .dashicons {
+					font-size: 14px;
+					width: 14px;
+					height: 14px;
+				}
+
+				/* Admin Pagination */
+				.seamless-pagination-wrapper {
+					margin-top: 1.5em;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+
+				.seamless-pagination-wrapper .page-numbers {
+					padding: 8px 14px;
+					margin: 0 2px;
+					text-decoration: none;
+					border: 1px solid #ccc;
+					border-radius: 4px;
+					color: #555;
+					background: #f7f7f7;
+					transition: all 0.2s ease-in-out;
+				}
+
+				.seamless-pagination-wrapper .page-numbers:hover {
+					background: #e9e9e9;
+					border-color: #999;
+				}
+
+				.seamless-pagination-wrapper .page-numbers.current {
+					background: #6c5ce7;
+					color: #fff;
+					border-color: #6c5ce7;
+					font-weight: bold;
+				}
+
+				.seamless-pagination-wrapper .page-numbers.dots {
+					border: none;
+					background: transparent;
+				}
+
+				.seamless-auth-setup {
+					background: #fff;
+					border: 1px solid #e1e5e9;
+					border-radius: 12px;
+					padding: 30px;
+					margin-bottom: 20px;
+				}
+
+				.seamless-auth-setup h3 {
+					margin: 0 0 24px 0;
+					font-size: 18px;
+					font-weight: 600;
+					color: #2d3748;
+					display: flex;
+					align-items: center;
+					gap: 10px;
+				}
+
+				.seamless-form-grid {
+					display: grid;
+					grid-template-columns: repeat(2, 1fr);
+					gap: 16px;
+					margin-bottom: 20px;
+				}
+
+				.seamless-form-group {
+					display: flex;
+					flex-direction: column;
+				}
+
+				.seamless-form-group-full {
+					grid-column: 1 / -1;
+				}
+
+				.seamless-form-label {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					font-size: 14px;
+					font-weight: 600;
+					color: #2d3748;
+					margin-bottom: 8px;
+				}
+
+				.seamless-form-label .dashicons {
+					font-size: 16px;
+					width: 16px;
+					height: 16px;
+					color: #6c5ce7;
+				}
+
+				.seamless-form-input {
+					width: 100%;
+					padding: 10px 14px;
+					border: 1px solid #e1e5e9;
+					border-radius: 6px;
+					font-size: 14px;
+					transition: all 0.2s ease;
+				}
+
+				.seamless-form-input:focus {
+					border-color: #6c5ce7;
+					outline: none;
+					box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+				}
+
+				.seamless-form-description {
+					font-size: 13px;
+					color: #718096;
+					margin-top: 6px;
+				}
+
+				.seamless-password-field {
+					position: relative;
+					display: flex;
+					align-items: center;
+					max-width: 400px;
+				}
+
+				.seamless-password-field input {
+					padding-right: 45px;
+				}
+
+				.seamless-toggle-password {
+					position: absolute;
+					right: 10px;
+					background: none;
+					border: none;
+					cursor: pointer;
+					padding: 5px;
+					color: #718096;
+					transition: color 0.2s ease;
+				}
+
+				.seamless-toggle-password:hover {
+					color: #6c5ce7;
+				}
+
+				.seamless-toggle-password .dashicons {
+					font-size: 18px;
+					width: 18px;
+					height: 18px;
+				}
+
+				.seamless-form-actions {
+					display: flex;
+					gap: 10px;
+					padding-top: 16px;
+					border-top: 1px solid #e1e5e9;
+				}
+
+				.seamless-test-connection {
+					margin-top: 20px;
+				}
+
+				.seamless-connection-divider {
+					text-align: center;
+					position: relative;
+					margin: 20px 0 16px;
+				}
+
+				.seamless-connection-divider::before {
+					content: '';
+					position: absolute;
+					top: 50%;
+					left: 0;
+					right: 0;
+					height: 1px;
+					background: #e1e5e9;
+				}
+
+				.seamless-connection-divider span {
+					position: relative;
+					background: #fff;
+					padding: 0 16px;
+					color: #718096;
+					font-size: 14px;
+					font-weight: 500;
+				}
+
+				.seamless-connection-content {
+					text-align: center;
+					padding: 20px;
+					background: #f7fafc;
+					border-radius: 6px;
+				}
+
+				.seamless-connection-content h4 {
+					margin: 0 0 8px 0;
+					font-size: 15px;
+					font-weight: 600;
+					color: #2d3748;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					gap: 8px;
+				}
+
+				.seamless-connection-content p {
+					margin: 0 0 16px 0;
+					color: #718096;
+					font-size: 14px;
+				}
+
+				.seamless-auth-connected {
+					background: #fff;
+					border: 1px solid #e1e5e9;
+					border-radius: 8px;
+					padding: 20px;
+				}
+
+				.seamless-connection-success {
+					display: flex;
+					align-items: center;
+					gap: 14px;
+					padding: 16px;
+					background: #f0fdf4;
+					border: 1px solid #bbf7d0;
+					border-radius: 6px;
+					margin-bottom: 20px;
+				}
+
+				.seamless-success-icon {
+					width: 48px;
+					height: 48px;
+					background: #10b981;
+					border-radius: 50%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					flex-shrink: 0;
+				}
+
+				.seamless-success-icon .dashicons {
+					font-size: 28px;
+					width: 28px;
+					height: 28px;
+					color: #fff;
+				}
+
+				.seamless-success-content h3 {
+					margin: 0 0 4px 0;
+					font-size: 16px;
+					font-weight: 600;
+					color: #065f46;
+				}
+
+				.seamless-success-content p {
+					margin: 0;
+					color: #047857;
+					font-size: 13px;
+				}
+
+				.seamless-connection-details {
+					background: #f7fafc;
+					border-radius: 6px;
+					padding: 16px;
+					margin-bottom: 20px;
+				}
+
+				.seamless-detail-item {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 12px 0;
+					border-bottom: 1px solid #e1e5e9;
+				}
+
+				.seamless-detail-item:last-child {
+					border-bottom: none;
+				}
+
+				.seamless-detail-label {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					font-size: 14px;
+					font-weight: 500;
+					color: #4a5568;
+				}
+
+				.seamless-detail-label .dashicons {
+					font-size: 16px;
+					width: 16px;
+					height: 16px;
+					color: #6c5ce7;
+				}
+
+				.seamless-detail-value {
+					font-size: 14px;
+					color: #2d3748;
+					font-weight: 500;
+				}
+
+				.seamless-status-badge.connected {
+					background: #d1fae5;
+					color: #065f46;
+					border: 1px solid #a7f3d0;
+				}
+
+				.seamless-connection-actions {
+					display: flex;
+					justify-content: flex-end;
+					padding-top: 16px;
+					border-top: 1px solid #e1e5e9;
+				}
+
+				/* Standardize all buttons */
+				.button,
+				.button-secondary,
+				.button-primary {
+					display: inline-flex !important;
+					align-items: center !important;
+					gap: 8px !important;
+					padding: 8px 16px !important;
+					border-radius: 6px !important;
+					font-size: 14px !important;
+					font-weight: 500 !important;
+					height: auto !important;
+					transition: all 0.2s ease !important;
+					border: 1px solid !important;
+				}
+
+				.button .dashicons,
+				.button-secondary .dashicons,
+				.button-primary .dashicons {
+					font-size: 16px;
+					width: 16px;
+					height: 16px;
+				}
+
+				.button-secondary {
+					background: #fff !important;
+					color: #6c5ce7 !important;
+					border-color: #e1e5e9 !important;
+				}
+
+				.button-secondary:hover {
+					background: #f7fafc !important;
+					border-color: #6c5ce7 !important;
+				}
+
+				@keyframes spin {
+					from {
+						transform: rotate(0deg);
+					}
+
+					to {
+						transform: rotate(360deg);
+					}
+				}
+
+				.spin {
+					animation: spin 1s linear infinite;
+				}
+
+				/* Scoped admin loader (as requested) */
+				.seamless-admin-loader {
+					position: fixed;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					background: rgba(255, 255, 255, 0.85);
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					z-index: 999999;
+					/* Above WP admin */
+				}
+
+				.seamless-admin-loader.hidden {
+					display: none;
+				}
+
+				.seamless-admin-spinner {
+					width: 30px;
+					height: 30px;
+					border: 3px solid #e5e5e5;
+					border-top-color: #6c5ce7;
+					border-radius: 50%;
+					animation: seamless-admin-spin 1s linear infinite;
+				}
+
+				.seamless-admin-loading-text {
+					margin-top: 12px;
+					font-weight: 600;
+					color: #333;
+				}
+
+				@keyframes seamless-admin-spin {
+					to {
+						transform: rotate(360deg);
+					}
+				}
+
+				/* Scope the loader to the table area only */
+				.seamless-table-area {
+					position: relative;
+				}
+
+				.seamless-table-area .seamless-admin-loader {
+					position: absolute;
+					/* overrides fixed for scoping */
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+				}
+
+				/* Modern table + search styles */
+				.seamless-search-bar {
+					display: flex;
+					align-items: center;
+					gap: 10px;
+					padding: 0px 20px;
+					margin: 1em 0;
+					flex-wrap: wrap;
+				}
+
+				.seamless-search-input {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					background: #fff;
+					border: 1px solid #e5e5e5;
+					border-radius: 8px;
+					padding: 6px 10px;
+					min-width: 280px;
+					box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+				}
+
+				.seamless-search-input .dashicons {
+					color: #6c5ce7;
+				}
+
+				.seamless-search-field {
+					border: none !important;
+					outline: none !important;
+					box-shadow: none !important;
+					width: 100%;
+				}
+
+				.seamless-card .seamless-search-button {
+					background: #6c5ce7 !important;
+					border-color: #6c5ce7 !important;
+					box-shadow: none !important;
+					text-shadow: none !important;
+					display: inline-flex;
+					align-items: center;
+					border-radius: 8px;
+					gap: 6px;
+					padding: 5px 15px;
+					line-height: 20px;
+				}
+
+				.seamless-card .seamless-search-button:hover {
+					background: #5849c3 !important;
+				}
+
+				/* Reset button styling */
+				.seamless-card .seamless-search-reset {
+					background: transparent !important;
+					border: 1px solid #e5e5e5 !important;
+					box-shadow: none !important;
+					text-shadow: none !important;
+					line-height: 20px !important;
+					color: #6c5ce7 !important;
+					display: inline-flex;
+					align-items: center;
+					border-radius: 8px;
+					gap: 6px;
+					padding: 5px 15px;
+					transition: all 0.2s ease-in-out;
+				}
+
+				.seamless-card .seamless-search-reset:hover {
+					border-color: #6c5ce7 !important;
+					background: #f7f7ff !important;
+					color: #5849c3 !important;
+				}
+
+				/* Fetch latest buttons styling (events and membership tabs) */
+				#fetch-latest-events-btn,
+				#fetch-latest-membership-data-btn {
+					background: #6c5ce7 !important;
+					border-color: #6c5ce7 !important;
+					color: #fff !important;
+					box-shadow: none !important;
+					text-shadow: none !important;
+					border-radius: 6px !important;
+					display: inline-flex !important;
+					align-items: center !important;
+					gap: 8px !important;
+					padding: 10px 20px !important;
+					font-size: 14px !important;
+					font-weight: 500 !important;
+					height: auto !important;
+					transition: all 0.2s ease !important;
+					line-height: 20px !important;
+				}
+
+				#fetch-latest-events-btn:hover,
+				#fetch-latest-membership-data-btn:hover {
+					background: #5849c3 !important;
+					border-color: #5849c3 !important;
+				}
+
+				#fetch-latest-events-btn .dashicons,
+				#fetch-latest-membership-data-btn .dashicons {
+					font-size: 18px;
+					width: 18px;
+					height: 18px;
+				}
+
+				/* Spin animation for dashicons when fetching */
+				.dashicons.spin {
+					animation: seamless-spin 1s linear infinite;
+				}
+
+				@keyframes seamless-spin {
+					from {
+						transform: rotate(0deg);
+					}
+
+					to {
+						transform: rotate(360deg);
+					}
+				}
+
+				.seamless-table {
+					border: 1px solid #e1e5e9;
+					border-radius: 8px;
+					overflow: hidden;
+					box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+				}
+
+				.seamless-table thead th {
+					background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+					color: #2d3748;
+					border-bottom: 2px solid #e1e5e9;
+					font-weight: 600;
+					padding: 14px 12px;
+					font-size: 13px;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+				}
+
+				.seamless-table tbody td {
+					padding: 14px 12px;
+					border-bottom: 1px solid #f7fafc;
+					font-size: 14px;
+					color: #4a5568;
+				}
+
+				.seamless-table tbody tr {
+					transition: background-color 0.2s ease;
+				}
+
+				.seamless-table tbody tr:hover {
+					background: #f7fafc;
+				}
+
+				.seamless-table tbody tr:last-child td {
+					border-bottom: none;
+				}
+
+				.seamless-blur-table .seamless-blur {
+					filter: blur(3px);
+					pointer-events: none;
+					user-select: none;
+					opacity: 0.7;
+				}
+
+				.seamless-blur-message {
+					position: absolute;
+					top: 40px;
+					left: 0;
+					right: 0;
+					text-align: center;
+					z-index: 2;
+					font-size: 18px;
+					font-weight: bold;
+					color: #d63638;
+				}
+
+				.seamless-blur-wrapper {
+					position: relative;
+				}
+
+				/* SSO Tab Styles */
+				.seamless-sso-section {
+					padding: 20px;
+				}
+
+				.seamless-sso-config {
+					background: #fff;
+					border: 1px solid #e1e5e9;
+					border-radius: 8px;
+					padding: 20px;
+					margin-bottom: 16px;
+				}
+
+				.seamless-sso-config h3 {
+					margin: 0 0 16px 0;
+					font-size: 16px;
+					font-weight: 600;
+					color: #2d3748;
+				}
+
+				.seamless-sso-shortcode-section {
+					background: #f7fafc;
+					border: 1px solid #e1e5e9;
+					border-radius: 8px;
+					padding: 16px;
+					margin-bottom: 16px;
+				}
+
+				.seamless-sso-shortcode-section h3 {
+					margin: 0 0 10px 0;
+					font-size: 15px;
+					font-weight: 600;
+					color: #2d3748;
+				}
+
+				.seamless-sso-shortcode-section p {
+					margin: 0 0 12px 0;
+					color: #4a5568;
+					font-size: 13px;
+				}
+
+				.seamless-code-block {
+					display: inline-block;
+					cursor: pointer;
+					margin: 0 !important;
+					background: #fff;
+					padding: 6px 10px;
+					border: 1px solid #e1e5e9;
+					border-radius: 6px;
+					font-family: 'Courier New', monospace;
+					font-size: 12px;
+					color: #6c5ce7;
+					line-height: 18px;
+					word-break: break-all;
+					transition: background-color 0.2s ease;
+				}
+
+				.seamless-code-block:hover {
+					background-color: #f7fafc;
+				}
+
+				/* Responsive Design */
+				@media screen and (max-width: 1024px) {
+					.seamless-form-grid {
+						grid-template-columns: 1fr;
+					}
+				}
+
+				@media screen and (max-width: 760px) {
+
+					.seamless-welcome-main,
+					.seamless-welcome-features {
+						grid-template-columns: auto;
+					}
+
+					.seamless-auth-section,
+					.seamless-sso-section {
+						padding: 0;
+					}
+
+					.seamless-auth-setup,
+					.seamless-auth-connected,
+					.seamless-sso-config {
+						padding: 16px;
+					}
+
+					.seamless-card>* {
+						padding: 16px;
+					}
+
+					.seamless-search-bar {
+						flex-direction: column;
+						align-items: stretch;
+					}
+
+					.seamless-search-input {
+						min-width: 100%;
+					}
+
+					.nav-tab {
+						padding: 12px 16px;
+						font-size: 13px;
+					}
+				}
+
+				@media screen and (max-width: 760px) {
+
+					.seamless-welcome-main,
+					.seamless-welcome-features {
+						grid-template-columns: auto;
+					}
+				}
+			</style>
+		<?php
+		}
+
+		public function maybe_flush_permalinks($option, $old_value, $value): void
+		{
+			$target_options = [
+				'seamless_event_list_endpoint',
+				'seamless_single_event_endpoint'
+				// 'seamless_single_donation_endpoint',
+				// 'seamless_membership_list_endpoint',
+				// 'seamless_single_membership_endpoint',
+			];
+			if (in_array($option, $target_options, true)) {
+				flush_rewrite_rules();
+			}
+		}
+
+		private function remove_all_notices(): void
+		{
+			// Remove all actions that add notices
+			remove_all_actions('admin_notices');
+			remove_all_actions('all_admin_notices');
+		}
+
+		public function schedule_rewrite_flush(): void
+		{
+			update_option('seamless_flush_needed', true);
+		}
+
+		public function maybe_flush_rewrite_rules(): void
+		{
+			if (get_option('seamless_flush_needed')) {
+				flush_rewrite_rules();
+				delete_option('seamless_flush_needed');
+			}
+		}
+
+		public function handle_domain_change($option, $old_value, $value): void
+		{
+			if ($old_value !== $value) {
+				$this->clear_all_seamless_cache();
+				$this->auth->disconnect();
+			}
+		}
+
+		public function handle_connect(): void
+		{
+			if (!wp_verify_nonce($_POST['nonce'] ?? '', 'seamless_connect')) {
+				wp_send_json_error('Invalid nonce');
+			}
+
+			if (! current_user_can('manage_options')) {
+				wp_send_json_error('Insufficient permissions');
+			}
+
+			try {
+				$token = $this->auth->fetch_token();
+
+				if ($token) {
+					wp_send_json_success('Authenticated successfully');
+				} else {
+					wp_send_json_error('Unable to authenticate with provided credentials');
+				}
+			} catch (\Throwable $e) {
+				wp_send_json_error($e->getMessage());
+			}
+		}
+
+		public function handle_fetch_latest_events(): void
+		{
+			if (!wp_verify_nonce($_POST['nonce'] ?? '', 'seamless_fetch_events')) {
+				wp_send_json_error('Invalid nonce');
+			}
+
+			if (! current_user_can('manage_options')) {
+				wp_send_json_error('Insufficient permissions');
+			}
+
+			// Clear existing caches
+			$this->clear_events_cache();
+
+			// Warm caches for both events and group events (page 1, default filters)
+			try {
+				$events_handler = new \Seamless\Operations\Events();
+				$events_handler->get_events(1, [], '', 'all');
+				$events_handler->get_group_events(1, [], '', 'all');
+
+				// Clear the new combined cache - it will be recreated when needed
+				delete_transient('seamless_all_events_and_categories');
+			} catch (\Throwable $e) {
+				// Non-fatal: log and continue to return success for UX
+				error_log('Seamless warm fetch error (events): ' . $e->getMessage());
+			}
+
+			wp_send_json_success('Fetched latest events and group events');
+		}
+
+		public function handle_fetch_latest_membership_data(): void
+		{
+			if (!wp_verify_nonce($_POST['nonce'] ?? '', 'seamless_fetch_membership_data')) {
+				wp_send_json_error('Invalid nonce');
+			}
+
+			if (! current_user_can('manage_options')) {
+				wp_send_json_error('Insufficient permissions');
+			}
+
+			// Clear existing caches
+			$this->clear_membership_and_donation_cache();
+
+			// Warm caches for both membership plans and donations (page 1)
+			try {
+				$membership_handler = new \Seamless\Operations\Membership();
+				$membership_handler->get_membership_plans(1, '');
+				$donations_handler = new \Seamless\Operations\Donations();
+				$donations_handler->get_donations(1, '');
+			} catch (\Throwable $e) {
+				// Non-fatal: log and continue to return success for UX
+				error_log('Seamless warm fetch error (membership/donations): ' . $e->getMessage());
+			}
+
+			wp_send_json_success('Fetched latest membership plans and donations');
+		}
+
+		private function clear_events_cache(): void
+		{
+			global $wpdb;
+
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_event_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_event_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_events_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_events_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_group_events_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_group_events_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_event_categories%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_event_categories%'");
+
+			// Clear the new combined cache
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_all_events_and_categories%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_all_events_and_categories%'");
+		}
+
+		private function clear_membership_and_donation_cache(): void
+		{
+			global $wpdb;
+
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_membership_plans_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_membership_plans_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_donations_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_donations_%'");
+		}
+
+		private function clear_all_seamless_cache(): void
+		{
+			global $wpdb;
+
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_seamless_%'");
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_seamless_%'");
+		}
+
+		private function render_authenticate_to_fetch_data($type = 'event', int $colspan = 5, string $message = 'Authenticate to fetch the data.'): void
+		{
+		?>
+			<div class="seamless-blur-wrapper">
+				<div class="seamless-blur-message">
+					<strong><?php echo esc_html($message); ?></strong>
+					<div style="margin-top: 10px;">
+						<a href="?page=seamless&view=settings&tab=authentication" class="seamless-btn seamless-btn-primary">
+							<span class="dashicons dashicons-admin-network"></span>
+							Connect Now
+						</a>
+					</div>
+				</div>
+				<div class="seamless-blur-table">
+					<table class="wp-list-table widefat striped seamless-table seamless-blur">
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th>Title</th>
+								<th>Start Date</th>
+								<th>End Date</th>
+								<?php if ($type === 'group_event'): ?>
+									<th>Associated Events</th>
+								<?php endif; ?>
+								<th>Shortcode</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan="<?php echo $colspan; ?>" style="text-align:center;"><?php echo esc_html($message); ?></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+	<?php
+		}
+
+		// Inside class SettingsPage
+		public function render_protected_post_types_field(): void
+		{
+			$value = get_option('seamless_protected_post_types', 'post,page');
+			echo '<input type="text" name="seamless_protected_post_types" value="' . esc_attr($value) . '" class="regular-text" placeholder="post, page, my_custom_cpt">';
+			echo '<p class="description">Comma-separated list of post type slugs (e.g., <code>post, page, product</code>) where the restriction fields should be enforced.</p>';
+		}
+
+		public function render_membership_purchase_url_field(): void
+		{
+			$value = get_option('seamless_membership_purchase_url', home_url('/membership'));
+			echo '<input type="url" name="seamless_membership_purchase_url" value="' . esc_attr($value) . '" class="regular-text">';
+			echo '<p class="description">The URL where logged-in users are redirected to purchase or upgrade their membership.</p>';
+		}
+	}

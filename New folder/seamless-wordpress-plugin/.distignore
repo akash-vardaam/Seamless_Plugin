@@ -1,0 +1,49 @@
+# Exclude development dependencies (50MB)
+node_modules/
+
+# Exclude source files (compiled to dist/)
+src/js/
+src/css/
+
+# Exclude build configuration
+package.json
+package-lock.json
+yarn.lock
+vite.config.js
+
+# Exclude version control
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Exclude IDE/editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.editorconfig
+
+# Exclude development tools
+tests/
+phpunit.xml
+phpunit.xml.dist
+.phpcs.xml
+.phpcs.xml.dist
+
+# Exclude documentation (keep readme.md)
+*.md
+!readme.md
+
+# Exclude OS files
+.DS_Store
+Thumbs.db
+
+# Exclude build artifacts that aren't needed
+.vite/
+
+# Exclude logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

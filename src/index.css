@@ -1,0 +1,21 @@
+/* ============================================
+   SEAMLESS EVENT DISPLAY - INDEX
+   ============================================
+   Main entry point for all CSS imports
+   ============================================ */
+
+@import "./styles/index.css";
+
+  
+  #events-react-root .md\:inline-block {
+    display: inline-block !important;
+  }
+  
+  #events-react-root .md\:flex {
+    display: flex !important;
+  }
+  
+  #events-react-root .md\:grid {
+    display: grid !important;
+  }
+

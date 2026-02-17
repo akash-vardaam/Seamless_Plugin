@@ -1,0 +1,82 @@
+/* ============================================
+   SEAMLESS EVENT DISPLAY - CSS VARIABLES
+   ============================================
+   This file defines all CSS custom properties
+   used throughout the application with
+   WordPress-compatible scoping.
+   ============================================ */
+
+:root {
+  /* Colors */
+  --seamless-color-primary: #0f3759;
+  --seamless-color-secondary: #00b2ca;
+  --seamless-color-white: #ffffff;
+  --seamless-color-gray-50: #f9fafb;
+  --seamless-color-gray-100: #f3f4f6;
+  --seamless-color-gray-200: #e5e7eb;
+  --seamless-color-gray-300: #d1d5db;
+  --seamless-color-gray-400: #9ca3af;
+  --seamless-color-gray-600: #4b5563;
+  --seamless-color-gray-700: #374151;
+  --seamless-color-red-50: #fef2f2;
+  --seamless-color-red-200: #fecaca;
+  --seamless-color-red-600: #dc2626;
+  --seamless-color-red-800: #991b1b;
+  
+  /* Teal/Cyan colors for backgrounds */
+  --seamless-color-teal-100: #ccf2f6;
+  --seamless-color-teal-400: #14b8a6;
+  --seamless-color-teal-500: #0d9488;
+
+  /* Border colors for dropdowns */
+  --seamless-border-color: #4a90e2;
+
+  /* Spacing */
+  --seamless-spacing-1: 0.25rem;
+  --seamless-spacing-2: 0.5rem;
+  --seamless-spacing-3: 0.75rem;
+  --seamless-spacing-4: 1rem;
+  --seamless-spacing-6: 1.5rem;
+  --seamless-spacing-8: 2rem;
+
+  /* Typography */
+  --seamless-font-family-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --seamless-font-family-serif: 'Merriweather', serif;
+  --seamless-font-family-montserrat: 'Montserrat', sans-serif;
+  
+  /* Font sizes */
+  --seamless-font-size-xs: 0.75rem;
+  --seamless-font-size-sm: 0.875rem;
+  --seamless-font-size-base: 1rem;
+  --seamless-font-size-lg: 1.125rem;
+  --seamless-font-size-xl: 1.25rem;
+  --seamless-font-size-2xl: 1.5rem;
+  --seamless-font-size-3xl: 1.875rem;
+
+  /* Transitions */
+  --seamless-transition-fast: 150ms ease-in-out;
+  --seamless-transition-normal: 300ms ease-in-out;
+  --seamless-transition-slow: 500ms ease-in-out;
+
+  /* Border radius */
+  --seamless-radius-sm: 0.375rem;
+  --seamless-radius-md: 0.5rem;
+  --seamless-radius-lg: 0.75rem;
+  --seamless-radius-full: 9999px;
+
+  /* Shadows */
+  --seamless-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --seamless-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --seamless-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --seamless-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* Z-index */
+  --seamless-z-dropdown: 50;
+  --seamless-z-modal: 1000;
+
+  /* Media query breakpoints (for reference) */
+  --seamless-breakpoint-sm: 640px;
+  --seamless-breakpoint-md: 768px;
+  --seamless-breakpoint-lg: 1024px;
+  --seamless-breakpoint-xl: 1280px;
+}

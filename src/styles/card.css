@@ -1,0 +1,226 @@
+/* ============================================
+   SEAMLESS EVENT DISPLAY - CARD STYLES
+   ============================================ */
+
+/* Grid card layout */
+.seamless-card {
+  background-color: var(--seamless-color-white) !important;
+  border-radius: var(--seamless-radius-lg) !important;
+  overflow: hidden !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: box-shadow var(--seamless-transition-normal) !important;
+  box-shadow: var(--seamless-shadow-md) !important;
+}
+
+.seamless-card:hover {
+  box-shadow: var(--seamless-shadow-xl) !important;
+}
+
+.seamless-card-image-container {
+  width: 100% !important;
+  height: 265px !important;
+  background-color: #f8fafc !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.seamless-card-image {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  max-height: 265px !important;
+  transition: transform var(--seamless-transition-normal) !important;
+}
+
+.seamless-card:hover .seamless-card-image {
+  transform: scale(1.05) !important;
+}
+
+.seamless-card-content {
+  padding: var(--seamless-spacing-6) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+}
+
+.seamless-card-title {
+  margin-bottom: var(--seamless-spacing-4) !important;
+  display: block !important;
+  font-weight: 500 !important;
+  font-size: var(--seamless-font-size-lg) !important;
+  line-height: 1.5 !important;
+  color: var(--seamless-color-primary) !important;
+  transition: color var(--seamless-transition-fast) !important;
+  font-family: var(--seamless-font-family-serif) !important;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.seamless-card-title:hover {
+  text-decoration: underline !important;
+}
+
+.seamless-card-date {
+  margin-bottom: var(--seamless-spacing-1) !important;
+  font-size: var(--seamless-font-size-base) !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+  color: var(--seamless-color-primary) !important;
+}
+
+.seamless-card-time {
+  margin-bottom: var(--seamless-spacing-4) !important;
+  font-size: var(--seamless-font-size-base) !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+  color: var(--seamless-color-primary) !important;
+}
+
+.seamless-card-see-details {
+  margin-top: auto !important;
+  font-weight: 600 !important;
+  font-size: var(--seamless-font-size-sm) !important;
+  transition: all var(--seamless-transition-normal) !important;
+  color: var(--seamless-color-secondary) !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+}
+
+.seamless-card-see-details:hover {
+  color: var(--seamless-color-primary) !important;
+}
+
+/* List card layout */
+.seamless-card-list {
+  border-bottom: 1px solid var(--seamless-color-secondary) !important;
+  padding: var(--seamless-spacing-6) 0 !important;
+  overflow: hidden !important;
+}
+
+.seamless-card-list-content {
+  display: flex !important;
+  gap: var(--seamless-spacing-6) !important;
+  overflow: hidden !important;
+}
+
+.seamless-card-list-image {
+  flex-shrink: 0 !important;
+}
+
+.seamless-card-list-image-wrapper {
+  width: 8rem !important;
+  height: 8rem !important;
+  border-radius: var(--seamless-radius-lg) !important;
+  overflow: hidden !important;
+  background-color: var(--seamless-color-gray-100) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.seamless-card-list-image-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  transition: transform var(--seamless-transition-normal) !important;
+}
+
+.seamless-card-list:hover .seamless-card-list-image-img {
+  transform: scale(1.05) !important;
+}
+
+.seamless-card-list-no-image {
+  color: var(--seamless-color-gray-400) !important;
+  font-size: var(--seamless-font-size-sm) !important;
+}
+
+.seamless-card-list-details {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.seamless-card-list-title {
+  display: block !important;
+  margin-bottom: var(--seamless-spacing-3) !important;
+  font-size: var(--seamless-font-size-lg) !important;
+  line-height: 1.5 !important;
+  font-weight: 500 !important;
+  color: var(--seamless-color-primary) !important;
+  transition: color var(--seamless-transition-fast) !important;
+  font-family: var(--seamless-font-family-serif) !important;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  width: 100% !important;
+}
+
+.seamless-card-list-title:hover {
+  text-decoration: underline !important;
+}
+
+.seamless-card-list-meta {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--seamless-spacing-1) !important;
+  margin-bottom: var(--seamless-spacing-4) !important;
+}
+
+.seamless-card-list-meta-item {
+  font-size: var(--seamless-font-size-base) !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+  color: var(--seamless-color-primary) !important;
+}
+
+.seamless-card-list-meta-date {
+  font-weight: 700 !important;
+}
+
+.seamless-card-list-description {
+  font-size: var(--seamless-font-size-base) !important;
+  line-height: 1.5 !important;
+  font-weight: 400 !important;
+  color: var(--seamless-color-gray-600) !important;
+  margin-bottom: var(--seamless-spacing-4) !important;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.seamless-card-list-see-details {
+  font-weight: 600 !important;
+  font-size: var(--seamless-font-size-sm) !important;
+  transition: all var(--seamless-transition-normal) !important;
+  display: inline-block !important;
+  color: var(--seamless-color-secondary) !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+}
+
+.seamless-card-list-see-details:hover {
+  color: var(--seamless-color-primary) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .seamless-card-image-container {
+    height: 200px !important;
+  }
+
+  .seamless-card-content {
+    padding: var(--seamless-spacing-4) !important;
+  }
+
+  .seamless-card-list-content {
+    gap: var(--seamless-spacing-4) !important;
+  }
+}
