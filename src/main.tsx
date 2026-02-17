@@ -9,7 +9,7 @@ const containerElement = document.getElementById('seamless-react-root') || docum
 if (containerElement) {
   // Add seamless-event-container ID for CSS scoping
   containerElement.id = 'seamless-event-container';
-  
+
   createRoot(containerElement).render(
     <StrictMode>
       <App />

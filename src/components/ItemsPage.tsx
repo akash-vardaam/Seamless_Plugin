@@ -24,7 +24,7 @@ const ItemsPage: React.FC = () => {
 
   // 4. Data — fetches one API page at a time (per_page=8)
   const {
-    events: items, loading: itemsLoading, error, totalPages, totalApiEvents
+    events: items, loading: itemsLoading, error, totalPages
   } = useSegmentedEventPagination(filters, currentPage);
 
   // 5. Client-side filtering (Year fallback — though backend pagination might miss events if status/category filters don't cover it)
