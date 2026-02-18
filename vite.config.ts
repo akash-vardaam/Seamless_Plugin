@@ -9,7 +9,6 @@ export default defineConfig({
       '/api': {
         target: 'https://mafp.seamlessams.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
         secure: false,
         followRedirects: true,
         headers: {

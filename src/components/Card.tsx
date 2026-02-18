@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import type { Event } from '../types/event';
-import { getEventPageURL } from '../utils/urlHelper';
+
 
 interface CardProps {
   item: Event;
@@ -54,10 +55,12 @@ const createItemSlug = (title: string, id: string): string => {
 const getItemLink = (item: Event): string => {
   // Use API slug if available, otherwise create one
   if (item.slug) {
-    return getEventPageURL(item.slug);
+    // If in development/standalone mode, return relative path for router
+    // In production/WP, we might want full URL, but here we prioritize app navigation
+    return `/event/${item.slug}`;
   }
   const slug = createItemSlug(item.title, item.id);
-  return getEventPageURL(slug);
+  return `/event/${slug}`;
 };
 
 const stripHtmlTags = (html: string): string => {
@@ -83,13 +86,13 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
         {/* Item Details */}
         <div className="seamless-card-content">
           {/* Title */}
-          <a
-            href={getItemLink(item)}
+          <Link
+            to={getItemLink(item)}
             className="seamless-card-title"
             style={{ fontFamily: 'Merriweather' }}
           >
             {item.title}
-          </a>
+          </Link>
 
           {/* Date Range */}
           <p className="seamless-card-date">
@@ -102,12 +105,12 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           </p>
 
           {/* SEE DETAILS Button */}
-          <a
-            href={getItemLink(item)}
+          <Link
+            to={getItemLink(item)}
             className="seamless-card-see-details"
           >
             SEE DETAILS
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -137,13 +140,13 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
         {/* Item Details */}
         <div className="seamless-card-list-details">
           {/* Title */}
-          <a
-            href={getItemLink(item)}
+          <Link
+            to={getItemLink(item)}
             className="seamless-card-list-title"
             style={{ fontFamily: 'Merriweather' }}
           >
             {item.title}
-          </a>
+          </Link>
 
           {/* Item Meta Information */}
           <div className="seamless-card-list-meta">
@@ -177,12 +180,12 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           )}
 
           {/* SEE DETAILS Link */}
-          <a
-            href={getItemLink(item)}
+          <Link
+            to={getItemLink(item)}
             className="seamless-card-list-see-details"
           >
             SEE DETAILS
-          </a>
+          </Link>
         </div>
       </div>
     </div>

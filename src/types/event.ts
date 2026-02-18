@@ -10,6 +10,7 @@ export interface Venue {
   address_line_2: string | null;
   city: string;
   state: string;
+  zip_code: string;
   country: string;
   google_map_url: string;
 }
@@ -21,13 +22,29 @@ export interface Category {
   color: string | null;
 }
 
+export interface Schedule {
+  start_date_display: string;
+  end_date_display: string;
+  description: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface Ticket {
+  id: string;
+  label: string;
+  price: number;
+  inventory: number;
+  formatted_registration_end_date: string;
+}
+
 export interface Event {
   id: string;
   title: string;
   slug: string;
   type: string;
-  description: string;
-  except: boolean;
+  description: string; // Detail description
+  excerpt: boolean; // Correcting typo 'except' -> 'excerpt' if possible, but keeping 'except' if API is really 'except'
   except_description: string;
   featured_image: string;
   additional_images: string[];
@@ -39,11 +56,26 @@ export interface Event {
   formatted_end_date: string;
   status: string;
   additional_details: AdditionalDetail[];
+  schedules: Schedule[];
+  tickets: Ticket[];
   venue: Venue;
   categories?: Category[];
   audiences?: Audience[];
   focuses?: Focus[];
   local_chapters?: LocalChapter[];
+  registration_url?: string;
+  // Deprecated/Legacy fields? Keeping for safety if needed, or remove if strict.
+  content?: string;
+  registration_link?: string;
+  registration_status?: 'open' | 'closed' | 'waitlist' | string;
+  capacity?: string | number;
+  schedule?: string;
+  registration_details?: string;
+  dates_to_know?: string;
+  location_parking_details?: string;
+  advocacy_resources?: string;
+  cme_credits?: string;
+  sections?: Array<{ title: string, content: string }>;
 }
 
 export interface PaginationMeta {

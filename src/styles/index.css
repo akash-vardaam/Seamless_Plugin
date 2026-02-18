@@ -37,6 +37,10 @@
 /* 10. View switcher styles */
 @import './view-switcher.css';
 
+/* 11. Single Event Page styles */
+@import './single-event.css';
+
+
 /* ============================================
    GLOBAL UTILITIES
    ============================================ */
