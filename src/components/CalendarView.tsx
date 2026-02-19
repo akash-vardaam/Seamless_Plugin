@@ -12,6 +12,8 @@ import {
 
 interface CalendarViewProps {
   events: Event[];
+  currentDate?: Date;
+  onMonthChange?: (date: Date) => void;
 }
 
 interface EventBar {
@@ -29,17 +31,15 @@ interface EventBar {
   continuesToNextMonth: boolean;
 }
 
-export const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  
+export const CalendarView: React.FC<CalendarViewProps> = ({ events, currentDate: propDate, onMonthChange }) => {
+  const [internalDate, setInternalDate] = useState(new Date());
+
+  // Use prop if provided, otherwise internal state
+  const currentDate = propDate || internalDate;
+
   // Debug logging
   React.useEffect(() => {
-    console.log('CalendarView received events:', events);
-    if (events.length > 0) {
-      console.log('First event:', events[0]);
-      console.log('First event start_date:', events[0].start_date);
-      console.log('First event end_date:', events[0].end_date);
-    }
+    console.log('CalendarView received events:', events.length);
   }, [events]);
 
   const getDaysInMonth = (date: Date) => {
@@ -53,8 +53,6 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
   // Create a map of events by day for easier lookup
   const eventsByDay = useMemo(() => {
     const dayMap = new Map<number, EventBar[]>();
-    
-    console.log('eventsByDay memo - processing events:', events.length);
 
     // Get the first and last day of the current month
     const year = currentDate.getFullYear();
@@ -69,18 +67,13 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
     }
 
     // Filter and process events
-    events.forEach((event, idx) => {
+    events.forEach((event) => {
       try {
         const startDateOnly = extractDateOnly(event.start_date);
         const endDateOnly = extractDateOnly(event.end_date || event.start_date);
-        
-        console.log(`Event ${idx}: ${event.title}, start: ${startDateOnly}, end: ${endDateOnly}`);
 
         const startParts = getDateParts(startDateOnly);
         const endParts = getDateParts(endDateOnly);
-        
-        console.log(`  Parsed - Start: ${startParts.year}-${startParts.month}-${startParts.day}, End: ${endParts.year}-${endParts.month}-${endParts.day}`);
-        console.log(`  Current month: ${year}-${month + 1}`);
 
         // Check if event overlaps with current month
         const eventStartDate = new Date(
@@ -95,13 +88,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
         );
 
         if (eventEndDate >= monthStart && eventStartDate <= monthEnd) {
-          console.log(`  ✓ Event overlaps with current month`);
-          
+
           // Determine if event continues from previous month
           const continuesFromPreviousMonth = eventStartDate < monthStart;
           // Determine if event continues to next month
           const continuesToNextMonth = eventEndDate > monthEnd;
-          
+
           // Add event to all days it spans in this month
           let currentDay = Math.max(startParts.day, 1);
           let endDay = Math.min(endParts.day, daysInMonth);
@@ -143,17 +135,12 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
           const firstDayEvents = dayMap.get(currentDay) || [];
           firstDayEvents.push(eventBar);
           dayMap.set(currentDay, firstDayEvents);
-          
-          console.log(`  Added to day ${currentDay} with span ${spanLength}`);
-        } else {
-          console.log(`  ✗ Event does NOT overlap with current month`);
         }
       } catch (err) {
         console.error('Error processing event:', event, err);
       }
     });
 
-    console.log('eventsByDay final map:', dayMap);
     return dayMap;
   }, [currentDate, events]);
 
@@ -175,15 +162,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
   });
 
   const handlePrevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
-    );
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
+    if (onMonthChange) {
+      onMonthChange(newDate);
+    } else {
+      setInternalDate(newDate);
+    }
   };
 
   const handleNextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
-    );
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
+    if (onMonthChange) {
+      onMonthChange(newDate);
+    } else {
+      setInternalDate(newDate);
+    }
   };
 
   return (
@@ -209,7 +202,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({ events }) => {
 
           // Get events for this day from the map
           const cellEvents = (day ? eventsByDay.get(day) : []) || [];
-          
+
           const mappedEvents = cellEvents.map((bar) => ({
             event: bar.event,
             color: bar.color,

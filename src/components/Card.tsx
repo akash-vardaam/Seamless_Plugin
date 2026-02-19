@@ -71,7 +71,7 @@ const stripHtmlTags = (html: string): string => {
 export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
   if (layout === 'grid') {
     return (
-      <div className="seamless-card">
+      <article className="seamless-card">
         {/* Image Container */}
         <div className="seamless-card-image-container">
           {item.featured_image && (
@@ -112,13 +112,13 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
             SEE DETAILS
           </Link>
         </div>
-      </div>
+      </article>
     );
   }
 
   // List layout
   return (
-    <div className="seamless-card-list">
+    <article className="seamless-card-list">
       <div className="seamless-card-list-content">
         {/* Image Container */}
         <div className="seamless-card-list-image">
@@ -188,6 +188,6 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           </Link>
         </div>
       </div>
-    </div>
+    </article>
   );
 };

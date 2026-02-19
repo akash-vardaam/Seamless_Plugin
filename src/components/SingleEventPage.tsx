@@ -11,11 +11,12 @@ export const SingleEventPage: React.FC = () => {
     const [slug, setSlug] = useState<string>(paramSlug || '');
     const [calendarDropdownOpen, setCalendarDropdownOpen] = useState(false);
     const [isCalendarAdded, setIsCalendarAdded] = useState(false);
+    const calendarDropdownRef = React.useRef<HTMLDivElement>(null);
 
     const handleCalendarOptionClick = () => {
         setCalendarDropdownOpen(false);
         setIsCalendarAdded(true);
-        setTimeout(() => setIsCalendarAdded(false), 3000); // Reset checkmark
+        setTimeout(() => setIsCalendarAdded(false), 3000);
     };
 
     useEffect(() => {
@@ -26,6 +27,24 @@ export const SingleEventPage: React.FC = () => {
             }
         }
     }, [paramSlug]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (calendarDropdownRef.current && !calendarDropdownRef.current.contains(event.target as Node)) {
+                setCalendarDropdownOpen(false);
+            }
+        };
+
+        if (calendarDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [calendarDropdownOpen]);
 
     const { event, loading, error } = useSingleEvent(slug);
 
@@ -166,25 +185,64 @@ export const SingleEventPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {event.schedules.map((sch, idx) => (
-                            <tr key={idx}>
-                                <td>
-                                    {isMultiDayEvent && sch.start_date ? (
-                                        <>
-                                            <div style={{ fontWeight: 'normal', color: '#4a5568', marginBottom: '4px' }}>
-                                                {new Date(sch.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                            </div>
-                                            <div>
-                                                {sch.start_date_display} – {sch.end_date_display}
-                                            </div>
-                                        </>
-                                    ) : (
-                                        `${sch.start_date_display} – ${sch.end_date_display}`
-                                    )}
-                                </td>
-                                <td dangerouslySetInnerHTML={{ __html: sch.description }} />
-                            </tr>
-                        ))}
+                        {event.schedules.map((sch, idx) => {
+                            // Helper to parse "Mar 04, 2026 12:00 PM" -> { date: "Mar 04", year: "2026", time: "12:00 PM", fullDate: "Mar 04, 2026" }
+                            // Fallback using split if regex fails
+                            const parseDateStr = (str: string) => {
+                                if (!str) return { date: '', year: '', time: '', fullDate: '' };
+                                const match = str.match(/^([A-Za-z]+\s\d+),\s(\d{4})\s(.*)$/);
+                                if (match) {
+                                    return { date: match[1], year: match[2], time: match[3], fullDate: `${match[1]}, ${match[2]}` };
+                                }
+                                // Fallback logic if format is different
+                                return { date: str, year: '', time: '', fullDate: str };
+                            };
+
+                            const schStart = parseDateStr(sch.start_date_display);
+                            const schEnd = parseDateStr(sch.end_date_display);
+                            // Use formatted_start_date from event, or fallback to start_date
+                            const mainStart = parseDateStr(event.formatted_start_date || event.start_date);
+
+                            const isSameAsMainDate = schStart.fullDate === mainStart.fullDate;
+
+                            // Check previous row to see if date changed
+                            let isNewDateGroup = true;
+                            if (idx > 0) {
+                                const prevSchStart = parseDateStr(event.schedules[idx - 1].start_date_display);
+                                if (prevSchStart.fullDate === schStart.fullDate) {
+                                    isNewDateGroup = false;
+                                }
+                            }
+
+                            // Comparison Logic for Display
+                            let displayString = '';
+                            const isItemMultiDay = schStart.fullDate !== schEnd.fullDate;
+
+                            if (isItemMultiDay) {
+                                displayString = `${schStart.date} ${schStart.time} – ${schEnd.date} ${schEnd.time}`;
+                            } else {
+                                const timeRange = `${schStart.time} – ${schEnd.time}`;
+                                if (isSameAsMainDate) {
+                                    displayString = timeRange;
+                                } else {
+                                    // Date is different from main event.
+                                    if (isNewDateGroup) {
+                                        displayString = `${schStart.date} ${timeRange}`;
+                                    } else {
+                                        // Same date as previous row (but different from main event).
+                                        // Standard table approach: Don't repeat date.
+                                        displayString = timeRange;
+                                    }
+                                }
+                            }
+
+                            return (
+                                <tr key={idx}>
+                                    <td>{displayString}</td>
+                                    <td dangerouslySetInnerHTML={{ __html: sch.description }} />
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             )
@@ -205,94 +263,82 @@ export const SingleEventPage: React.FC = () => {
     // The prompt implies "Loop through data.additional_details", so likely we only use that + Schedule.
     // I will rely on the explicit instruction.
 
-    const googleCalLink = getGoogleCalendarLink(event);
     const capacity = event.tickets && event.tickets.length > 0 ? event.tickets[0].inventory : null;
 
     return (
-        <div id="singleEventWrapper" className="seamless-single-event-container">
+        <article id="singleEventWrapper" className="seamless-single-event-container">
             {/* Breadcrumbs */}
-            {/* <div className="seamless-breadcrumbs">
-                <Link to="/">Home</Link> &raquo; <Link to="/events">Events</Link> &raquo; <span className="seamless-breadcrumb-current">{event.title}</span>
-            </div> 
-            User didn't explicitly ask for breadcrumbs in the "Layout Requirements" or DOM structure list, 
-            but it's good practice. I'll comment it out if not in screenshot/reqs to be safe or keep it if it fits. 
-            The screenshot top part is cut off, but typical. I'll leave it out to be safe strictly following reqs. 
-            Actually, user says "The layout must match the provided screenshot". 
-            Screenshot starts with "2026 Family Medicine Advocacy Day" (Title). 
-            So I will REMOVE breadcrumbs to be safe.
-            */}
+            {/* ... breadcrumbs commented out ... */}
 
             <div className="seamless-single-event-grid">
-                {/* Left Column */}
-                <div className="seamless-single-event-content">
-                    {/* Header */}
-                    <div className="seamless-event-header-group">
-                        <div className="seamless-event-icon-circle">
-                            {event.featured_image ? (
-                                <img src={event.featured_image} alt="Event Icon" />
-                            ) : (
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a365d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                                    <line x1="12" y1="19" x2="12" y2="23"></line>
-                                    <line x1="8" y1="23" x2="16" y2="23"></line>
-                                </svg>
-                            )}
-                        </div>
-                        <h1 className="seamless-event-title">{event.title}</h1>
+                {/* Header - Moved out for mobile/tab ordering */}
+                <header className="seamless-event-header-group">
+                    <div className="seamless-event-icon-circle">
+                        {event.featured_image ? (
+                            <img src={event.featured_image} alt="Event Icon" />
+                        ) : (
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a365d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        )}
                     </div>
+                    <h1 className="seamless-event-title">{event.title}</h1>
+                </header>
 
+                {/* Left Column Content (Description + Accordions) */}
+                <section className="seamless-single-event-content">
                     {/* Description */}
                     <div id="seamless-single-event-description" className="seamless-event-description" dangerouslySetInnerHTML={{ __html: event.description }}></div>
 
 
                     {/* Accordions */}
                     <SeamlessAccordion items={sections} />
-                </div>
+                </section>
 
                 {/* Right Column: Sidebar */}
-                <div className="seamless-single-event-sidebar">
+                <aside className="seamless-single-event-sidebar">
                     {/* Details Box */}
-                    <div className="seamless-sidebar-box seamless-details-box">
-                        <div className="seamless-detail-row">
-                            <Calendar className="seamless-detail-icon" size={20} />
-                            <div>
-                                <span className="seamless-detail-label">Date</span>
-                                <p className="seamless-detail-value">{getFormattedDate(event.start_date)}</p>
-                            </div>
-                        </div>
-                        <div className="seamless-detail-row">
-                            <Clock className="seamless-detail-icon" size={20} />
-                            <div>
-                                <span className="seamless-detail-label">Time</span>
-                                <p className="seamless-detail-value">{getFormattedTimeRange(event.start_date, event.end_date)}</p>
-                            </div>
-                        </div>
-                        {capacity !== null && (
-                            <div className="seamless-detail-row">
-                                <Users className="seamless-detail-icon" size={20} />
-                                <div style={{ width: '100%' }}>
-                                    <span className="seamless-detail-label">Capacity</span>
-                                    <p className="seamless-detail-value">{capacity} capacity</p>
+                    <section className="seamless-sidebar-box seamless-details-box">
+                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                            <li className="seamless-detail-row">
+                                <Calendar className="seamless-detail-icon" size={20} />
+                                <div>
+                                    <span className="seamless-detail-label">Date</span>
+                                    <p className="seamless-detail-value">{getFormattedDate(event.start_date)}</p>
                                 </div>
-                            </div>
-                        )}
-                        <div className="seamless-detail-row">
-                            <MapPin className="seamless-detail-icon" size={20} />
-                            <div>
-                                <span className="seamless-detail-label">Location</span>
-                                {/* Location Format: Union Depot \n 214 4th St E UNIT 120, \n (St. Paul, MN) 55101 */}
-                                <p className="seamless-detail-value">{event.venue.name}</p>
-                                <p className="seamless-detail-subvalue">{event.venue.address_line_1},</p>
-                                <p className="seamless-detail-subvalue">({event.venue.city}, {event.venue.state}) {event.venue.zip_code}</p>
-                            </div>
-                        </div>
+                            </li>
+                            <li className="seamless-detail-row">
+                                <Clock className="seamless-detail-icon" size={20} />
+                                <div>
+                                    <span className="seamless-detail-label">Time</span>
+                                    <p className="seamless-detail-value">{getFormattedTimeRange(event.start_date, event.end_date)}</p>
+                                </div>
+                            </li>
+                            {capacity !== null && (
+                                <li className="seamless-detail-row">
+                                    <Users className="seamless-detail-icon" size={20} />
+                                    <div style={{ width: '100%' }}>
+                                        <span className="seamless-detail-label">Capacity</span>
+                                        <p className="seamless-detail-value">{capacity} capacity</p>
+                                    </div>
+                                </li>
+                            )}
+                            <li className="seamless-detail-row">
+                                <MapPin className="seamless-detail-icon" size={20} />
+                                <div>
+                                    <span className="seamless-detail-label">Location</span>
+                                    {/* Location Format: Union Depot \n 214 4th St E UNIT 120, \n (St. Paul, MN) 55101 */}
+                                    <p className="seamless-detail-value">{event.venue.name}</p>
+                                    <p className="seamless-detail-subvalue">{event.venue.address_line_1},</p>
+                                    <p className="seamless-detail-subvalue">({event.venue.city}, {event.venue.state}) {event.venue.zip_code}</p>
+                                </div>
+                            </li>
+                        </ul>
 
-
-
-
-
-                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <div style={{ position: 'relative', display: 'inline-block', width: 'fit-content' }} ref={calendarDropdownRef}>
 
                             <button
                                 onClick={() => setCalendarDropdownOpen(!calendarDropdownOpen)}
@@ -335,10 +381,10 @@ export const SingleEventPage: React.FC = () => {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </section>
 
                     {/* Tickets Box */}
-                    <div className="seamless-sidebar-box seamless-tickets-box">
+                    <section className="seamless-sidebar-box seamless-tickets-box">
 
                         <h3 className="seamless-tickets-title">Tickets</h3>
                         {event.tickets && event.tickets.map(ticket => (
@@ -363,9 +409,9 @@ export const SingleEventPage: React.FC = () => {
                                 Register Now
                             </a>
                         )}
-                    </div>
-                </div>
+                    </section>
+                </aside>
             </div>
-        </div>
+        </article>
     );
 };

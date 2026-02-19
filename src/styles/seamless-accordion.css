@@ -1,47 +1,117 @@
 .seamless-accordions {
-    border-top: 1px solid #e2e8f0;
-    width: 100%;
+    border-top: 1px solid #e2e8f0 !important;
+    width: 100% !important;
 }
 
 .seamless-accordion-item {
-    border-bottom: 1px solid #e2e8f0;
-    padding: 20px 0px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
 }
 
-.seamless-accordion-trigger {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 20px 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #1a365d;
-    text-align: left;
-    gap: 15px;
-    transition: color 0.2s ease;
+#singleEventWrapper .seamless-accordion-trigger {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding: 20px 0 !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-family: inherit !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: #1a365d !important;
+    text-align: left !important;
+    gap: 15px !important;
+    transition: color 0.2s ease !important;
 }
 
 .seamless-accordion-icon {
-    color: #1a365d;
-    flex-shrink: 0;
-    transition: color 0.2s ease;
+    color: #1a365d !important;
+    flex-shrink: 0 !important;
+    transition: color 0.2s ease !important;
 }
 
 .seamless-accordion-trigger:hover {
-    color: var(--seamless-color-primary, #0070f3);
+    color: var(--seamless-color-primary, #0070f3) !important;
 }
 
 .seamless-accordion-trigger:hover .seamless-accordion-icon {
-    color: var(--seamless-color-primary, #0070f3);
+    color: var(--seamless-color-primary, #0070f3) !important;
 }
 
-.seamless-accordion-content {
-    padding-bottom: 15px;
-    color: #4a5568;
-    line-height: 1.6;
+#singleEventWrapper .seamless-accordion-content {
+    padding: 0 0 25px 38px !important;
+    color: #4a5568 !important;
+    line-height: 1.6 !important;
+}
+
+/* Styles moved from single-event.css */
+#singleEventWrapper .seamless-accordion-item .seamless-accordion-content * {
+    font-size: 16px !important;
+    line-height: 29px !important;
+}
+
+#singleEventWrapper .seamless-accordion-item .seamless-accordion-content table * {
+    font-size: 14px !important;
+    line-height: 21px !important;
+}
+
+#singleEventWrapper .seamless-accordion-item .seamless-accordion-content table td {
+    padding: 10px !important;
+    vertical-align: middle !important;
+}
+
+#singleEventWrapper button.seamless-accordion-trigger.active {
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    margin-bottom: 25px !important;
+}
+
+#singleEventWrapper .seamless-accordion-content a.elementor-button {
+    background-color: var(--seamless-color-primary, #0c2e4e) !important;
+    border: 1px solid var(--seamless-color-primary, #0c2e4e) !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    padding: 5px 25px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    margin-top: 10px !important;
+}
+
+#singleEventWrapper .seamless-accordion-content a.elementor-button:hover {
+    background-color: #ffffff !important;
+    color: var(--seamless-color-primary, #0c2e4e) !important;
+    border: 1px solid var(--seamless-color-primary, #0c2e4e) !important;
+    border-radius: 30px !important;
+    padding: 5px 25px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    margin-top: 10px !important;
+}
+
+#singleEventWrapper .seamless-accordion-content table td {
+    border: 1px solid #E0E0E0 !important;
+}
+
+#singleEventWrapper .seamless-accordion-content table.event-schedule-table td{
+    border: none !important;
+}
+
+#singleEventWrapper .seamless-accordion-content table a * , #singleEventWrapper .seamless-accordion-content table strong {
+    display: inline !important;
+ }
+
+ #singleEventWrapper .seamless-accordion-content p{
+    color: #282828 !important;
+    margin-bottom: 10px !important;
+ }
+
+ @media screen and (max-width: 768px) {
+    #singleEventWrapper .seamless-event-header-group {
+        flex-direction: column !important;
+    }
+
+   #singleEventWrapper .seamless-accordion-content {
+        padding: 0 0 25px 0 !important;
+    }
 }

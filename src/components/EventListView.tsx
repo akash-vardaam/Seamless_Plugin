@@ -1,5 +1,6 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useSegmentedEventPagination } from '../hooks/useSegmentedEventPagination';
 import { useCategories } from '../hooks/useCategories';
 import { useFilterState, useClientFilters } from '../hooks/useFilters';
@@ -9,6 +10,8 @@ import { Card } from './Card';
 import { CalendarView } from './CalendarView';
 import { Pagination } from './Pagination';
 import type { ViewType, Event } from '../types/event';
+import { useCalendarEvents } from '../hooks/useCalendarEvents';
+// ... defaults
 
 export const EventListView: React.FC = () => {
     // 1. Categories
@@ -19,56 +22,85 @@ export const EventListView: React.FC = () => {
 
     // 2. Filter State
     const { filters, updateFilter, resetFilters } = useFilterState();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // 3. Current page state (drives backend pagination)
-    const [currentPage, setCurrentPage] = useState(1);
+    const currentPage = parseInt(searchParams.get('page') || '1');
+
+    // Calendar State
+    // Initialize from URL or default to today
+    const calendarDate = useMemo(() => {
+        const dateParam = searchParams.get('date');
+        return dateParam ? new Date(dateParam) : new Date();
+    }, [searchParams]);
+
+    // Helper to update URL params
+    const updateUrlParams = (updates: Record<string, string | null>) => {
+        setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            Object.entries(updates).forEach(([key, value]) => {
+                if (value === null) {
+                    newParams.delete(key);
+                } else {
+                    newParams.set(key, value);
+                }
+            });
+            return newParams;
+        });
+    };
 
     // 4. Data — fetches one API page at a time (per_page=8)
     const {
-        events: items, loading: itemsLoading, error, totalPages
+        events: paginatedItems, loading: paginatedLoading, error: paginatedError, totalPages
     } = useSegmentedEventPagination(filters, currentPage);
 
-    // 5. Client-side filtering (Year fallback — though backend pagination might miss events if status/category filters don't cover it)
+    // 5. Calendar Data - fetches by month
+    const {
+        events: calendarItems, loading: calendarLoading, error: calendarError
+    } = useCalendarEvents(calendarDate, filters);
+
+    // 6. View state
+    const getDefaultView = (): ViewType =>
+        typeof window !== 'undefined' && window.innerWidth < 768 ? 'grid' : 'list';
+
+    const currentView = (searchParams.get('view') as ViewType) || getDefaultView();
+
+    // Determine active data source
+    const items = currentView === 'calendar' ? calendarItems : paginatedItems;
+    const itemsLoading = currentView === 'calendar' ? calendarLoading : paginatedLoading;
+    const error = currentView === 'calendar' ? calendarError : paginatedError;
+
+    // 7. Client-side filtering (Year fallback)
     const eventsData = (items || []) as Event[];
 
     // Note: useClientFilters handles "Year" filtering which API cannot do.
     const filteredItems = useClientFilters(eventsData, filters);
 
-    // 6. View state
-    const getDefaultView = (): ViewType =>
-        typeof window !== 'undefined' && window.innerWidth < 768 ? 'grid' : 'list';
-    const [currentView, setCurrentView] = useState<ViewType>(getDefaultView());
-
-    // Responsive view switch
+    // ... Responsive view switch ...
     useEffect(() => {
         const onResize = () => {
-            if (window.innerWidth < 768 && currentView === 'list') setCurrentView('grid');
+            if (window.innerWidth < 768 && currentView === 'list') {
+                updateUrlParams({ view: 'grid' });
+            }
         };
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
     }, [currentView]);
 
-    // Reset to page 1 when any filter changes OR view changes
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [
-        filters.search,
-        filters.status,
-        filters.audience,
-        filters.focus,
-        filters.localChapter,
-        filters.year,
-        currentView // Reset on view change
-    ]);
-
     const handleViewChange = (view: ViewType) => {
-        setCurrentView(view);
+        // Reset page to 1 on view change
+        updateUrlParams({ view, page: '1' });
+    };
+
+    const handleMonthChange = (date: Date) => {
+        // Store simple date string YYYY-MM-DD or just ISO
+        updateUrlParams({ date: date.toISOString() });
     };
 
     const handlePageChange = (page: number) => {
         // Clamp page to valid range
         const safePage = Math.max(1, Math.min(page, totalPages));
-        setCurrentPage(safePage);
+        updateUrlParams({ page: safePage.toString() });
         // Scroll to top of the events container
         document.getElementById('seamless-event-container')?.scrollIntoView({ behavior: 'smooth' });
     };
@@ -100,8 +132,8 @@ export const EventListView: React.FC = () => {
     }
 
     return (
-        <div className="seamless-container">
-            <div className="seamless-filter-section">
+        <section className="seamless-container">
+            <aside className="seamless-filter-section">
                 <FilterBar
                     search={filters.search}
                     onSearchChange={(v) => updateFilter('search', v)}
@@ -121,9 +153,9 @@ export const EventListView: React.FC = () => {
                     years={years}
                     onReset={resetFilters}
                 />
-            </div>
+            </aside>
 
-            <div className="seamless-results-info">
+            <header className="seamless-results-info">
                 <p className="seamless-results-text">
                     {loading ? (
                         <span>Loading items...</span>
@@ -132,14 +164,18 @@ export const EventListView: React.FC = () => {
                             Showing{' '}
                             <span className="seamless-results-count">{filteredItems.length}</span>{' '}
                             item(s)
-                            {' · '}Page {currentPage} of {totalPages}
+                            {currentView !== 'calendar' && (
+                                <>
+                                    {' · '}Page {currentPage} of {totalPages}
+                                </>
+                            )}
                         </>
                     )}
                 </p>
                 <ViewSwitcher currentView={currentView} onViewChange={handleViewChange} />
-            </div>
+            </header>
 
-            <div className="seamless-items-display" style={{ minHeight: '300px', position: 'relative' }}>
+            <main className="seamless-items-display" style={{ minHeight: '300px', position: 'relative' }}>
                 {loading && (
                     <div className="seamless-loading-overlay" style={{
                         position: 'absolute', inset: 0,
@@ -157,7 +193,11 @@ export const EventListView: React.FC = () => {
                         <p className="seamless-empty-state-text">No items found matching your filters.</p>
                     </div>
                 ) : !loading && currentView === 'calendar' ? (
-                    <CalendarView events={filteredItems} />
+                    <CalendarView
+                        events={filteredItems}
+                        currentDate={calendarDate}
+                        onMonthChange={handleMonthChange}
+                    />
                 ) : !loading && currentView === 'grid' ? (
                     <>
                         <div className="seamless-items-grid">
@@ -187,7 +227,7 @@ export const EventListView: React.FC = () => {
                         />
                     </>
                 )}
-            </div>
-        </div>
+            </main>
+        </section>
     );
 };

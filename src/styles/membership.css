@@ -1,0 +1,246 @@
+
+#seamless-membership-section.seamless-membership-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 60px 20px !important;
+    font-family: 'Inter', sans-serif !important;
+    color: var(--seamless-color-text, #0f172a) !important;
+}
+
+#seamless-membership-section .seamless-membership-header {
+    text-align: center !important;
+    margin-bottom: 80px !important;
+}
+
+#seamless-membership-section .seamless-membership-title {
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+}
+
+#seamless-membership-section .seamless-membership-subtitle {
+    font-size: 1.125rem !important;
+    color: #64748b !important;
+}
+
+#seamless-membership-section .seamless-plans-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+    gap: 40px !important;
+    margin-bottom: 100px !important;
+}
+
+#seamless-membership-section .seamless-plan-card {
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    padding: 25px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border: 1px solid #f1f5f9 !important;
+}
+
+#seamless-membership-section .seamless-plan-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01) !important;
+}
+
+#seamless-membership-section .seamless-plan-header-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    margin-bottom: 24px !important;
+    gap: 20px !important;
+}
+
+#seamless-membership-section .seamless-plan-header-left {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+}
+
+#seamless-membership-section .seamless-plan-header-right {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+}
+
+#seamless-membership-section .seamless-plan-label {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin: 0 0 12px 0 !important;
+    line-height: 28px !important;
+}
+
+#seamless-membership-section .seamless-plan-label h3 {
+    line-height: 0px !important;
+}
+
+#seamless-membership-section .seamless-plan-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    font-size: 12px !important;
+    line-height: 16px !important;
+    font-weight: 500 !important;
+    padding: 4px 8px !important;
+    border-radius: 20px !important;
+    margin-top: 5px !important;
+}
+
+#seamless-membership-section .seamless-plan-price-badge {
+    background-color: var(--seamless-color-primary, #0c2e4e) !important;
+    color: #ffffff !important;
+    padding: 8px 16px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    margin-bottom: 8px !important;
+}
+
+#seamless-membership-section .seamless-currency {
+    font-size: 0.875rem !important;
+    margin-top: 4px !important;
+    margin-right: 2px !important;
+    font-weight: 600 !important;
+}
+
+#seamless-membership-section .seamless-amount {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+
+#seamless-membership-section .seamless-plan-renewal {
+    font-size: 0.875rem !important;
+    color: #64748b !important;
+    text-align: right !important;
+}
+
+#seamless-membership-section .seamless-plan-divider {
+    height: 1px !important;
+    background-color: #e2e8f0 !important;
+    margin-bottom: 32px !important;
+    width: 100% !important;
+}
+
+#seamless-membership-section .seamless-plan-features-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin-bottom: 40px !important;
+    flex-grow: 1 !important;
+}
+
+#seamless-membership-section .seamless-feature-item {
+    display: flex !important;
+    align-items: flex-start !important;
+    font-size: 1rem !important;
+    color: #334155 !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-membership-section .seamless-check {
+    color: #0f172a !important;
+    margin-right: 12px !important;
+    font-weight: bold !important;
+    flex-shrink: 0 !important;
+}
+
+#seamless-membership-section .seamless-plan-footer {
+    margin-top: auto !important;
+}
+
+#seamless-membership-section .seamless-plan-cta {
+    display: block !important;
+    width: 100% !important;
+    padding: 12px 16px !important;
+    background-color: var(--seamless-color-primary, #0c2e4e) !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    font-size: 0.875rem !important;
+    border-radius: 12px !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    transition: background-color 0.2s !important;
+}
+
+#seamless-membership-section .seamless-plan-cta:hover {
+    background-color: var(--seamless-color-secondary, #0c2e4e) !important;
+}
+
+#seamless-membership-section .seamless-comparison-section {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 0 !important;
+    margin-top: 80px !important;
+}
+
+#seamless-membership-section .seamless-comparison-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin-bottom: 30px !important;
+}
+
+#seamless-membership-section .seamless-comparison-table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+}
+
+#seamless-membership-section .seamless-comparison-table th {
+    background-color: var(--seamless-color-primary, #0c2e4e) !important;
+    color: #ffffff !important;
+    padding: 20px !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+}
+
+#seamless-membership-section .seamless-comparison-table th:first-child {
+    border-top-left-radius: 12px !important;
+}
+
+#seamless-membership-section .seamless-comparison-table th:last-child {
+    border-top-right-radius: 12px !important;
+}
+
+#seamless-membership-section .seamless-comparison-table th {
+    min-width: 250px !important;
+}
+
+#seamless-membership-section .seamless-comparison-table td {
+    padding: 20px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+}
+
+#seamless-membership-section .seamless-comparison-table tr:last-child td {
+    border-bottom: none !important;
+}
+
+#seamless-membership-section .seamless-comparison-plan-name {
+    display: block !important;
+    font-size: 1rem !important;
+    margin-bottom: 4px !important;
+}
+
+#seamless-membership-section .seamless-comparison-plan-price {
+    font-size: 0.875rem !important;
+    opacity: 0.8 !important;
+    font-weight: 400 !important;
+}
+
+@media (max-width: 768px) {
+    #seamless-membership-section .seamless-plans-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

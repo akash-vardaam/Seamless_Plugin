@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { Event, FilterState } from '../types/event';
 
 export const DEFAULT_FILTERS: FilterState = {
@@ -17,15 +18,43 @@ interface UseFilterStateReturn {
 }
 
 export const useFilterState = (): UseFilterStateReturn => {
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Create filters object from searchParams, falling back to defaults
+  const filters: FilterState = useMemo(() => ({
+    search: searchParams.get('search') || DEFAULT_FILTERS.search,
+    status: (searchParams.get('status') as FilterState['status']) || DEFAULT_FILTERS.status,
+    audience: searchParams.get('audience') || DEFAULT_FILTERS.audience,
+    focus: searchParams.get('focus') || DEFAULT_FILTERS.focus,
+    localChapter: searchParams.get('localChapter') || DEFAULT_FILTERS.localChapter,
+    year: searchParams.get('year') || DEFAULT_FILTERS.year,
+  }), [searchParams]);
 
   const updateFilter = (key: keyof FilterState, value: string) => {
     console.log(`Updating filter ${key} to ${value}`);
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      if (value) {
+        newParams.set(key, value);
+      } else {
+        newParams.delete(key);
+      }
+      // Reset page to 1 when filters change (common pattern)
+      newParams.set('page', '1');
+      return newParams;
+    });
   };
 
   const resetFilters = () => {
-    setFilters(DEFAULT_FILTERS);
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      // Remove all filter keys
+      Object.keys(DEFAULT_FILTERS).forEach(key => {
+        newParams.delete(key);
+      });
+      newParams.set('page', '1');
+      return newParams;
+    });
   };
 
   return { filters, updateFilter, resetFilters };

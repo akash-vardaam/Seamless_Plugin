@@ -28,6 +28,8 @@ export interface Schedule {
   description: string;
   start_date?: string;
   end_date?: string;
+  start_date_utc?: string;
+  end_date_utc?: string;
 }
 
 export interface Ticket {
