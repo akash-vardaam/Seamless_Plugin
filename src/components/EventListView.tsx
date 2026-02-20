@@ -39,7 +39,7 @@ export const EventListView: React.FC = () => {
         setSearchParams(prev => {
             const newParams = new URLSearchParams(prev);
             Object.entries(updates).forEach(([key, value]) => {
-                if (value === null) {
+                if (value === null || (key === 'page' && value === '1')) {
                     newParams.delete(key);
                 } else {
                     newParams.set(key, value);
@@ -54,16 +54,16 @@ export const EventListView: React.FC = () => {
         events: paginatedItems, loading: paginatedLoading, error: paginatedError, totalPages
     } = useSegmentedEventPagination(filters, currentPage);
 
-    // 5. Calendar Data - fetches by month
-    const {
-        events: calendarItems, loading: calendarLoading, error: calendarError
-    } = useCalendarEvents(calendarDate, filters);
-
-    // 6. View state
+    // 5. View state
     const getDefaultView = (): ViewType =>
         typeof window !== 'undefined' && window.innerWidth < 768 ? 'grid' : 'list';
 
     const currentView = (searchParams.get('view') as ViewType) || getDefaultView();
+
+    // 6. Calendar Data - fetches by month
+    const {
+        events: calendarItems, loading: calendarLoading, error: calendarError
+    } = useCalendarEvents(calendarDate, filters, currentView === 'calendar');
 
     // Determine active data source
     const items = currentView === 'calendar' ? calendarItems : paginatedItems;

@@ -3,7 +3,9 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { EventListView } from './components/EventListView';
 import { SingleEventPage } from './components/SingleEventPage';
-import { MembershipListView } from './components/MembershipListView';
+import { MembershipListView } from './components/MembershipView';
+import { CoursesView } from './components/CoursesView';
+import { UserDashboardView } from './components/UserDashboardView';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +16,8 @@ const App: React.FC = () => {
           <Route path="/events" element={<EventListView />} />
           <Route path="/event/:slug" element={<SingleEventPage />} />
           <Route path="/membership-plans" element={<MembershipListView />} />
+          <Route path="/courses" element={<CoursesView />} />
+          <Route path="/dashboard" element={<UserDashboardView />} />
           {/* Fallback for unknown routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

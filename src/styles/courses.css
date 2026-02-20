@@ -1,0 +1,212 @@
+
+#seamless-courses-section.seamless-courses-container {
+    max-width: 1300px !important;
+    margin: 0 auto !important;
+    padding: 60px 20px !important;
+    font-family: 'Inter', sans-serif !important;
+    color: var(--seamless-color-text, #0f172a) !important;
+}
+
+#seamless-courses-section .seamless-courses-header {
+    text-align: center !important;
+    margin-bottom: 40px !important; /* Reduced margin to fit filter bar */
+}
+
+#seamless-courses-section .seamless-courses-title {
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    color: #1e293b !important;
+    margin-bottom: 16px !important;
+}
+
+#seamless-courses-section .seamless-courses-subtitle {
+    font-size: 1.125rem !important;
+    color: #64748b !important;
+}
+
+/* Filter Bar Styles */
+#seamless-courses-section .seamless-filter-bar {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 40px !important;
+    background: var(--seamless-color-teal-100, #ccf2f6) !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+#seamless-courses-section .seamless-filter-group-left {
+    display: flex !important;
+    flex: 1 !important;
+    min-width: 250px !important;
+}
+
+#seamless-courses-section .seamless-filter-group-right {
+    display: flex !important;
+    gap: 12px !important;
+    align-items: center !important;
+}
+
+/* Reuse plan card styles but modified for course content */
+#seamless-courses-section .seamless-courses-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 30px !important;
+    margin-bottom: 60px !important;
+}
+
+#seamless-courses-section .seamless-course-card {
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    padding: 0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border: 1px solid #f1f5f9 !important;
+    overflow: hidden !important;
+}
+
+#seamless-courses-section .seamless-course-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01) !important;
+}
+
+#seamless-courses-section .seamless-course-price {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #0f172a !important;
+}
+
+
+#seamless-courses-section .seamless-course-image-container {
+    width: 100% !important;
+    height: 200px !important;
+    background-color: #f1f5f9 !important;
+    position: relative !important;
+}
+
+#seamless-courses-section .seamless-course-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+#seamless-courses-section .seamless-course-content {
+    padding: 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+}
+
+#seamless-courses-section .seamless-course-badges {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+}
+
+#seamless-courses-section .seamless-course-access-badge {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 4px 10px !important;
+    border-radius: 20px !important;
+    text-transform: uppercase !important;
+}
+
+#seamless-courses-section .seamless-course-access-free {
+    background-color: #dcfce7 !important;
+    color: #166534 !important;
+}
+
+#seamless-courses-section .seamless-course-access-paid {
+    background-color: var(--seamless-color-primary, #0c2e4e) !important;
+    color: #ffffff !important;
+}
+
+#seamless-courses-section .seamless-course-price {
+    font-weight: 700 !important;
+    color: #0f172a !important;
+}
+
+#seamless-courses-section .seamless-course-title {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin: 0 0 12px 0 !important;
+    line-height: 1.4 !important;
+}
+
+#seamless-courses-section .seamless-course-description {
+    font-size: 0.95rem !important;
+    color: #64748b !important;
+    line-height: 1.6 !important;
+    margin-bottom: 20px !important;
+    overflow: hidden !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+}
+
+#seamless-courses-section .seamless-course-meta {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    margin-top: auto !important;
+    margin-bottom: 24px !important;
+    color: #64748b !important;
+    font-size: 0.875rem !important;
+}
+
+#seamless-courses-section .seamless-course-meta-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+#seamless-courses-section .seamless-course-footer {
+    margin-top: auto !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#seamless-courses-section .seamless-course-cta {
+    display: block !important;
+    padding: 12px 16px !important;
+    background-color: var(--seamless-color-primary, #0c2e4e) !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    font-size: 0.875rem !important;
+    border-radius: 12px !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    transition: background-color 0.2s !important;
+}
+
+#seamless-courses-section .seamless-course-cta:hover {
+    background-color: var(--seamless-color-secondary, #0c2e4e) !important;
+}
+
+@media screen and (min-width: 450px) and (max-width: 768px) {
+    #seamless-courses-section .seamless-courses-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    #seamless-courses-section .seamless-filter-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    
+    #seamless-courses-section .seamless-filter-group-right {
+        justify-content: space-between !important;
+    }
+}

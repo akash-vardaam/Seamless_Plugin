@@ -13,12 +13,16 @@ function formatError(err: unknown): string {
     return err instanceof Error ? err.message : 'Unknown error';
 }
 
+// In-memory cache to avoid repeated sessionStorage access or API calls
+const calendarCache = new Map<string, Event[]>();
+
 export const useCalendarEvents = (
     currentDate: Date,
-    filters: FilterState
+    filters: FilterState,
+    enabled: boolean = true
 ) => {
     const [events, setEvents] = useState<Event[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(enabled);
     const [error, setError] = useState<string | null>(null);
 
     // Helper to get start/end of month
@@ -71,17 +75,27 @@ export const useCalendarEvents = (
         let cancelled = false;
 
         const fetchData = async () => {
-            setLoading(true);
-            setError(null);
+            if (!enabled) return;
 
             const params = buildParams();
             const cacheKey = `seamless_calendar_${JSON.stringify(params)}`;
 
-            // Check Cache
+            // Check In-Memory Cache first
+            if (calendarCache.has(cacheKey)) {
+                setEvents(calendarCache.get(cacheKey)!);
+                setLoading(false);
+                return;
+            }
+
+            setLoading(true);
+            setError(null);
+
+            // Check SessionStorage Cache Next
             try {
                 const cached = sessionStorage.getItem(cacheKey);
                 if (cached) {
                     const data = JSON.parse(cached);
+                    calendarCache.set(cacheKey, data); // Pop into memory
                     setEvents(data);
                     setLoading(false);
                     return;
@@ -96,14 +110,17 @@ export const useCalendarEvents = (
                 if (cancelled) return;
 
                 const rawEvents = (response.data.data?.events || []) as Event[];
+
+                // Save to caches
+                calendarCache.set(cacheKey, rawEvents);
                 setEvents(rawEvents);
 
-                // Save to Cache
                 try {
                     sessionStorage.setItem(cacheKey, JSON.stringify(rawEvents));
                 } catch (e) {
                     console.log(e);
                 }
+
 
             } catch (err) {
                 if (!cancelled) {
@@ -120,7 +137,7 @@ export const useCalendarEvents = (
         fetchData();
 
         return () => { cancelled = true; };
-    }, [buildParams]);
+    }, [buildParams, enabled]);
 
     return { events, loading, error };
 };

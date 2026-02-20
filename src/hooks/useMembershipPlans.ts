@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import type { MembershipPlan, MembershipPlanResponse } from '../types/membership';
+import { fetchMembershipPlans } from '../services/membershipService';
+import type { MembershipPlan } from '../types/membership';
 
 interface UseMembershipPlansReturn {
     plans: MembershipPlan[];
@@ -15,14 +14,14 @@ export const useMembershipPlans = (): UseMembershipPlansReturn => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchPlans = async () => {
+        const getPlans = async () => {
             try {
-                // Using the specific URL requested by the user
-                const response = await axios.get<MembershipPlanResponse>('https://mafp.seamlessams.com/api/membership-plans');
-                if (response.data.success) {
-                    setPlans(response.data.data);
+                // Using the unified api service which supports dynamic tenant URLs
+                const data = await fetchMembershipPlans();
+                if (data.success) {
+                    setPlans(data.data);
                 } else {
-                    setError(response.data.message || 'Failed to fetch membership plans');
+                    setError(data.message || 'Failed to fetch membership plans');
                 }
             } catch (err: any) {
                 setError(err.message || 'An error occurred while fetching plans');
@@ -31,7 +30,7 @@ export const useMembershipPlans = (): UseMembershipPlansReturn => {
             }
         };
 
-        fetchPlans();
+        getPlans();
     }, []);
 
     return { plans, loading, error };

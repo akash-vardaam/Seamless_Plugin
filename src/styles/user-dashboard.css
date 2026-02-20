@@ -1,0 +1,3284 @@
+
+#seamless-user-dashboard-section .seamless-user-dashboard {
+    display: flex !important;
+    gap: 20px !important;
+    padding: 0px !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    min-height: 600px !important;
+}
+
+/* Sidebar */
+#seamless-user-dashboard-section .seamless-user-dashboard-sidebar {
+    width: 270px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    flex-shrink: 0 !important;
+    padding: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-card {
+    background: var(--seamless-color-primary) !important;
+    padding: 16px !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-name {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-email {
+    font-size: 13px !important;
+}
+
+/* Navigation */
+#seamless-user-dashboard-section .seamless-user-dashboard-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 8px !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-nav button.seamless-user-dashboard-nav-item,
+#seamless-user-dashboard-section .seamless-user-dashboard-nav a.seamless-user-dashboard-nav-item {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 5px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #333 !important;
+    padding: 8px 12px !important;
+    border-radius: 12px !important;
+    border-left: 3px solid transparent !important;
+    cursor: pointer !important;
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+    font-weight: 400 !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    text-align: left !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-nav button.seamless-user-dashboard-nav-item:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-nav a.seamless-user-dashboard-nav-item:hover {
+    background: #f3f4f9 !important;
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-nav button.seamless-user-dashboard-nav-item.active,
+#seamless-user-dashboard-section .seamless-user-dashboard-nav a.seamless-user-dashboard-nav-item.active {
+    background: var(--seamless-color-primary) !important;
+    color: #fff !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-nav button.seamless-user-dashboard-nav-item svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-nav a.seamless-user-dashboard-nav-item svg {
+    opacity: 0.7 !important;
+    transition: opacity 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-nav button.seamless-user-dashboard-nav-item:hover svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-nav a.seamless-user-dashboard-nav-item:hover svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-nav button.seamless-user-dashboard-nav-item.active svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-nav a.seamless-user-dashboard-nav-item.active svg {
+    opacity: 1 !important;
+}
+
+/* Main Content Area */
+#seamless-user-dashboard-section .seamless-user-dashboard .seamless-user-dashboard-main {
+    flex: 1 !important;
+    min-width: 0 !important;
+    padding: 0px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-main .seamless-user-dashboard-view {
+    display: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-main .seamless-user-dashboard-view.active {
+    display: block !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-view .seamless-user-dashboard-view-title {
+    margin: 0 0 20px 0 !important;
+    font-size: 21px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+/* Summary Grid - Two Cards */
+#seamless-user-dashboard-section .seamless-user-dashboard-main .seamless-user-dashboard-summary-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 3fr !important;
+    gap: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-dashboard-content-container .seamless-user-dashboard-summary-grid-memberships {
+    grid-template-columns: 1fr 1fr !important;
+}
+
+#seamless-event-container #seamless-user-dashboard-section .seamless-user-dashboard-invoice-btn {
+    background-color: var(--seamless-color-primary) !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 8px 18px !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Total Memberships Card */
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-grid .seamless-user-dashboard-summary-card {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-card .seamless-user-dashboard-summary-value {
+    font-size: 42px !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+    line-height: 1 !important;
+    margin-bottom: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-card .seamless-user-dashboard-summary-label {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+}
+
+/* Current Membership Card */
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-grid .seamless-user-dashboard-current-membership-card {
+    background: linear-gradient(135deg, var(--seamless-color-primary) 0%, var(--seamless-color-primary) 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    gap: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-grid .seamless-user-dashboard-current-membership-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    right: -20% !important;
+    width: 200px !important;
+    height: 200px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 50% !important;
+}
+
+#seamless-user-dashboard-section .seamless-dashboard-content-container .seamless-user-dashboard-summary-grid .upgraded::before {
+    right: -10% !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-grid .seamless-user-dashboard-current-membership-header h3 {
+    margin: 0 !important;
+    font-size: 21px !important;
+    line-height: 1.5 !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card .seamless-user-dashboard-badge {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(10px) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 3px 12px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0.5px !important;
+    font-size: 12px !important;
+    line-height: 15px !important;
+}
+
+/* Upgraded Card - Premium Gold Design */
+
+#seamless-user-dashboard-section .upgraded .seamless-user-dashboard-current-membership-header h3 {
+    color: #1a1a1a !important;
+    font-size: 24px !important;
+    line-height: 36px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Upgraded Badge with Sparkles */
+#seamless-user-dashboard-section .upgraded .seamless-upgraded-badge-container {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 10 !important;
+}
+
+#seamless-user-dashboard-section .seamless-upgraded-badge-container .seamless-upgraded-badge {
+    position: relative !important;
+    background: linear-gradient(135deg, rgb(253 236 167) 0%, rgba(255, 255, 255, 0.85) 100%) !important;
+    backdrop-filter: blur(10px) !important;
+    padding: 0px 12px !important;
+    border-radius: 12px !important;
+    border: 2px solid rgba(212, 175, 55, 0.5) !important;
+    box-shadow: 0 4px 0px rgba(0, 0, 0, 0.2) !important;
+}
+
+#seamless-user-dashboard-section .seamless-upgraded-badge .seamless-badge-text {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #c5a028 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    display: inline-block !important;
+    position: relative !important;
+    z-index: 2 !important;
+    line-height: 1 !important;
+}
+
+/* Sparkle Animation */
+#seamless-user-dashboard-section .seamless-upgraded-badge .seamless-badge-sparkle {
+    position: absolute !important;
+    width: 4px !important;
+    height: 4px !important;
+    background: radial-gradient(circle, #fff 0%, #f4d03f 50%, transparent 100%) !important;
+    border-radius: 50% !important;
+    animation: sparkle 2s infinite !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8) !important;
+}
+
+#seamless-user-dashboard-section .seamless-upgraded-badge .seamless-sparkle-1 {
+    top: -8px !important;
+    left: 15% !important;
+    animation-delay: 0s !important;
+}
+
+#seamless-user-dashboard-section .seamless-upgraded-badge .seamless-sparkle-2 {
+    top: 5px !important;
+    right: 10% !important;
+    animation-delay: 0.4s !important;
+}
+
+#seamless-user-dashboard-section .seamless-upgraded-badge .seamless-sparkle-3 {
+    bottom: -5px !important;
+    left: 30% !important;
+    animation-delay: 0.8s !important;
+}
+
+#seamless-user-dashboard-section .seamless-upgraded-badge .seamless-sparkle-4 {
+    top: -5px !important;
+    right: 25% !important;
+    animation-delay: 1.2s !important;
+}
+
+#seamless-user-dashboard-section .seamless-upgraded-badge .seamless-sparkle-5 {
+    bottom: 5px !important;
+    right: 20% !important;
+    animation-delay: 1.6s !important;
+}
+
+@keyframes sparkle {
+
+    0%,
+    100% {
+        opacity: 0 !important;
+        transform: scale(0) !important;
+    }
+
+    50% {
+        opacity: 1 !important;
+        transform: scale(1.5) !important;
+    }
+}
+
+/* Active Badge - Bottom Right */
+#seamless-user-dashboard-section .upgraded .seamless-user-dashboard-badge {
+    position: absolute !important;
+    top: auto !important;
+    bottom: 15px !important;
+    right: 15px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(10px) !important;
+    color: #000 !important;
+    border: 1px solid rgba(154, 154, 154, 0.3) !important;
+    padding: 6px 14px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0.5px !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card .seamless-user-dashboard-current-membership-body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card .seamless-user-dashboard-current-membership-expiry {
+    font-size: 14px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card.upgraded .seamless-user-dashboard-current-membership-expiry {
+    color: rgb(54 54 54 / 80%) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card .seamless-user-dashboard-current-membership-expiry strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card.upgraded .seamless-user-dashboard-current-membership-expiry span {
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card.upgraded .seamless-user-dashboard-current-membership-expiry strong {
+    color: #1a1a1a !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Empty Membership Card */
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-grid .seamless-user-dashboard-empty-membership {
+    background: #f9fafb !important;
+    border: 2px dashed #d1d5db !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-grid .seamless-user-dashboard-empty-membership::before {
+    display: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-membership .seamless-user-dashboard-summary-message {
+    text-align: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-membership .seamless-user-dashboard-summary-message strong {
+    display: block !important;
+    font-size: 16px !important;
+    color: #4a5568 !important;
+    margin-bottom: 4px !important;
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-membership .seamless-user-dashboard-summary-message p {
+    margin: 0 !important;
+    font-size: 14px !important;
+    color: #718096 !important;
+}
+
+/* Tabs Wrapper */
+#seamless-user-dashboard-section .seamless-user-dashboard-view .seamless-user-dashboard-tabs-wrapper {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    overflow: visible !important;
+}
+
+/* Tabs Header */
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-wrapper .seamless-user-dashboard-tabs-header {
+    display: flex !important;
+    gap: 0 !important;
+    background: #f9fafb !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-header button.seamless-user-dashboard-tab {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 16px 24px !important;
+    background: transparent !important;
+    border-radius: 0px !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    cursor: pointer !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-header button.seamless-user-dashboard-tab:hover {
+    color: #1a1a1a !important;
+    border-bottom: 2px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-header button.seamless-user-dashboard-tab.active {
+    color: #1a1a1a !important;
+    border-bottom-color: var(--seamless-primary-color) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tab .seamless-user-dashboard-tab-count {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    padding: 0 6px !important;
+    background: #e5e7eb !important;
+    color: #374151 !important;
+    border-radius: 10px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-header button.seamless-user-dashboard-tab.active .seamless-user-dashboard-tab-count {
+    background: #dbeafe !important;
+    color: #1a1a1a !important;
+}
+
+/* Tabs Content */
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-wrapper .seamless-user-dashboard-tab-content {
+    display: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-wrapper .seamless-user-dashboard-tab-content.active {
+    display: block !important;
+    margin: 30px; background: rgb(250, 250, 250); border: 1px solid rgb(243, 244, 246); padding: 60px; text-align: center; border-radius: 8px;
+}
+
+/* Membership List */
+#seamless-user-dashboard-section .seamless-user-dashboard-tabs-content .seamless-user-dashboard-membership-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-list .seamless-user-dashboard-membership-card {
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    overflow: visible !important;
+    transition: all 0.3s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-card .seamless-user-dashboard-membership-content {
+    position: relative !important;
+    padding: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-content .seamless-user-dashboard-membership-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 5px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-header .seamless-user-dashboard-membership-title {
+    width: auto !important;
+    flex: 1 !important;
+    margin: 0 !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-header .seamless-user-dashboard-badge {
+    flex-shrink: 0 !important;
+    padding: 3px 12px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0.5px !important;
+    font-size: 12px !important;
+    line-height: 15px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-content .seamless-user-dashboard-membership-title {
+    width: 93% !important;
+    margin: 0 !important;
+    font-size: 21px !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+    line-height: 30px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-content .seamless-user-dashboard-membership-actions {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    display: flex !important;
+    flex-direction: row-reverse !important;
+    gap: 10px !important;
+    align-items: center !important;
+    border-radius: 12px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-content .seamless-user-dashboard-membership-body {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-body .seamless-user-dashboard-membership-meta {
+    font-size: 14px !important;
+    color: #4a5568 !important;
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-body .seamless-user-dashboard-membership-meta:last-child {
+    margin-bottom: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-body .seamless-user-dashboard-membership-meta strong {
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-body .seamless-user-dashboard-membership-meta span {
+    font-size: 14px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge {
+    padding: 3px 12px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0.5px !important;
+    border: none !important;
+    line-height: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-active {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+    color: #065f46 !important;
+    border: 1px solid #6ee7b7 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-cancelled {
+    background: linear-gradient(135deg, #ff6f6f 0%, #f33e3e 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #fc4d4d !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-upgraded {
+    background: rgb(245 158 11 / 5%) !important;
+    color: #f59e0b !important;
+    padding: 3px 9px !important;
+    border-radius: 8px !important;
+    border: 1px solid #f59e0b !important;
+    /* box-shadow: 0 2px 0px rgba(0, 0, 0, 0.2); */
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-downgraded {
+    background: rgba(225, 29, 72, 0.05) !important;
+    color: rgb(225, 29, 72) !important;
+    padding: 3px 9px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(225, 29, 72, 0.5) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-list .seamless-user-dashboard-badge-expired {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
+    color: #4b5563 !important;
+    border: 1px solid #d1d5db !important;
+}
+
+/* Three-Dot Menu */
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-container {
+    position: relative !important;
+    display: inline-block !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-button {
+    background: transparent !important;
+    border: 1px solid #d1d5db !important;
+    cursor: pointer !important;
+    padding: 6px 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    color: #6b7280 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-button:hover {
+    background: #f9fafb !important;
+    border-color: #9ca3af !important;
+    color: #374151 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-dropdown {
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    margin-top: 10px !important;
+    background: #ffffff !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    min-width: 150px !important;
+    z-index: 20 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(-10px) !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-container.active .seamless-user-dashboard-menu-dropdown {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding: 10px 14px !important;
+    background: none !important;
+    border: none !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    color: #4b5563 !important;
+    text-align: left !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item:first-child {
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item:last-child {
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item svg {
+    flex-shrink: 0 !important;
+    width: 14px !important;
+    height: 14px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item.seamless-user-dashboard-badge-upgrade svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item.seamless-user-dashboard-badge-downgrade svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item.seamless-user-dashboard-badge-cancel svg {
+    color: #1e1e1e !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item.seamless-user-dashboard-badge-upgrade:hover svg {
+    color: #00a63e !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item.seamless-user-dashboard-badge-downgrade:hover svg {
+    color: #d97706 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-item.seamless-user-dashboard-badge-cancel:hover svg {
+    color: #dc2626 !important;
+}
+
+
+/* Cancelled Membership Notice */
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-cancelled-notice {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    border-radius: 8px !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-cancelled-notice svg {
+    flex-shrink: 0 !important;
+    margin-top: 2px !important;
+    color: #f59e0b !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-cancelled-notice strong {
+    font-weight: 600 !important;
+}
+
+/* Scheduled Downgrade Notice */
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-scheduled-notice {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-scheduled-notice svg {
+    flex-shrink: 0 !important;
+    margin-top: 2px !important;
+    color: #f59e0b !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-scheduled-notice button.seamless-user-dashboard-cancel-scheduled-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #fff !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    border: none !important;
+    font-size: 12px !important;
+    padding: 6px 14px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-scheduled-notice button.seamless-user-dashboard-cancel-scheduled-btn:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+    transform: translateY(0px) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-scheduled-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    flex: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-scheduled-date {
+    font-size: 13px !important;
+    opacity: 0.9 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-scheduled-date strong {
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-scheduled-btn {
+    margin-top: 8px !important;
+    padding: 8px 16px !important;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    align-self: flex-start !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-scheduled-btn:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-scheduled-btn:active {
+    transform: translateY(0) !important;
+}
+
+/* Buttons - Classic Style */
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-btn {
+    padding: 4px 12px !important;
+    border: 1px solid #cbd5e0 !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    line-height: 20px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    text-align: center !important;
+    background: #ffffff !important;
+    color: #2d3748 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-btn:hover {
+    background: #f7fafc !important;
+    border-color: #a0aec0 !important;
+    border: 1px solid var(--seamless-primary-color) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-btn-renew {
+    background: var(--seamless-primary-color) !important;
+    color: #1a1a1a !important;
+    border: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-btn-renew:hover {
+    background: var(--seamless-secondary-color) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-actions .seamless-user-dashboard-btn-edit-profile {
+    background: var(--seamless-primary-color) !important;
+    color: #1a1a1a !important;
+    border: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-actions .seamless-user-dashboard-btn-edit-profile:hover {
+    background: var(--seamless-secondary-color) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-action .seamless-user-dashboard-btn-invoice {
+    background: var(--seamless-primary-color) !important;
+    color: #1a1a1a !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+    text-decoration: none !important;
+    border-radius: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-action .seamless-user-dashboard-btn-invoice:hover {
+    background: var(--seamless-secondary-color) !important;
+    font-weight: inherit !important;
+}
+
+/* Courses Section */
+
+#seamless-user-dashboard-section #seamless-dashboard-courses-container .seamless-user-dashboard-summary-grid {
+    display: grid !important;
+    grid-template-columns: 160px 160px 1fr !important;
+    align-items: stretch !important;
+    gap: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+
+#seamless-user-dashboard-section .seamless-user-dashboard-view .seamless-user-dashboard-section {
+    margin-bottom: 40px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-view .seamless-user-dashboard-section:last-child {
+    margin-bottom: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-section .seamless-user-dashboard-section-title {
+    font-size: 21px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    margin: 0px 0px 20px 0px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tab-content .seamless-user-dashboard-courses-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-courses-grid .seamless-user-dashboard-course-card {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-courses-grid .seamless-user-dashboard-course-card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Course Image */
+#seamless-user-dashboard-section .seamless-user-dashboard-course-card .seamless-user-dashboard-course-image {
+    width: 100% !important;
+    height: 160px !important;
+    overflow: hidden !important;
+    background: #f3f4f6 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-card .seamless-user-dashboard-course-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-card .seamless-user-dashboard-course-image-placeholder {
+    background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-card .seamless-user-dashboard-course-image-placeholder svg {
+    color: #8b5cf6 !important;
+    opacity: 0.6 !important;
+}
+
+/* Course Content */
+#seamless-user-dashboard-section .seamless-user-dashboard-course-card .seamless-user-dashboard-course-content {
+    padding: 16px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-card .seamless-user-dashboard-course-content .seamless-user-dashboard-course-title {
+    margin: 0 0 10px 0 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    line-height: 1.4 !important;
+}
+
+/* Course Progress Section */
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-text {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-courses-grid .seamless-user-dashboard-course-progress-section {
+    margin-bottom: 10px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-bar {
+    width: 100% !important;
+    height: 8px !important;
+    background: #e5e7eb !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-fill {
+    height: 100% !important;
+    background: linear-gradient(90deg, #155dfc 0%, #5568d3 100%) !important;
+    border-radius: 10px !important;
+    transition: width 0.3s ease !important;
+}
+
+/* Current Course Card */
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-card {
+    background: linear-gradient(135deg, var(--seamless-primary-color) 0%, var(--seamless-primary-color) 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 130px !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    right: -20% !important;
+    width: 200px !important;
+    height: 200px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 50% !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 15px !important;
+    z-index: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-header h3 {
+    margin: 0 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    line-height: 1.3 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-status {
+    font-size: 14px !important;
+    color: #fff !important;
+    line-height: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-header a.seamless-user-dashboard-course-continue-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 5px 10px !important;
+    background: transparent !important;
+    backdrop-filter: blur(16px) !important;
+    color: #fff !important;
+    border: 1px solid rgba(154, 154, 154, 0.3) !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-continue-btn:hover {
+    background: var(--seamless-primary-color) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-continue-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-body {
+    z-index: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-card .seamless-user-dashboard-progress-label,
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-card .seamless-user-dashboard-progress-text {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-card .seamless-user-dashboard-progress-bar {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-course-card .seamless-user-dashboard-progress-fill {
+    background: #ffffff !important;
+}
+
+/* Empty Course Card */
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-course-card {
+    background: #f9fafb !important;
+    border: 2px dashed #d1d5db !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-course-content {
+    text-align: center !important;
+    color: #9ca3af !important;
+    line-height: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-course-content svg {
+    width: 40px !important;
+    height: 40px !important;
+    color: #d1d5db !important;
+    margin-bottom: 12px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-course-content p {
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+}
+
+/* Simple Course Info (for included courses without progress) */
+#seamless-user-dashboard-section .seamless-user-dashboard-course-info {
+    margin-bottom: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-lessons-simple {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-lessons-simple svg {
+    width: 16px !important;
+    height: 16px !important;
+    color: #9ca3af !important;
+}
+
+/* Renewal Modal Plan Card */
+#seamless-user-dashboard-section .seamless-user-dashboard-renew-plan-info .seamless-user-dashboard-renew-plan-card {
+    background: #eef2ff !important;
+    border: 2px solid #667eea !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-renew-plan-card .seamless-user-dashboard-renew-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-renew-header .seamless-user-dashboard-renew-plan-name {
+    font-size: 16px !important;
+    line-height: 30px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    margin: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-renew-plan-price {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #667eea !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-renew-plan-price .plan-period {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section span.seamless-user-dashboard-renew-total {
+    color: #059669 !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+/* Info Icon for Subsequent Renewal Price */
+#seamless-user-dashboard-section .seamless-user-dashboard-info-icon {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: help !important;
+    position: relative !important;
+    vertical-align: middle !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-info-icon svg {
+    color: #667eea !important;
+    transition: color 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-info-icon:hover svg {
+    color: #4c51bf !important;
+}
+
+/* Tooltip styling */
+#seamless-user-dashboard-section .seamless-user-dashboard-info-icon::after {
+    content: attr(data-tooltip) !important;
+    position: absolute !important;
+    bottom: 100% !important;
+    left: 50% !important;
+    height: auto !important;
+    width: max-content !important;
+    max-width: 400px !important;
+    transform: translateX(-50%) translateY(-8px) !important;
+    background: #1f2937 !important;
+    color: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    white-space: normal !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+    z-index: 1000 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-info-icon::before {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 100% !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateY(-2px) !important;
+    border: 5px solid transparent !important;
+    border-top-color: #1f2937 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+    z-index: 1000 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-info-icon:hover::after,
+#seamless-user-dashboard-section .seamless-user-dashboard-info-icon:hover::before {
+    opacity: 1 !important;
+    transform: translateX(-50%) translateY(-4px) !important;
+}
+
+/* Continue Button */
+#seamless-user-dashboard-section .seamless-user-dashboard-course-content .seamless-user-dashboard-course-continue {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    color: #155dfc !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-content .seamless-user-dashboard-course-continue:hover {
+    color: #5568d3 !important;
+}
+
+/* Completed Badge */
+#seamless-user-dashboard-section .seamless-user-dashboard-course-content .seamless-user-dashboard-course-completed {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #059669 !important;
+    text-decoration: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-content .seamless-user-dashboard-course-completed svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-course-content .seamless-user-dashboard-course-continue svg {
+    width: 14px !important;
+    height: 14px !important;
+    transition: transform .2s !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-content .seamless-user-dashboard-course-completed:hover svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-course-content .seamless-user-dashboard-course-continue:hover svg {
+    transform: translateX(2px) !important;
+}
+
+/* Empty State */
+#seamless-user-dashboard-section .seamless-user-dashboard-tab-content .seamless-user-dashboard-empty {
+    padding: 40px 20px !important;
+    text-align: center !important;
+    color: #6b7280 !important;
+    font-size: 15px !important;
+    background: #f9fafb !important;
+    border-radius: 8px !important;
+    border: 1px solid #e5e7eb !important;
+    margin: 20px !important;
+}
+
+/* Orders Table */
+#seamless-user-dashboard-section .seamless-user-dashboard-view .seamless-user-dashboard-orders-container {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-orders-container .seamless-user-dashboard-order-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    margin: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-orders-container table.seamless-user-dashboard-order-table thead tr th {
+    background: #f9fafb !important;
+    border: none !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    padding: 12px 16px !important;
+    align-content: center !important;
+    text-align: left !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    color: #374151 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-orders-container table.seamless-user-dashboard-order-table tbody tr {
+    border-bottom: 1px solid #e5e7eb !important;
+    transition: background 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-orders-container table.seamless-user-dashboard-order-table tbody tr:hover {
+    background: #f9fafb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-orders-container table.seamless-user-dashboard-order-table tbody tr:last-child {
+    border-bottom: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-orders-container table.seamless-user-dashboard-order-table td {
+    border: none !important;
+    padding: 16px !important;
+    font-size: 14px !important;
+    color: #1a1a1a !important;
+    vertical-align: middle !important;
+}
+
+/* Column widths */
+#seamless-user-dashboard-section .seamless-user-dashboard-order-table .seamless-user-dashboard-col-customer {
+    width: 15% !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-order-table .seamless-user-dashboard-col-items {
+    width: 8% !important;
+    text-align: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-order-table .seamless-user-dashboard-col-products {
+    width: 25% !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-order-table .seamless-user-dashboard-col-status {
+    width: 12% !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-order-table .seamless-user-dashboard-col-total {
+    width: 15% !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-order-table .seamless-user-dashboard-col-date {
+    width: 15% !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-order-table .seamless-user-dashboard-col-action {
+    width: 10% !important;
+    text-align: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-order-row .seamless-user-dashboard-ellipsis {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 240px !important;
+    white-space: normal !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-items .seamless-user-dashboard-count-badge {
+    font-size: 13px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-status .seamless-user-dashboard-chip {
+    display: inline-block !important;
+    padding: 4px 12px !important;
+    border-radius: 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-status .seamless-user-dashboard-chip-success {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-status .seamless-user-dashboard-chip-warning {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-status .seamless-user-dashboard-chip-danger {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-status .seamless-user-dashboard-chip-neutral {
+    background: #f3f4f6 !important;
+    color: #6b7280 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-total .seamless-user-dashboard-strike {
+    text-decoration: line-through !important;
+    color: #9ca3af !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-total .seamless-user-dashboard-amount-green {
+    color: #059669 !important;
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-total .seamless-user-dashboard-refunded {
+    font-size: 11px !important;
+    color: #dc2626 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-col-total .seamless-user-dashboard-muted {
+    color: #6b7280 !important;
+}
+
+/* Pagination */
+#seamless-user-dashboard-section .seamless-user-dashboard-orders-container .seamless-user-dashboard-pagination {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 16px 20px !important;
+    background: #f9fafb !important;
+    border-top: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-memberships-container .seamless-user-dashboard-pagination,
+#seamless-user-dashboard-section .seamless-user-dashboard-courses-container .seamless-user-dashboard-pagination {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 16px 20px !important;
+    background: #f9fafb !important;
+    border-top: 1px solid #e5e7eb !important;
+    border-radius: 0px 0px 12px 12px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-pagination .seamless-user-dashboard-pagination-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 8px 16px !important;
+    background: #fff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-pagination .seamless-user-dashboard-pagination-btn:hover:not(:disabled) {
+    background: #f9fafb !important;
+    border: 1px solid #9ca3af !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-pagination .seamless-user-dashboard-pagination-btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    border: 1px solid #9ca3af !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-pagination .seamless-user-dashboard-pagination-info {
+    font-size: 14px !important;
+    color: #6b7280 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-pagination .seamless-user-dashboard-current-page,
+#seamless-user-dashboard-section .seamless-user-dashboard-pagination .seamless-user-dashboard-total-pages {
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+/* Profile Section - Inline Editing */
+#seamless-user-dashboard-section .seamless-user-dashboard-view .seamless-user-dashboard-profile-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-container .seamless-user-dashboard-profile-section {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 24px 30px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-section .seamless-user-dashboard-profile-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-header .seamless-user-dashboard-section-title {
+    margin: 0 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+/* Edit Button */
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-header .seamless-user-dashboard-btn-edit {
+    background: var(--seamless-primary-color) !important;
+    color: #fff !important;
+    border: 1px solid var(--seamless-primary-color) !important;
+    padding: 8px 20px !important;
+    border-radius: 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-header .seamless-user-dashboard-btn-edit:hover {
+    color: var(--seamless-primary-color) !important;
+    background: transparent !important;
+    border: 1px solid var(--seamless-primary-color) !important;
+}
+
+/* Profile Grid */
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-grid,
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-edit-mode .seamless-user-dashboard-profile-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-grid:last-child {
+    margin-bottom: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-field {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-field-full {
+    grid-column: 1 / -1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-field label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-field .seamless-user-dashboard-profile-value,
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-edit-mode .seamless-user-dashboard-profile-field .seamless-user-dashboard-profile-value {
+    font-size: 15px !important;
+    color: #1a1a1a !important;
+}
+
+/* Profile Separator */
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-separator,
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-edit-mode .seamless-user-dashboard-profile-separator {
+    margin: 24px 0 20px 0 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-subsection-title,
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-edit-mode .seamless-user-dashboard-subsection-title {
+    margin: 0 !important;
+    padding-bottom: 10px !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+/* Form Groups in Edit Mode */
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group .required {
+    color: #dc2626 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group input,
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group select {
+    padding: 10px 14px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    color: #1a1a1a !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group input:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group select:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Profile Actions (Save/Cancel buttons) */
+#seamless-user-dashboard-section .seamless-user-dashboard-edit-profile-form .seamless-user-dashboard-profile-actions {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-end !important;
+    margin-top: 20px !important;
+    padding-top: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-actions .seamless-user-dashboard-btn-cancel,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-cancel,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-keep,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-keep-scheduled {
+    background: #fff !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-actions .seamless-user-dashboard-btn-cancel:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-cancel:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-keep:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-keep-scheduled:hover {
+    background: #f9fafb !important;
+    border: 1px solid #9ca3af !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-actions button.seamless-user-dashboard-modal-confirm-cancel,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-actions button.seamless-user-dashboard-modal-confirm-cancel-scheduled {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #fff !important;
+    border: 1px solid #ef4444 !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-actions button.seamless-user-dashboard-modal-confirm-cancel:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-actions button.seamless-user-dashboard-modal-confirm-cancel-scheduled:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-actions .seamless-user-dashboard-btn-save,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-upgrade,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-renew {
+    background: var(--seamless-primary-color) !important;
+    color: #fff !important;
+    border: 1px solid !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-actions .seamless-user-dashboard-btn-save:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-upgrade:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-renew:hover {
+    background: transparent !important;
+    border: 1px solid var(--seamless-primary-color) !important;
+    color: var(--seamless-primary-color) !important;
+}
+
+/* Form Message */
+#seamless-user-dashboard-section .seamless-user-dashboard-form-message {
+    padding: 12px 16px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    margin-bottom: 16px !important;
+    display: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-message.success {
+    display: block !important;
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+    border: 1px solid #a7f3d0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-message.error {
+    display: block !important;
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border: 1px solid #fecaca !important;
+}
+
+/* Modal */
+#seamless-user-dashboard-section .seamless-user-dashboard-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 9999 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-header {
+    padding: 20px 30px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-header h3 {
+    margin: 0 !important;
+    font-size: 20px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-close {
+    background: none !important;
+    border: none !important;
+    font-size: 28px !important;
+    color: #9ca3af !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Form */
+#seamless-user-dashboard-section .seamless-user-dashboard-edit-profile-form {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group label {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group .required {
+    color: #dc2626 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group input,
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group select {
+    background: transparent !important;
+    padding: 10px 14px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    color: #1a1a1a !important;
+    transition: border-color 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group input:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-form-group select:focus {
+    outline: none !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-message {
+    display: none !important;
+    padding: 12px 16px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    margin-top: 10px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-message-success {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+    border: 1px solid #a7f3d0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-message-error {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border: 1px solid #fecaca !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-primary {
+    background: #2563eb !important;
+    color: #fff !important;
+    border-color: #2563eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-primary:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-secondary {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+    border-color: #d1d5db !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-secondary:hover {
+    background: #e5e7eb !important;
+}
+
+/* Responsive */
+@media (max-width: 1250px) {
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-order-header,
+    #seamless-user-dashboard-section .seamless-user-dashboard-order-card {
+        grid-template-columns: 1fr 0.5fr 1.5fr 1fr 1fr 1fr 0.8fr !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-orders-container .seamless-user-dashboard-order-table-container {
+        overflow-x: scroll !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #seamless-user-dashboard-section .seamless-user-dashboard {
+        flex-direction: column !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-sidebar {
+        width: 100% !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-main .seamless-user-dashboard-summary-grid,
+    #seamless-user-dashboard-section #seamless-dashboard-courses-container .seamless-user-dashboard-summary-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-nav {
+        flex-direction: column !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-nav-item {
+        white-space: nowrap !important;
+        border-left: none !important;
+        border-bottom: 3px solid transparent !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-nav-item.active {
+        border-left: none !important;
+        border-bottom-color: #fff !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-summary {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 20px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-tabs {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-tab {
+        white-space: nowrap !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-tabs-wrapper .seamless-user-dashboard-tabs-header {
+        flex-direction: column !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-membership-content .seamless-user-dashboard-membership-body {
+        align-items: flex-start !important;
+        flex-direction: column !important;
+        gap: 0px !important;
+        margin-top: 10px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-courses-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Responsive Table - Horizontal scroll on mobile */
+    #seamless-user-dashboard-section .seamless-user-dashboard-orders-container .seamless-user-dashboard-order-table-container {
+        overflow-x: scroll !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-col-items,
+    #seamless-user-dashboard-section .seamless-user-dashboard-col-products,
+    #seamless-user-dashboard-section .seamless-user-dashboard-col-status,
+    #seamless-user-dashboard-section .seamless-user-dashboard-col-total,
+    #seamless-user-dashboard-section .seamless-user-dashboard-col-date,
+    #seamless-user-dashboard-section .seamless-user-dashboard-col-action {
+        white-space: nowrap !important;
+        width: auto !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-col-customer {
+        min-width: 230px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-order-table {
+        min-width: 800px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-order-table thead th {
+        position: sticky !important;
+        top: 0 !important;
+        background: #f9fafb !important;
+        z-index: 1 !important;
+    }
+
+    /* Profile Grid Responsive */
+    #seamless-user-dashboard-section .seamless-user-dashboard-profile-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-info-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-form-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-content {
+        width: 95% !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-pagination {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-pagination-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-profile-container .seamless-user-dashboard-profile-section {
+        padding: 20px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-profile-view-mode .seamless-user-dashboard-profile-grid,
+    #seamless-user-dashboard-section .seamless-user-dashboard-profile-edit-mode .seamless-user-dashboard-profile-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge {
+        font-size: 10px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-membership-content .seamless-user-dashboard-membership-actions {
+        top: 15px !important;
+        right: 15px !important;
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        justify-content: space-around !important;
+        gap: 50px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-membership-content .seamless-user-dashboard-membership-title {
+        width: 70% !important;
+        font-size: 20px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-membership-body .seamless-user-dashboard-membership-meta {
+        font-size: 13px !important;
+        line-height: 1.8 !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-membership-body .seamless-user-dashboard-membership-meta span {
+        font-size: 13px !important;
+    }
+
+    #seamless-user-dashboard-section .upgraded .seamless-user-dashboard-badge {
+        right: 10px !important;
+        bottom: 10px !important;
+    }
+
+    #seamless-user-dashboard-section .upgraded .seamless-user-dashboard-current-membership-header h3 {
+        font-size: 21px !important;
+        width: 70% !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-dashboard-content-container .seamless-user-dashboard-summary-grid .upgraded::before {
+        right: -35% !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-upgraded-badge .seamless-badge-text {
+        font-size: 10px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card .seamless-user-dashboard-current-membership-expiry,
+    #seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card .seamless-user-dashboard-current-membership-expiry strong {
+        font-size: 12px !important;
+    }
+}
+
+/* Notice */
+#seamless-user-dashboard-section .seamless-user-dashboard-notice,
+#seamless-user-dashboard-section .seamless-user-dashboard-error {
+    padding: 20px !important;
+    background: #f9fafb !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    text-align: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-error {
+    background: #fee2e2 !important;
+    border-color: #fecaca !important;
+    color: #991b1b !important;
+}
+
+/* Upgrade/Downgrade Badge Buttons */
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-upgrade,
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-downgrade,
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-cancel {
+    cursor: pointer !important;
+    border: none !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    border-radius: 12px !important;
+    line-height: 1.8 !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-upgrade:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-downgrade:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-cancel:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer button.seamless-user-dashboard-modal-renew:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-container button.seamless-user-dashboard-menu-button:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-pagination .seamless-user-dashboard-pagination-btn:focus,
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-btn:focus {
+    outline: none !important;
+    border: none !important;
+    background-color: transparent !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-upgrade {
+    /* border-top-left-radius: 8px; */
+    /* border-top-right-radius: 8px; */
+    background: #fff !important;
+    color: #1e1e1e !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-upgrade:hover {
+    background: #f9fafb !important;
+    border: none !important;
+    color: #00a63e !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-downgrade {
+    position: relative !important;
+    background: #fff !important;
+    color: #1e1e1e !important;
+    z-index: 10 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-downgrade:hover {
+    background: #f9fafb !important;
+    border: none !important;
+    color: #d87700 !important;
+}
+
+/* Upgrade Modal */
+#seamless-user-dashboard-section .seamless-user-dashboard-upgrade-modal,
+#seamless-user-dashboard-section .seamless-user-dashboard-renew-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 10000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-container {
+    position: relative !important;
+    background: #fff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    max-width: 900px !important;
+    width: 90% !important;
+    max-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 24px 30px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-title {
+    margin: 0 !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-close {
+    background: none !important;
+    border: none !important;
+    font-size: 32px !important;
+    color: #9ca3af !important;
+    cursor: pointer !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 24px 30px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-columns {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 30px !important;
+    margin-top: 15px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-renew-modal .seamless-user-dashboard-modal-columns {
+    margin-top: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-header button.seamless-user-dashboard-modal-close {
+    font-size: 18px !important;
+    line-height: 1 !important;
+    padding: 5px 20px !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--seamless-primary-color) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-header button.seamless-user-dashboard-modal-close:hover {
+    background: transparent !important;
+    color: var(--seamless-primary-color) !important;
+    border: 1px solid var(--seamless-primary-color) !important;
+}
+
+/* Left Column - Plans List */
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-left h3,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-right h3 {
+    margin: 0 0 20px 0 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    line-height: 30px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plans-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card {
+    padding: 16px !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    background: #fff !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card:hover {
+    border-color: #667eea !important;
+    background: #f9fafb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card.selected {
+    border-color: #667eea !important;
+    background: #eef2ff !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card .seamless-user-dashboard-plan-card-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card-header .seamless-user-dashboard-plan-card-name {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card-price {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #667eea !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card-price .plan-period {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-card-description {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
+/* Proration Breakdown */
+#seamless-user-dashboard-section .seamless-user-dashboard-proration {
+    background: #f9fafb !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-proration h4 {
+    margin: 0 0 16px 0 !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-proration-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 0 !important;
+    font-size: 14px !important;
+    color: #374151 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-proration-item:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-proration-total {
+    padding-top: 16px !important;
+    border-top: 1px solid #e5e7eb !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-proration-amount {
+    color: #059669 !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-proration-note {
+    margin: 20px 0 0 0 !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    color: #6b7280 !important;
+    font-style: italic !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-remaining-days {
+    font-weight: 600 !important;
+    color: #374151 !important;
+}
+
+/* Right Column - Plan Perks */
+#seamless-user-dashboard-section .seamless-user-dashboard-plan-perks {
+    display: flex !important;
+    flex-direction: column !important;
+    background: #eef2ff !important;
+    padding: 10px !important;
+    border-radius: 12px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-perks {
+    color: #9ca3af !important;
+    font-style: italic !important;
+    text-align: center !important;
+    padding: 40px 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-icon {
+    flex-shrink: 0 !important;
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-icon.included {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-icon.excluded {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-text {
+    flex: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin: 0 0 4px 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-value {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    margin: 0 !important;
+}
+
+/* Modal Footer */
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-footer {
+    display: flex !important;
+    justify-content: flex-start !important;
+    flex-direction: row-reverse !important;
+    gap: 12px !important;
+    padding: 20px 30px !important;
+    border-top: 1px solid #e5e7eb !important;
+    background: #f9fafb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-upgrade:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-container {
+        width: 95% !important;
+        max-height: 95vh !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-columns {
+        grid-template-columns: 1fr !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-header {
+        padding: 20px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-body {
+        padding: 20px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-footer {
+        padding: 16px 20px !important;
+        flex-direction: column-reverse !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-footer .seamless-user-dashboard-btn {
+        width: 100% !important;
+    }
+}
+
+/* Redesigned Perk Items */
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 15px !important;
+    transition: all 0.2s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-highlight {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+    border-left: 3px solid #f59e0b !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    margin-bottom: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-highlight:hover {
+    background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-value {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #374151 !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-item.excluded .seamless-user-dashboard-perk-value {
+    color: #9ca3af !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-icon {
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    margin-top: 2px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-icon svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-perk-text {
+    flex: 1 !important;
+}
+
+/* Upgraded Membership Card Styling */
+#seamless-user-dashboard-section .seamless-user-dashboard-summary-grid .seamless-user-dashboard-current-membership-card.upgraded {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+    /* border-left: 4px solid #f59e0b; */
+    position: relative !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-current-membership-card.upgraded h3.seamless-user-dashboard-current-membership-header {
+    color: #000 !important;
+}
+
+/* Scheduled Downgrade Info */
+#seamless-user-dashboard-section .seamless-user-dashboard-scheduled-info {
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-info-message {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: flex-start !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-info-message svg {
+    width: 18px !important;
+    height: 18px !important;
+    color: #3b82f6 !important;
+    flex-shrink: 0 !important;
+    margin-top: 2px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-info-message p {
+    margin: 0 !important;
+    font-size: 14px !important;
+    color: #1447e6 !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-actions {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-start !important;
+    flex-direction: row-reverse !important;
+}
+
+@media (max-width: 768px) {
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-note {
+        font-size: 12px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-modal-actions {
+        flex-direction: column-reverse !important;
+    }
+}
+
+/* Cancel Membership Button */
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-cancel {
+    /* border-radius: 8px; */
+    background: #fff !important;
+    color: #1e1e1e !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-actions .seamless-user-dashboard-badge-cancel:hover {
+    background: #f9fafb !important;
+    border: none !important;
+    color: #dc2626 !important;
+}
+
+/* Cancel Modal - Using Same Structure as Upgrade Modal */
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 99999 !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-menu-container button.seamless-user-dashboard-menu-button {
+    background: #fff !important;
+    color: #000000 !important;
+    padding: 0px !important;
+    margin: 0px !important;
+    border: none !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-container {
+    position: relative !important;
+    background: #fff !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    max-width: 600px !important;
+    width: 90% !important;
+    max-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 24px 30px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-header h2 {
+    margin: 0 !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-close {
+    background: none !important;
+    border: none !important;
+    font-size: 32px !important;
+    color: #9ca3af !important;
+    cursor: pointer !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-close:hover {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 24px 30px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-content {
+    padding: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-question {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    color: #374151 !important;
+    margin-bottom: 24px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-policy p:last-child {
+    margin-bottom: 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-refund {
+    color: #059669 !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-refund strong {
+    color: #047857 !important;
+    font-size: 16px !important;
+}
+
+/* Period End Cancellation */
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-no-refund {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    background: #fef2f2 !important;
+    border: 1px solid #fecaca !important;
+    border-radius: 8px !important;
+    margin-bottom: 16px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-no-refund svg {
+    flex-shrink: 0 !important;
+    color: #dc2626 !important;
+    margin-top: 2px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-no-refund p {
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    color: #991b1b !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-period-end,
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-policy {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-period-end svg,
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-policy svg {
+    flex-shrink: 0 !important;
+    color: #193cb8 !important;
+    margin-top: 2px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-policy h4 {
+    margin: 0 0 8px 0 !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    font-weight: 600 !important;
+    color: #193cb8 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-period-end p,
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-policy p {
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: #1447e6 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-warnings {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-warning {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 12px !important;
+    background: #fef2f2 !important;
+    border: 1px solid #fecaca !important;
+    border-radius: 6px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-warning svg {
+    flex-shrink: 0 !important;
+    color: #dc2626 !important;
+    margin-top: 2px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-warning span {
+    font-size: 14px !important;
+    color: #991b1b !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-footer {
+    padding: 20px 30px !important;
+    border-top: 1px solid #e5e7eb !important;
+    background: #f9fafb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-actions {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-end !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-danger:disabled {
+    background: #9ca3af !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Cancel Scheduled Change Modal Warning */
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-warning {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-warning svg {
+    color: #f59e0b !important;
+    margin-bottom: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-warning p {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    color: #374151 !important;
+    margin: 0 !important;
+    max-width: 500px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-secondary,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-keep {
+    background: #fff !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-secondary:hover,
+#seamless-user-dashboard-section .seamless-user-dashboard-modal-keep:hover {
+    background: #f3f4f6 !important;
+    border-color: #9ca3af !important;
+}
+
+@media (max-width: 768px) {
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-container {
+        width: 95% !important;
+        max-height: 95vh !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-header,
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-body,
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-footer {
+        padding: 16px 20px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-actions {
+        flex-direction: column !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-modal .seamless-user-dashboard-modal-actions button {
+        width: 100% !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-policy {
+        padding: 12px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-question {
+        font-size: 15px !important;
+    }
+
+    #seamless-user-dashboard-section .seamless-user-dashboard-cancel-warning {
+        padding: 10px !important;
+    }
+}
+
+/* Extracted inline styles from React components */
+#seamless-user-dashboard-section .seamless-user-dashboard-loading {
+    padding: 80px 20px !important;
+    text-align: center !important;
+    min-height: 600px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-react-layout {
+    padding: 40px 20px !important;
+    max-width: 1300px !important;
+    margin: 0 auto !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-container {
+    background: #fff !important;
+    padding: 30px !important;
+    border-radius: 12px !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-profile-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-bottom: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-section-title {
+    margin: 0 !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-edit-btn {
+    background: var(--seamless-color-primary) !important;
+    border: 1px solid #d1d5db !important;
+    padding: 6px 16px !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    color: #fff !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-grid-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-grid-2.margin-bottom-30 {
+    margin-bottom: 30px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-grid-item-span-2 {
+    grid-column: span 2 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-label-text {
+    color: #6b7280 !important;
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-value-text {
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-subtitle {
+    margin-top: 30px !important;
+    margin-bottom: 20px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    border-top: 1px solid #e5e7eb !important;
+    padding-top: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-input {
+    width: 100% !important;
+    padding: 8px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-form-actions {
+    display: flex !important;
+    gap: 10px !important;
+    justify-content: flex-start !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-primary {
+    background: var(--seamless-primary-color) !important;
+    color: #1a1a1a !important;
+    padding: 10px 20px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-btn-secondary {
+    background: #f3f4f6 !important;
+    color: #374151 !important;
+    padding: 10px 20px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-text {
+    color: #64748b !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-membership-card {
+    margin-bottom: 16px !important;
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-flex-between {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-flex-center {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-card-title {
+    margin: 0 !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-badge.seamless-user-dashboard-badge-active {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+    padding: 4px 10px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-expiry-info {
+    margin-top: 12px !important;
+    color: #64748b !important;
+    font-size: 14px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-expiry-info strong {
+    color: #0f172a !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-card {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tab-content-grid {
+    padding: 20px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-title {
+    margin: 0 0 10px 0 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    color: #ffffff !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-course-date {
+    color: #64748b !important;
+    font-size: 13px !important;
+    margin-bottom: 16px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-bar-bg {
+    width: 100% !important;
+    height: 8px !important;
+    background: #e2e8f0 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-fill {
+    height: 100% !important;
+    background: var(--seamless-primary-color) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-fill.completed {
+    background: #10b981 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-text {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-top: 8px !important;
+    font-size: 12px !important;
+    color: #ffffff !important;
+    font-weight: bold !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-status-text {
+    color: var(--seamless-primary-color) !important;
+}
+#seamless-user-dashboard-section .seamless-user-dashboard-status-text.completed {
+    color: #10b981 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table-wrapper {
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    text-align: left !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table thead {
+    background: #f9fafb !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table th {
+    padding: 16px !important;
+    font-size: 14px !important;
+    color: #6b7280 !important;
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td {
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 16px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.empty-message {
+    text-align: center !important;
+    color: #64748b !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.order-number {
+    font-weight: bold !important;
+    color: var(--seamless-primary-color) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.order-date {
+    color: #4b5563 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.order-total {
+    font-weight: bold !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table .seamless-user-dashboard-badge-completed {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tab-content-padded {
+    padding: 20px !important;
+}
+
+/* Inline styles moved from UserDashboardView.tsx */
+
+#seamless-user-dashboard-section .seamless-user-dashboard-expired-message {
+    text-align: center !important;
+    padding: 40px 0 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-badge-expired {
+    background-color: #f3f4f6 !important;
+    color: #6b7280 !important;
+}
+
+#seamless-user-dashboard-section .seamless-course-in-progress-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    justify-content: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-text {
+    margin-top: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-icon {
+    margin: 0 auto 10px !important;
+    display: block !important;
+    color: #9ca3af !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tab-content-no-padding {
+    padding: 0px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-state {
+    margin: 30px !important;
+    background: #fafafa !important;
+    border: 1px solid #f3f4f6 !important;
+    padding: 60px !important;
+    text-align: center !important;
+    border-radius: 8px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-empty-state .seamless-user-dashboard-empty-text {
+    font-size: 15px !important;
+    color: #6b7280 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-tab-content-section {
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-bar-bg {
+    background-color: #e5e7eb !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-fill {
+    background-color: var(--seamless-color-primary) !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-progress-text-value {
+    color: #1a1a1a !important;
+    font-weight: 500 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table-wrapper {
+    border: 1px solid #f3f4f6 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    text-align: left !important;
+    background-color: #fff !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table thead tr {
+    border-bottom: 1px solid #f3f4f6 !important;
+    background-color: #fff !important;
+    font-size: 14px !important;
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table th, 
+#seamless-user-dashboard-section .seamless-user-dashboard-table td {
+    padding: 20px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table tbody tr {
+    border-bottom: 1px solid #f3f4f6 !important;
+    background-color: #fafafa !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.seamless-user-dashboard-table-empty {
+    padding: 40px !important;
+    text-align: center !important;
+    color: #6b7280 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.customer-cell {
+    color: #4b5563 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td {
+    color: #4b5563 !important;
+    font-size: 14px !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table th.text-center,
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.text-center {
+    text-align: center !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-badge-completed {
+    display: inline-block !important;
+    background-color: #dcfce7 !important;
+    color: #059669 !important;
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table td.order-total-cell {
+    color: #059669 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+#seamless-user-dashboard-section .seamless-user-dashboard-table .order-total-flex {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}

@@ -132,7 +132,7 @@
     display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
-    margin-bottom: 40px !important;
+    margin-bottom: 25px !important;
     flex-grow: 1 !important;
 }
 
@@ -239,8 +239,8 @@
     font-weight: 400 !important;
 }
 
-@media (max-width: 768px) {
+@media screen and (min-width: 450px) and (max-width: 768px) {
     #seamless-membership-section .seamless-plans-grid {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr 1fr !important;
     }
 }

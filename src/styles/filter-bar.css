@@ -69,7 +69,7 @@
 .seamless-filter-controls-row {
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
-  gap: var(--seamless-spacing-3) !important;
+  gap: 25px !important;
   align-items: center !important;
   width: 100% !important;
 }
@@ -105,7 +105,6 @@
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
-  max-width: 240px !important;
 }
 
 /* TEXT truncates */

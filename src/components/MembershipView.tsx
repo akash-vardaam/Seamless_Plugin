@@ -104,7 +104,7 @@ export const MembershipListView: React.FC = () => {
 
                         <div className="seamless-plan-footer">
                             <a
-                                href={`${siteUrl.replace(/\/$/, '')}/${plan.id}`}
+                                href={`${siteUrl.replace(/\/$/, '')}/memberships/${plan.id}`}
                                 className="seamless-plan-cta"
                             >
                                 GET STARTED

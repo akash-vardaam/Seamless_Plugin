@@ -10,12 +10,14 @@
   height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
-  transition: box-shadow var(--seamless-transition-normal) !important;
-  box-shadow: var(--seamless-shadow-md) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid #f1f5f9 !important;
 }
 
 .seamless-card:hover {
-  box-shadow: var(--seamless-shadow-xl) !important;
+  transform: translateY(-8px) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01) !important;
 }
 
 .seamless-card-image-container {
@@ -36,9 +38,7 @@
   transition: transform var(--seamless-transition-normal) !important;
 }
 
-.seamless-card:hover .seamless-card-image {
-  transform: scale(1.05) !important;
-}
+
 
 .seamless-card-content {
   padding: var(--seamless-spacing-6) !important;
@@ -132,9 +132,7 @@
   transition: transform var(--seamless-transition-normal) !important;
 }
 
-.seamless-card-list:hover .seamless-card-list-image-img {
-  transform: scale(1.05) !important;
-}
+
 
 .seamless-card-list-no-image {
   color: var(--seamless-color-gray-400) !important;
