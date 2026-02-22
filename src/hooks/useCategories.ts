@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import api from '../services/api';
+import { fetchCategories as fetchCategoriesApi } from '../services/eventService';
 import type { Category } from '../types/event';
 
 interface ApiCategory {
@@ -27,7 +27,7 @@ export const useCategories = (): UseCategoriesReturn => {
             try {
                 setLoading(true);
                 // Fetch categories from the new endpoint
-                const response = await api.get<any>('/categories');
+                const response = await fetchCategoriesApi();
 
                 console.log('Categories API Response:', response.data);
 

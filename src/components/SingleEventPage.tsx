@@ -3,7 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { Calendar, Clock, MapPin, Users, Check } from 'lucide-react';
 import { useSingleEvent } from '../hooks/useSingleEvent';
 import { SeamlessAccordion } from './SeamlessAccordion';
+
 import type { Event } from '../types/event';
+import { LoadingSpinner } from './LoadingSpinner';
 
 export const SingleEventPage: React.FC = () => {
     const { slug: paramSlug } = useParams<{ slug: string }>();
@@ -30,7 +32,7 @@ export const SingleEventPage: React.FC = () => {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (calendarDropdownRef.current && !calendarDropdownRef.current.contains(event.target as Node)) {
+            if (calendarDropdownRef.current && !calendarDropdownRef.current.contains(event?.target as Node)) {
                 setCalendarDropdownOpen(false);
             }
         };
@@ -46,9 +48,47 @@ export const SingleEventPage: React.FC = () => {
         };
     }, [calendarDropdownOpen]);
 
-    const { event, loading, error } = useSingleEvent(slug);
+    const isGroupEvent = window.location.pathname.includes('/group-event/');
+    const { event, loading, error } = useSingleEvent(slug, isGroupEvent);
 
     // Date/Time Formatters
+    const formatEventDateRange = (startStr: string, endStr: string) => {
+        if (!startStr) return '';
+        try {
+            const start = new Date(startStr);
+            const end = endStr ? new Date(endStr) : start;
+
+            const isSameDay = start.toDateString() === end.toDateString();
+            const startWeekday = start.toLocaleDateString('en-US', { weekday: 'long' });
+            const startMonth = start.toLocaleDateString('en-US', { month: 'long' });
+            const startDay = start.getDate();
+            const startYear = start.getFullYear();
+
+            if (isSameDay) {
+                return `${startWeekday}, ${startMonth} ${startDay}, ${startYear}`;
+            }
+
+            const endWeekday = end.toLocaleDateString('en-US', { weekday: 'long' });
+            
+            // Check if same month
+            if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+                const endDay = end.getDate();
+                return `${startWeekday} - ${endWeekday}, ${startMonth} ${startDay} - ${endDay}, ${startYear}`;
+            }
+            // If different month but same year
+            if (start.getFullYear() === end.getFullYear()) {
+                 const endMonth = end.toLocaleDateString('en-US', { month: 'long' });
+                 const endDay = end.getDate();
+                 return `${startWeekday} - ${endWeekday}, ${startMonth} ${startDay} - ${endMonth} ${endDay}, ${startYear}`;
+            }
+            
+            return `${start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'})} - ${end.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'})}`;
+        } catch {
+            return startStr;
+        }
+    };
+    
+    // For specific date mapping logic later on in schedule where we just need "Mar 04, 2026"
     const getFormattedDate = (dateStr: string) => {
         if (!dateStr) return '';
         try {
@@ -75,7 +115,7 @@ export const SingleEventPage: React.FC = () => {
             };
             const start = new Date(startStr).toLocaleTimeString('en-US', options);
             const end = endStr ? new Date(endStr).toLocaleTimeString('en-US', options) : '';
-            return `${start}${end ? ` – ${end}` : ''} CST`;
+            return `${start}${end ? ` – ${end}` : ''} CDT`;
         } catch {
             return '';
         }
@@ -90,7 +130,7 @@ export const SingleEventPage: React.FC = () => {
     const getCalendarDetails = (evt: Event) => {
         const title = encodeURIComponent(evt.title);
         const details = encodeURIComponent(evt.description.replace(/<[^>]+>/g, ''));
-        const location = encodeURIComponent(`${evt.venue.name}, ${evt.venue.address_line_1}, ${evt.venue.city}, ${evt.venue.state} ${evt.venue.zip_code}`);
+        const location = encodeURIComponent(`${evt.venue?.name}, ${evt.venue?.address_line_1}, ${evt.venue?.city}, ${evt.venue?.state} ${evt.venue?.zip_code}`);
         const start = formatCalendarDate(evt.start_date);
         const end = formatCalendarDate(evt.end_date);
         return { title, details, location, start, end };
@@ -99,7 +139,7 @@ export const SingleEventPage: React.FC = () => {
     const generateICSFile = (evt: Event) => {
         const { start, end } = getCalendarDetails(evt);
         const description = evt.description.replace(/<[^>]+>/g, '');
-        const location = `${evt.venue.name}, ${evt.venue.address_line_1}, ${evt.venue.city}, ${evt.venue.state} ${evt.venue.zip_code}`;
+        const location = `${evt.venue?.name}, ${evt.venue?.address_line_1}, ${evt.venue?.city}, ${evt.venue?.state} ${evt.venue?.zip_code}`;
 
         const icsContent = [
             'BEGIN:VCALENDAR',
@@ -139,7 +179,7 @@ export const SingleEventPage: React.FC = () => {
             const endDate = new Date(evt.end_date).toISOString().replace(/-|:|\.\d\d\d/g, "");
             const title = encodeURIComponent(evt.title);
             const details = encodeURIComponent(evt.description.replace(/<[^>]+>/g, '')); // Strip HTML for cal desc
-            const location = encodeURIComponent(`${evt.venue.name}, ${evt.venue.address_line_1}, ${evt.venue.city}, ${evt.venue.state} ${evt.venue.zip_code}`);
+            const location = encodeURIComponent(`${evt.venue?.name}, ${evt.venue?.address_line_1}, ${evt.venue?.city}, ${evt.venue?.state} ${evt.venue?.zip_code}`);
 
             return `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startDate}/${endDate}&details=${details}&location=${location}&ctz=America/Chicago`;
         } catch {
@@ -149,8 +189,8 @@ export const SingleEventPage: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="seamless-single-event-container">
-                <div style={{ textAlign: 'center', padding: '40px' }}>Loading event details...</div>
+            <div className="seamless-single-event-container" style={{ minHeight: '50vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <LoadingSpinner fullHeight={false} />
             </div>
         );
     }
@@ -160,7 +200,7 @@ export const SingleEventPage: React.FC = () => {
             <div className="seamless-single-event-container">
                 <div className="seamless-error-container">
                     <p className="seamless-error-title">Event not found</p>
-                    <Link to="/" className="seamless-btn-outline-primary" style={{ display: 'inline-block', marginTop: '10px' }}>Back to Events</Link>
+                    <Link to="/" className="seamless-btn-outline-primary seamless-single-evt-back-btn">Back to Events</Link>
                 </div>
             </div>
         );
@@ -170,10 +210,10 @@ export const SingleEventPage: React.FC = () => {
     const sections: { title: string; content: React.ReactNode }[] = [];
 
 
-    const isMultiDayEvent = getFormattedDate(event.start_date) !== getFormattedDate(event.end_date);
+    const isMultiDayEvent = getFormattedDate(event?.start_date) !== getFormattedDate(event?.end_date);
 
     // 1. Schedule Section
-    if (event.schedules && event.schedules.length > 0) {
+    if (event?.schedules && event?.schedules.length > 0) {
         sections.push({
             title: 'Schedule',
             content: (
@@ -185,7 +225,7 @@ export const SingleEventPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {event.schedules.map((sch, idx) => {
+                        {event?.schedules.map((sch, idx) => {
                             // Helper to parse "Mar 04, 2026 12:00 PM" -> { date: "Mar 04", year: "2026", time: "12:00 PM", fullDate: "Mar 04, 2026" }
                             // Fallback using split if regex fails
                             const parseDateStr = (str: string) => {
@@ -198,17 +238,17 @@ export const SingleEventPage: React.FC = () => {
                                 return { date: str, year: '', time: '', fullDate: str };
                             };
 
-                            const schStart = parseDateStr(sch.start_date_display);
-                            const schEnd = parseDateStr(sch.end_date_display);
+                            const schStart = parseDateStr(sch?.start_date_display);
+                            const schEnd = parseDateStr(sch?.end_date_display);
                             // Use formatted_start_date from event, or fallback to start_date
-                            const mainStart = parseDateStr(event.formatted_start_date || event.start_date);
+                            const mainStart = parseDateStr(event?.formatted_start_date || event?.start_date);
 
                             const isSameAsMainDate = schStart.fullDate === mainStart.fullDate;
 
                             // Check previous row to see if date changed
                             let isNewDateGroup = true;
                             if (idx > 0) {
-                                const prevSchStart = parseDateStr(event.schedules[idx - 1].start_date_display);
+                                const prevSchStart = parseDateStr(event?.schedules[idx - 1].start_date_display);
                                 if (prevSchStart.fullDate === schStart.fullDate) {
                                     isNewDateGroup = false;
                                 }
@@ -239,7 +279,7 @@ export const SingleEventPage: React.FC = () => {
                             return (
                                 <tr key={idx}>
                                     <td>{displayString}</td>
-                                    <td dangerouslySetInnerHTML={{ __html: sch.description }} />
+                                    <td dangerouslySetInnerHTML={{ __html: sch?.description }} />
                                 </tr>
                             );
                         })}
@@ -250,11 +290,11 @@ export const SingleEventPage: React.FC = () => {
     }
 
     // 2. Additional Details Sections
-    if (event.additional_details && event.additional_details.length > 0) {
-        event.additional_details.forEach(detail => {
+    if (event?.additional_details && event?.additional_details.length > 0) {
+        event?.additional_details.forEach(detail => {
             sections.push({
-                title: detail.name,
-                content: <div dangerouslySetInnerHTML={{ __html: detail.value }} />
+                title: detail?.name,
+                content: <div dangerouslySetInnerHTML={{ __html: detail?.value }} />
             });
         });
     }
@@ -263,10 +303,17 @@ export const SingleEventPage: React.FC = () => {
     // The prompt implies "Loop through data.additional_details", so likely we only use that + Schedule.
     // I will rely on the explicit instruction.
 
-    const capacity = event.tickets && event.tickets.length > 0 ? event.tickets[0].inventory : null;
+    const computedCapacity = event?.capacity || (event?.tickets && event?.tickets.length > 0 ? event?.tickets[0].inventory : null);
+    
+    // Choose which date boundaries to use
+    const startDateToUse = isGroupEvent && event?.event_date_range?.start ? event?.event_date_range.start : event?.start_date;
+    const endDateToUse = isGroupEvent && event?.event_date_range?.end ? event?.event_date_range.end : event?.end_date;
+
+    // Check if event has passed
+    const isEventPassed = new Date(endDateToUse || startDateToUse).getTime() < new Date().getTime();
 
     return (
-        <article id="singleEventWrapper" className="seamless-single-event-container">
+        <article className="seamless-single-event-container">
             {/* Breadcrumbs */}
             {/* ... breadcrumbs commented out ... */}
 
@@ -274,8 +321,8 @@ export const SingleEventPage: React.FC = () => {
                 {/* Header - Moved out for mobile/tab ordering */}
                 <header className="seamless-event-header-group">
                     <div className="seamless-event-icon-circle">
-                        {event.featured_image ? (
-                            <img src={event.featured_image} alt="Event Icon" />
+                        {event?.featured_image ? (
+                            <img src={event?.featured_image} alt="Event Icon" />
                         ) : (
                             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a365d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
@@ -285,13 +332,13 @@ export const SingleEventPage: React.FC = () => {
                             </svg>
                         )}
                     </div>
-                    <h1 className="seamless-event-title">{event.title}</h1>
+                    <h1 className="seamless-event-title">{event?.title}</h1>
                 </header>
 
                 {/* Left Column Content (Description + Accordions) */}
                 <section className="seamless-single-event-content">
                     {/* Description */}
-                    <div id="seamless-single-event-description" className="seamless-event-description" dangerouslySetInnerHTML={{ __html: event.description }}></div>
+                    <div  className="seamless-event-description" dangerouslySetInnerHTML={{ __html: event?.description }}></div>
 
 
                     {/* Accordions */}
@@ -302,27 +349,27 @@ export const SingleEventPage: React.FC = () => {
                 <aside className="seamless-single-event-sidebar">
                     {/* Details Box */}
                     <section className="seamless-sidebar-box seamless-details-box">
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        <ul className="seamless-single-evt-details-list">
                             <li className="seamless-detail-row">
                                 <Calendar className="seamless-detail-icon" size={20} />
                                 <div>
                                     <span className="seamless-detail-label">Date</span>
-                                    <p className="seamless-detail-value">{getFormattedDate(event.start_date)}</p>
+                                    <p className="seamless-detail-value">{formatEventDateRange(startDateToUse, endDateToUse)}</p>
                                 </div>
                             </li>
                             <li className="seamless-detail-row">
                                 <Clock className="seamless-detail-icon" size={20} />
                                 <div>
                                     <span className="seamless-detail-label">Time</span>
-                                    <p className="seamless-detail-value">{getFormattedTimeRange(event.start_date, event.end_date)}</p>
+                                    <p className="seamless-detail-value">{getFormattedTimeRange(startDateToUse, endDateToUse)}</p>
                                 </div>
                             </li>
-                            {capacity !== null && (
+                            {computedCapacity !== null && (
                                 <li className="seamless-detail-row">
                                     <Users className="seamless-detail-icon" size={20} />
-                                    <div style={{ width: '100%' }}>
+                                    <div className="seamless-single-evt-full-width">
                                         <span className="seamless-detail-label">Capacity</span>
-                                        <p className="seamless-detail-value">{capacity} capacity</p>
+                                        <p className="seamless-detail-value">{computedCapacity} capacity</p>
                                     </div>
                                 </li>
                             )}
@@ -330,15 +377,29 @@ export const SingleEventPage: React.FC = () => {
                                 <MapPin className="seamless-detail-icon" size={20} />
                                 <div>
                                     <span className="seamless-detail-label">Location</span>
-                                    {/* Location Format: Union Depot \n 214 4th St E UNIT 120, \n (St. Paul, MN) 55101 */}
-                                    <p className="seamless-detail-value">{event.venue.name}</p>
-                                    <p className="seamless-detail-subvalue">{event.venue.address_line_1},</p>
-                                    <p className="seamless-detail-subvalue">({event.venue.city}, {event.venue.state}) {event.venue.zip_code}</p>
+                                    {event?.venue?.name && (
+                                        <p className="seamless-detail-value">
+                                            {event?.venue?.google_map_url ? (
+                                                <a href={event?.venue.google_map_url} target="_blank" rel="noopener noreferrer" className="seamless-location-link" style={{ color: '#0ea5e9', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    {event?.venue.name}
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                                </a>
+                                            ) : (
+                                                <span>{event?.venue.name}</span>
+                                            )}
+                                        </p>
+                                    )}
+                                    {(event?.venue?.address_line_1 || event?.venue?.city) && (
+                                        <div className="seamless-detail-subvalue" style={{ lineHeight: '1.4', marginTop: '4px', display: 'flex', flexDirection: 'column' }}>
+                                            <span>{event?.venue.address_line_1 ? `${event?.venue.address_line_1} ${event?.venue.name || ''},` : ''}</span>
+                                            <span>{event?.venue.city ? `(${event?.venue.city}, ${event?.venue.state})` : ''}</span>
+                                        </div>
+                                    )}
                                 </div>
                             </li>
                         </ul>
 
-                        <div style={{ position: 'relative', display: 'inline-block', width: 'fit-content' }} ref={calendarDropdownRef}>
+                        <div className="seamless-single-evt-dropdown-wrap" ref={calendarDropdownRef}>
 
                             <button
                                 onClick={() => setCalendarDropdownOpen(!calendarDropdownOpen)}
@@ -354,7 +415,7 @@ export const SingleEventPage: React.FC = () => {
 
                             {calendarDropdownOpen && (
                                 <div className="seamless-calendar-dropdown">
-                                    <a href={generateICSFile(event)} download={`${event.slug}.ics`} className="seamless-calendar-option" onClick={handleCalendarOptionClick}>
+                                    <a href={generateICSFile(event)} download={`${event?.slug}.ics`} className="seamless-calendar-option" onClick={handleCalendarOptionClick}>
                                         <svg viewBox="0 0 24 24" width="20" height="20" className="seamless-cal-icon"><path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.14.47-2.17.65-3.32-.23C3.62 17.5 3 10.3 6.96 10.1c1.28-.06 2.49.56 3.3.56.81 0 2.2-.6 3.6-.5 1.5.06 2.65.6 3.4 1.7-2.9 1.7-2.4 6 1.1 7.4-.7 1.75-1.07 1.25-1.31 1.02zM13 6.3c.6 1.7-1.5 3.3-3.2 2.7-1.3-.4-1.7-2.2-.8-3.5.9-1.2 3.4-1.1 4 .8z" /></svg>
                                         Apple
                                     </a>
@@ -362,7 +423,7 @@ export const SingleEventPage: React.FC = () => {
                                         <svg viewBox="0 0 24 24" width="20" height="20" className="seamless-cal-icon"><path fill="currentColor" d="M20 2h-4v2h2v2h2V4h2V2h-2zm-6 0h-2v2h2V2zM7 5v2H5V5H2v2h3v2l0 0H2v2h3v14h14v-3h-2v1H7V11h12v-2H7V7h12V5H7z" /></svg>
                                         Google
                                     </a>
-                                    <a href={generateICSFile(event)} download={`${event.slug}.ics`} className="seamless-calendar-option" onClick={handleCalendarOptionClick}>
+                                    <a href={generateICSFile(event)} download={`${event?.slug}.ics`} className="seamless-calendar-option" onClick={handleCalendarOptionClick}>
                                         <svg viewBox="0 0 24 24" width="20" height="20" className="seamless-cal-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" strokeWidth="2" /><line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" strokeWidth="2" /><line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" strokeWidth="2" /><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2" /></svg>
                                         iCal File
                                     </a>
@@ -387,28 +448,46 @@ export const SingleEventPage: React.FC = () => {
                     <section className="seamless-sidebar-box seamless-tickets-box">
 
                         <h3 className="seamless-tickets-title">Tickets</h3>
-                        {event.tickets && event.tickets.map(ticket => (
-                            <div key={ticket.id}>
+                        
+                        {/* Normal Event Tickets */}
+                        {!isGroupEvent && event?.tickets && event?.tickets.map(ticket => (
+                            <div key={ticket?.id} className="seamless-ticket-item">
                                 <div className="seamless-ticket-row">
-                                    <span className="seamless-ticket-name">{ticket.label}</span>
-                                    <span className="seamless-ticket-price">{ticket.price === 0 ? 'Free' : `$${ticket.price}`}</span>
+                                    <span className="seamless-ticket-name">{ticket?.label}</span>
+                                    <span className="seamless-ticket-price">{ticket?.price === 0 ? 'Free' : `$${ticket?.price}`}</span>
                                 </div>
                                 <span className="seamless-ticket-deadline">
-                                    Registration ends on {ticket.formatted_registration_end_date}
+                                    Registration ends on {ticket?.formatted_registration_end_date}
                                 </span>
                             </div>
                         ))}
 
-                        {event.registration_url && (
+                        {/* Group Event Tickets from Associated Events */}
+                        {isGroupEvent && event?.associated_events && event?.associated_events.map(assocEvent => (
+                            <div key={assocEvent.id} className="seamless-ticket-item">
+                                <div className="seamless-ticket-row">
+                                    <span className="seamless-ticket-name">{assocEvent.title}</span>
+                                    {assocEvent.price !== undefined ? (
+                                        <span className="seamless-ticket-price">{assocEvent.price == 0 ? 'Free' : `$${assocEvent.price}`}</span>
+                                    ) : null}
+                                </div>
+                            </div>
+                        ))}
+
+                        {isEventPassed ? (
+                            <div className="seamless-event-passed-box">
+                                Event has passed!
+                            </div>
+                        ) : event?.registration_url ? (
                             <a
-                                href={event.registration_url}
+                                href={event?.registration_url}
                                 className="event-register-btn"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 Register Now
                             </a>
-                        )}
+                        ) : null}
                     </section>
                 </aside>
             </div>

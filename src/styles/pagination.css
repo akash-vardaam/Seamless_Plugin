@@ -2,7 +2,7 @@
    SEAMLESS EVENT DISPLAY - PAGINATION STYLES
    ============================================ */
 
-.seamless-pagination {
+#seamless-plugin-root .seamless-pagination {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -10,8 +10,8 @@
   margin-top: var(--seamless-spacing-8) !important;
 }
 
-.seamless-pagination-button-prev,
-.seamless-pagination-button-next {
+#seamless-plugin-root .seamless-pagination-button-prev,
+#seamless-plugin-root .seamless-pagination-button-next {
   padding: var(--seamless-spacing-2) var(--seamless-spacing-4) !important;
   border-radius: var(--seamless-radius-md) !important;
   font-weight: 600 !important;
@@ -21,31 +21,31 @@
   border: none !important;
 }
 
-.seamless-pagination-button-prev:disabled,
-.seamless-pagination-button-next:disabled {
+#seamless-plugin-root .seamless-pagination-button-prev:disabled,
+#seamless-plugin-root .seamless-pagination-button-next:disabled {
   background-color: var(--seamless-color-gray-200) !important;
   color: var(--seamless-color-gray-400) !important;
   cursor: not-allowed !important;
 }
 
-.seamless-pagination-button-prev:not(:disabled),
-.seamless-pagination-button-next:not(:disabled) {
+#seamless-plugin-root .seamless-pagination-button-prev:not(:disabled),
+#seamless-plugin-root .seamless-pagination-button-next:not(:disabled) {
   background-color: var(--seamless-color-secondary) !important;
   color: var(--seamless-color-white) !important;
 }
 
-.seamless-pagination-button-prev:not(:disabled):hover,
-.seamless-pagination-button-next:not(:disabled):hover {
+#seamless-plugin-root .seamless-pagination-button-prev:not(:disabled):hover,
+#seamless-plugin-root .seamless-pagination-button-next:not(:disabled):hover {
   background-color: var(--seamless-color-primary) !important;
 }
 
-.seamless-pagination-numbers {
+#seamless-plugin-root .seamless-pagination-numbers {
   display: flex !important;
   align-items: center !important;
   gap: var(--seamless-spacing-2) !important;
 }
 
-.seamless-pagination-number-button {
+#seamless-plugin-root .seamless-pagination-number-button {
   padding: var(--seamless-spacing-2) var(--seamless-spacing-3) !important;
   border-radius: var(--seamless-radius-md) !important;
   font-size: var(--seamless-font-size-sm) !important;
@@ -55,16 +55,16 @@
   border: none !important;
 }
 
-.seamless-pagination-number-button-current {
+#seamless-plugin-root .seamless-pagination-number-button-current {
   background-color: var(--seamless-color-primary) !important;
   color: var(--seamless-color-white) !important;
 }
 
-.seamless-pagination-number-button-inactive {
+#seamless-plugin-root .seamless-pagination-number-button-inactive {
   background-color: var(--seamless-color-gray-100) !important;
   color: var(--seamless-color-gray-700) !important;
 }
 
-.seamless-pagination-number-button-inactive:hover {
+#seamless-plugin-root .seamless-pagination-number-button-inactive:hover {
   background-color: var(--seamless-color-gray-200) !important;
 }

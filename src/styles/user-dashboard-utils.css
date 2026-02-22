@@ -1,0 +1,161 @@
+/* Dashboard utility classes mapped from inline styles */
+#seamless-plugin-root .seamless-pricing-breakdown-hdr {
+    margin-bottom: 16px !important;
+    font-size: 15px !important;
+}
+
+#seamless-plugin-root .seamless-pricing-diff.seamless-color-upgrade {
+    color: #f43f5e !important;
+}
+
+#seamless-plugin-root .seamless-pricing-diff.seamless-color-downgrade {
+    color: #10b981 !important;
+}
+
+#seamless-plugin-root .seamless-offerings-box.seamless-bg-offerings-active {
+    background: #eff6ff !important;
+}
+
+#seamless-plugin-root .seamless-offerings-box.seamless-bg-offerings-inactive {
+    background: #f8fafc !important;
+}
+
+#seamless-plugin-root .seamless-col-span-full {
+    grid-column: 1 / -1 !important;
+}
+
+#seamless-plugin-root .seamless-no-underline {
+    text-decoration: none !important;
+}
+
+#seamless-plugin-root .seamless-mb-32 {
+    margin-bottom: 32px !important;
+}
+
+#seamless-plugin-root .seamless-flex-col-gap-24 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+}
+
+#seamless-plugin-root .seamless-padding-24-full-center {
+    padding: 24px !important;
+    height: 100% !important;
+    align-items: center !important;
+}
+
+#seamless-plugin-root .seamless-justify-center {
+    justify-content: center !important;
+}
+
+#seamless-plugin-root .seamless-mt-8 {
+    margin-top: 8px !important;
+}
+
+#seamless-plugin-root .seamless-capitalize {
+    text-transform: capitalize !important;
+}
+
+#seamless-plugin-root .seamless-opacity-bg-card {
+    opacity: 0.7 !important;
+    padding: 24px !important;
+    height: 100% !important;
+    align-items: center !important;
+}
+
+#seamless-plugin-root .seamless-transparent-mt-24 {
+    background: transparent !important;
+    padding: 0 !important;
+    margin-top: 24px !important;
+}
+
+#seamless-plugin-root .seamless-grid-gap-16 {
+    display: grid !important;
+    gap: 16px !important;
+}
+
+#seamless-plugin-root .seamless-membership-card-box {
+    background: #fff !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 24px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+}
+
+#seamless-plugin-root .seamless-items-start {
+    align-items: flex-start !important;
+}
+
+#seamless-plugin-root .seamless-items-center {
+    align-items: center !important;
+}
+
+#seamless-plugin-root .seamless-flex-col-gap-16-full {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+}
+
+#seamless-plugin-root .seamless-flex-between-center {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+#seamless-plugin-root .seamless-card-title {
+    margin: 0 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+#seamless-plugin-root .seamless-position-relative {
+    position: relative !important;
+}
+
+#seamless-plugin-root .seamless-btn-transparent {
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    color: #1e293b !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#seamless-plugin-root .seamless-menu-dropdown-pos {
+    top: 100% !important;
+    right: 0 !important;
+    margin-top: 8px !important;
+}
+
+#seamless-plugin-root .seamless-flex-gap-24-slate {
+    display: flex !important;
+    gap: 24px !important;
+    color: #64748b !important;
+    font-size: 14px !important;
+}
+
+#seamless-plugin-root .seamless-mt-0 {
+    margin-top: 0 !important;
+}
+
+#seamless-plugin-root .seamless-mt-24 {
+    margin-top: 24px !important;
+}
+
+#seamless-plugin-root .seamless-p-24-center-slate {
+    padding: 24px !important;
+    text-align: center !important;
+    color: #64748b !important;
+}
+
+#seamless-plugin-root .seamless-text-center {
+    text-align: center !important;
+}
+
+#seamless-plugin-root .seamless-text-slate-600 {
+    color: #475569 !important;
+}

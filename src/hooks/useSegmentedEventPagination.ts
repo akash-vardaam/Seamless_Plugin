@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import axios from 'axios';
-import api from '../services/api';
+import { fetchEvents, fetchGroupEvents } from '../services/eventService';
 import type { Event, FilterState, PaginationMeta } from '../types/event';
 
 // ─── Error formatter ────────────────────────────────────────────
@@ -66,15 +66,15 @@ export const useSegmentedEventPagination = (
         let cancelled = false;
 
         const fetchData = async () => {
-            setLoading(true);
+            let initialDataLoaded = false;
             setError(null);
 
             const params = buildParams();
             const cacheKey = `seamless_events_${JSON.stringify(params)}_${uiPage}`;
 
-            // 1. Check Cache
+            // 1. Check LocalStorage Cache for immediate UI paint
             try {
-                const cached = sessionStorage.getItem(cacheKey);
+                const cached = localStorage.getItem(cacheKey);
                 if (cached) {
                     const data = JSON.parse(cached);
                     setEvents(data.events);
@@ -83,23 +83,56 @@ export const useSegmentedEventPagination = (
                     if (data.lastPageRef) {
                         lastPageRef.current = data.lastPageRef;
                     }
+                    initialDataLoaded = true;
                     setLoading(false);
-                    return;
                 }
             } catch (e) {
                 console.log(e);
             }
 
+            if (!initialDataLoaded) {
+                setLoading(true);
+            }
+
+            // 2. Fetch fresh API data unconditionally (Stale-while-revalidate)
             try {
 
-                const response = await api.get<any>('/events', {
-                    params: { ...params, page: uiPage }
-                });
+                const [response, groupResponse] = await Promise.all([
+                    fetchEvents({ ...params, page: uiPage }),
+                    fetchGroupEvents({ per_page: 100 }).catch(e => { console.error("Grid fetch group error:", e); return null; })
+                ]);
 
                 if (cancelled) return;
 
                 const rawEvents = (response.data.data?.events || []) as Event[];
                 const meta = response.data.data?.pagination as PaginationMeta;
+                const groupEventsRaw = groupResponse?.data?.data?.group_events || [];
+
+                const hiddenSubEvents = new Set<string>();
+                const groupEventBySubId: Record<string, Event> = {};
+
+                groupEventsRaw.forEach((ge: any) => {
+                    const mappedGe = { ...ge, start_date: ge.event_date_range?.start || ge.formatted_start_date || '', end_date: ge.event_date_range?.end || ge.formatted_end_date || '', is_group_event: true } as Event;
+                    (ge.associated_events || []).forEach((sub: any) => {
+                        hiddenSubEvents.add(sub.id);
+                        groupEventBySubId[sub.id] = mappedGe;
+                    });
+                });
+
+                const finalEvents: Event[] = [];
+                const seenGroups = new Set<string>();
+
+                for (const e of rawEvents) {
+                    if (hiddenSubEvents.has(e.id)) {
+                        const ge = groupEventBySubId[e.id];
+                        if (ge && !seenGroups.has(ge.id)) {
+                            finalEvents.push(ge);
+                            seenGroups.add(ge.id);
+                        }
+                    } else {
+                        finalEvents.push(e);
+                    }
+                }
 
                 // Update totals directly from API
                 const newTotalEvents = meta?.total || 0;
@@ -116,25 +149,26 @@ export const useSegmentedEventPagination = (
 
                 // Sorting
                 if (mode === 'upcoming') {
-                    rawEvents.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+                    finalEvents.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
                 }
-                setEvents(rawEvents);
+                setEvents(finalEvents);
+                setLoading(false);
 
-                // 2. Save to Cache
+                // 3. Save to Cache
                 try {
                     const dataToCache = {
-                        events: rawEvents,
+                        events: finalEvents,
                         totalPages: newTotalPages,
                         totalApiEvents: newTotalEvents,
                         lastPageRef: lastPageRef.current
                     };
-                    sessionStorage.setItem(cacheKey, JSON.stringify(dataToCache));
+                    localStorage.setItem(cacheKey, JSON.stringify(dataToCache));
                 } catch (e) {
                     console.log(e);
                 }
 
             } catch (err) {
-                if (!cancelled) {
+                if (!cancelled && !initialDataLoaded) {
                     setError(formatError(err));
                 }
             } finally {

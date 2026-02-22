@@ -55,13 +55,13 @@ export const CalendarCell: React.FC<CalendarCellProps> = ({
           >
             {events.map((item, idx) => (
               <EventBar
-                key={`${item.event.id}-${idx}`}
-                event={item.event}
-                color={item.color}
-                borderColor={item.borderColor}
-                spanLength={item.spanLength}
-                continuesFromPreviousMonth={item.continuesFromPreviousMonth}
-                continuesToNextMonth={item.continuesToNextMonth}
+                key={`${item?.event.id}-${idx}`}
+                event={item?.event}
+                color={item?.color}
+                borderColor={item?.borderColor}
+                spanLength={item?.spanLength}
+                continuesFromPreviousMonth={item?.continuesFromPreviousMonth}
+                continuesToNextMonth={item?.continuesToNextMonth}
                 eventIndex={idx}
               />
             ))}

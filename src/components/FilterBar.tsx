@@ -51,7 +51,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <div className="seamless-filter-bar-desktop">
               {/* Search Header and Input - Row 1 */}
               <div className="seamless-filter-header-row">
-                <h3 className="seamless-filter-label" style={{ fontFamily: 'Montserrat' }}>
+                <h3 className="seamless-filter-label seamless-font-montserrat">
                   SEARCH AND FILTER
                 </h3>
                 <div className="seamless-filter-search-wrapper">
@@ -131,8 +131,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <div className="seamless-filter-control">
                   <div
                     onClick={onReset}
-                    className="seamless-button seamless-button-primary seamless-button-full"
-                    style={{ fontFamily: 'Montserrat' }}
+                    className="seamless-button seamless-button-primary seamless-button-full seamless-font-montserrat"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -150,7 +149,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             {/* Mobile Layout */}
             <div className="seamless-filter-bar-mobile">
               {/* Title */}
-              <h3 className="seamless-filter-label seamless-w-full" style={{ fontFamily: 'Montserrat' }}>
+              <h3 className="seamless-filter-label seamless-w-full seamless-font-montserrat">
                 SEARCH AND FILTER
               </h3>
 
@@ -165,8 +164,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <select
                   value={status}
                   onChange={(e) => onStatusChange(e.target.value)}
-                  className="seamless-select-dropdown seamless-filter-mobile-control"
-                  style={{ fontFamily: 'Montserrat' }}
+                  className="seamless-select-dropdown seamless-filter-mobile-control seamless-font-montserrat"
                 >
                   <option value="upcoming">UPCOMING</option>
                   <option value="current">CURRENT</option>
@@ -177,8 +175,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <select
                   value={audience}
                   onChange={(e) => onAudienceChange(e.target.value)}
-                  className="seamless-select-dropdown seamless-filter-mobile-control"
-                  style={{ fontFamily: 'Montserrat' }}
+                  className="seamless-select-dropdown seamless-filter-mobile-control seamless-font-montserrat"
                 >
                   <option value="">AUDIENCE</option>
                   {audiences.map((aud) => (
@@ -192,8 +189,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <select
                   value={focus}
                   onChange={(e) => onFocusChange(e.target.value)}
-                  className="seamless-select-dropdown seamless-filter-mobile-control"
-                  style={{ fontFamily: 'Montserrat' }}
+                  className="seamless-select-dropdown seamless-filter-mobile-control seamless-font-montserrat"
                 >
                   <option value="">FOCUS</option>
                   {focuses.map((foc) => (
@@ -207,8 +203,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <select
                   value={localChapter}
                   onChange={(e) => onLocalChapterChange(e.target.value)}
-                  className="seamless-select-dropdown seamless-filter-mobile-control"
-                  style={{ fontFamily: 'Montserrat' }}
+                  className="seamless-select-dropdown seamless-filter-mobile-control seamless-font-montserrat"
                 >
                   <option value="">LOCAL CHAPTERS / REGIONS</option>
                   {localChapters.map((lc) => (
@@ -222,8 +217,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <select
                   value={year}
                   onChange={(e) => onYearChange(e.target.value)}
-                  className="seamless-select-dropdown seamless-filter-mobile-control"
-                  style={{ fontFamily: 'Montserrat' }}
+                  className="seamless-select-dropdown seamless-filter-mobile-control seamless-font-montserrat"
                 >
                   <option value="">YEAR</option>
                   {years.map((yr) => (
@@ -236,8 +230,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 {/* Reset Button */}
                 <button
                   onClick={onReset}
-                  className="seamless-button seamless-button-primary seamless-button-full seamless-filter-mobile-control"
-                  style={{ fontFamily: 'Montserrat' }}
+                  className="seamless-button seamless-button-primary seamless-button-full seamless-filter-mobile-control seamless-font-montserrat"
                 >
                   RESET
                 </button>

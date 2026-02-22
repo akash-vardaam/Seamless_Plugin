@@ -3,7 +3,7 @@
    ============================================ */
 
 /* Grid card layout */
-.seamless-card {
+#seamless-plugin-root .seamless-card {
   background-color: var(--seamless-color-white) !important;
   border-radius: var(--seamless-radius-lg) !important;
   overflow: hidden !important;
@@ -15,12 +15,12 @@
   border: 1px solid #f1f5f9 !important;
 }
 
-.seamless-card:hover {
+#seamless-plugin-root .seamless-card:hover {
   transform: translateY(-8px) !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01) !important;
 }
 
-.seamless-card-image-container {
+#seamless-plugin-root .seamless-card-image-container {
   width: 100% !important;
   height: 265px !important;
   background-color: #f8fafc !important;
@@ -30,7 +30,7 @@
   overflow: hidden !important;
 }
 
-.seamless-card-image {
+#seamless-plugin-root .seamless-card-image {
   width: 100% !important;
   height: auto !important;
   object-fit: contain !important;
@@ -40,14 +40,14 @@
 
 
 
-.seamless-card-content {
+#seamless-plugin-root .seamless-card-content {
   padding: var(--seamless-spacing-6) !important;
   display: flex !important;
   flex-direction: column !important;
   flex-grow: 1 !important;
 }
 
-.seamless-card-title {
+#seamless-plugin-root .seamless-card-title {
   margin-bottom: var(--seamless-spacing-4) !important;
   display: block !important;
   font-weight: 500 !important;
@@ -62,11 +62,7 @@
   -webkit-box-orient: vertical !important;
 }
 
-.seamless-card-title:hover {
-  text-decoration: underline !important;
-}
-
-.seamless-card-date {
+#seamless-plugin-root .seamless-card-date {
   margin-bottom: var(--seamless-spacing-1) !important;
   font-size: var(--seamless-font-size-base) !important;
   line-height: 1.25 !important;
@@ -74,7 +70,7 @@
   color: var(--seamless-color-primary) !important;
 }
 
-.seamless-card-time {
+#seamless-plugin-root .seamless-card-time {
   margin-bottom: var(--seamless-spacing-4) !important;
   font-size: var(--seamless-font-size-base) !important;
   line-height: 1 !important;
@@ -82,7 +78,7 @@
   color: var(--seamless-color-primary) !important;
 }
 
-.seamless-card-see-details {
+#seamless-plugin-root .seamless-card-see-details {
   margin-top: auto !important;
   font-weight: 600 !important;
   font-size: var(--seamless-font-size-sm) !important;
@@ -93,28 +89,28 @@
   display: inline-block !important;
 }
 
-.seamless-card-see-details:hover {
+#seamless-plugin-root .seamless-card-see-details:hover {
   color: var(--seamless-color-primary) !important;
 }
 
 /* List card layout */
-.seamless-card-list {
+#seamless-plugin-root .seamless-card-list {
   border-bottom: 1px solid var(--seamless-color-secondary) !important;
   padding: var(--seamless-spacing-6) 0 !important;
   overflow: hidden !important;
 }
 
-.seamless-card-list-content {
+#seamless-plugin-root .seamless-card-list-content {
   display: flex !important;
   gap: var(--seamless-spacing-6) !important;
   overflow: hidden !important;
 }
 
-.seamless-card-list-image {
+#seamless-plugin-root .seamless-card-list-image {
   flex-shrink: 0 !important;
 }
 
-.seamless-card-list-image-wrapper {
+#seamless-plugin-root .seamless-card-list-image-wrapper {
   width: 8rem !important;
   height: 8rem !important;
   border-radius: var(--seamless-radius-lg) !important;
@@ -125,7 +121,7 @@
   justify-content: center !important;
 }
 
-.seamless-card-list-image-img {
+#seamless-plugin-root .seamless-card-list-image-img {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
@@ -134,17 +130,17 @@
 
 
 
-.seamless-card-list-no-image {
+#seamless-plugin-root .seamless-card-list-no-image {
   color: var(--seamless-color-gray-400) !important;
   font-size: var(--seamless-font-size-sm) !important;
 }
 
-.seamless-card-list-details {
+#seamless-plugin-root .seamless-card-list-details {
   flex: 1 !important;
   min-width: 0 !important;
 }
 
-.seamless-card-list-title {
+#seamless-plugin-root .seamless-card-list-title {
   display: block !important;
   margin-bottom: var(--seamless-spacing-3) !important;
   font-size: var(--seamless-font-size-lg) !important;
@@ -160,29 +156,34 @@
   width: 100% !important;
 }
 
-.seamless-card-list-title:hover {
+#seamless-plugin-root .seamless-card-list-title:hover {
   text-decoration: underline !important;
 }
 
-.seamless-card-list-meta {
+#seamless-plugin-root .seamless-card-list-meta {
   display: flex !important;
   flex-direction: column !important;
   gap: var(--seamless-spacing-1) !important;
   margin-bottom: var(--seamless-spacing-4) !important;
 }
 
-.seamless-card-list-meta-item {
+#seamless-plugin-root .seamless-card-list-meta p {
+  margin: 0 !important;
+  line-height: 18px !important;
+}
+
+#seamless-plugin-root .seamless-card-list-meta-item {
   font-size: var(--seamless-font-size-base) !important;
   line-height: 1 !important;
   font-weight: 400 !important;
   color: var(--seamless-color-primary) !important;
 }
 
-.seamless-card-list-meta-date {
+#seamless-plugin-root .seamless-card-list-meta-date {
   font-weight: 700 !important;
 }
 
-.seamless-card-list-description {
+#seamless-plugin-root .seamless-card-list-description {
   font-size: var(--seamless-font-size-base) !important;
   line-height: 1.5 !important;
   font-weight: 400 !important;
@@ -194,7 +195,7 @@
   -webkit-box-orient: vertical !important;
 }
 
-.seamless-card-list-see-details {
+#seamless-plugin-root .seamless-card-list-see-details {
   font-weight: 600 !important;
   font-size: var(--seamless-font-size-sm) !important;
   transition: all var(--seamless-transition-normal) !important;
@@ -204,21 +205,21 @@
   cursor: pointer !important;
 }
 
-.seamless-card-list-see-details:hover {
+#seamless-plugin-root .seamless-card-list-see-details:hover {
   color: var(--seamless-color-primary) !important;
 }
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
-  .seamless-card-image-container {
+  #seamless-plugin-root .seamless-card-image-container {
     height: 200px !important;
   }
 
-  .seamless-card-content {
+  #seamless-plugin-root .seamless-card-content {
     padding: var(--seamless-spacing-4) !important;
   }
 
-  .seamless-card-list-content {
+  #seamless-plugin-root .seamless-card-list-content {
     gap: var(--seamless-spacing-4) !important;
   }
 }

@@ -1,26 +1,27 @@
 export const getCategoryColor = (
   event: any
-): { bg: string; text: string; border: string } => {
-  // Extract color from categories if available
-  if (event.categories && event.categories.length > 0) {
-    const category = event.categories[0];
-    const slug = category.slug?.toLowerCase() || '';
+): string => {
+  const COLOR_PALETTES = [
+    'amber',
+    'red',
+    'indigo',
+    'green',
+    'purple',
+    'orange',
+    'pink',
+    'blue',
+    'teal',
+    'slate'
+  ];
 
-    // Color mapping based on category slugs
-    if (slug.includes('advocacy'))
-      return { bg: 'bg-orange-100', text: 'text-orange-700', border: '#f97316' };
-    if (slug.includes('cme'))
-      return { bg: 'bg-pink-100', text: 'text-pink-700', border: '#ec4899' };
-    if (slug.includes('conference'))
-      return { bg: 'bg-blue-100', text: 'text-blue-700', border: '#3b82f6' };
-    if (slug.includes('summer'))
-      return { bg: 'bg-green-100', text: 'text-green-700', border: '#22c55e' };
-    if (slug.includes('ksa'))
-      return { bg: 'bg-purple-100', text: 'text-purple-700', border: '#a855f7' };
-    if (slug.includes('region'))
-      return { bg: 'bg-pink-100', text: 'text-pink-700', border: '#ec4899' };
+  const seedString = String(event?.id || '') + String(event?.title || '') + String(event?.start_date || '') || 'default';
+  let hash = 0;
+  for (let i = 0; i < seedString.length; i++) {
+    hash = seedString.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return { bg: 'bg-teal-100', text: 'text-teal-700', border: '#14b8a6' };
+  
+  const index = Math.abs(hash) % COLOR_PALETTES.length;
+  return COLOR_PALETTES[index];
 };
 
 export const getStartTime = (dateString: string) => {

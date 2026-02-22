@@ -48,7 +48,7 @@ const formatTimeRange = (startDate: string, endDate: string): string => {
 };
 
 const handleEventClick = (event: Event) => {
-  navigateToEvent(event.slug || createEventSlug(event.title, event.id));
+  navigateToEvent(event?.slug || createEventSlug(event?.title || '', event?.id || ''), event?.is_group_event);
 };
 
 export const EventBar: React.FC<EventBarProps> = ({
@@ -64,8 +64,8 @@ export const EventBar: React.FC<EventBarProps> = ({
     handleEventClick(event);
   };
 
-  const dateRange = formatDateRange(event.start_date, event.end_date || event.start_date);
-  const timeRange = formatTimeRange(event.start_date, event.end_date || event.start_date);
+  const dateRange = formatDateRange(event?.start_date, event?.end_date || event?.start_date);
+  const timeRange = formatTimeRange(event?.start_date, event?.end_date || event?.start_date);
   const widthPercentage = spanLength * 100;
   const gapSize = (spanLength - 1) * 8;
   const dynamicWidth = `calc(${widthPercentage}% + ${gapSize}px)`;
@@ -88,7 +88,7 @@ export const EventBar: React.FC<EventBarProps> = ({
         display: 'flex',
         alignItems: 'center',
       }}
-      title={event.title}
+      title={event?.title}
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -105,7 +105,7 @@ export const EventBar: React.FC<EventBarProps> = ({
 
       {/* Main truncated text */}
       <div className="seamless-calendar-event-bar-text">
-        {event.title}
+        {event?.title}
       </div>
 
       {/* Continuation indicator to next month */}
@@ -115,7 +115,7 @@ export const EventBar: React.FC<EventBarProps> = ({
 
       {/* Tooltip on hover - responsive positioning */}
       <div className="seamless-calendar-event-tooltip">
-        <div className="seamless-calendar-event-tooltip-title">{event.title}</div>
+        <div className="seamless-calendar-event-tooltip-title">{event?.title}</div>
         <div className="seamless-calendar-event-tooltip-date">{dateRange}</div>
         <div className="seamless-calendar-event-tooltip-time">{timeRange}</div>
       </div>

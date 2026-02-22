@@ -1,13 +1,13 @@
-.seamless-accordions {
+#seamless-plugin-root .seamless-accordions {
     border-top: 1px solid #e2e8f0 !important;
     width: 100% !important;
 }
 
-.seamless-accordion-item {
+#seamless-plugin-root .seamless-accordion-item {
     border-bottom: 1px solid #e2e8f0 !important;
 }
 
-#singleEventWrapper .seamless-accordion-trigger {
+#seamless-plugin-root .seamless-accordion-trigger {
     width: 100% !important;
     display: flex !important;
     justify-content: flex-start !important;
@@ -25,49 +25,49 @@
     transition: color 0.2s ease !important;
 }
 
-.seamless-accordion-icon {
+#seamless-plugin-root .seamless-accordion-icon {
     color: #1a365d !important;
     flex-shrink: 0 !important;
     transition: color 0.2s ease !important;
 }
 
-.seamless-accordion-trigger:hover {
+#seamless-plugin-root .seamless-accordion-trigger:hover {
     color: var(--seamless-color-primary, #0070f3) !important;
 }
 
-.seamless-accordion-trigger:hover .seamless-accordion-icon {
+#seamless-plugin-root .seamless-accordion-trigger:hover .seamless-accordion-icon {
     color: var(--seamless-color-primary, #0070f3) !important;
 }
 
-#singleEventWrapper .seamless-accordion-content {
+#seamless-plugin-root .seamless-accordion-content {
     padding: 0 0 25px 38px !important;
     color: #4a5568 !important;
     line-height: 1.6 !important;
 }
 
 /* Styles moved from single-event.css */
-#singleEventWrapper .seamless-accordion-item .seamless-accordion-content * {
+#seamless-plugin-root .seamless-accordion-item .seamless-accordion-content * {
     font-size: 16px !important;
     line-height: 29px !important;
 }
 
-#singleEventWrapper .seamless-accordion-item .seamless-accordion-content table * {
+#seamless-plugin-root .seamless-accordion-item .seamless-accordion-content table * {
     font-size: 14px !important;
     line-height: 21px !important;
 }
 
-#singleEventWrapper .seamless-accordion-item .seamless-accordion-content table td {
+#seamless-plugin-root .seamless-accordion-item .seamless-accordion-content table td {
     padding: 10px !important;
     vertical-align: middle !important;
 }
 
-#singleEventWrapper button.seamless-accordion-trigger.active {
+#seamless-plugin-root button.seamless-accordion-trigger.active {
     padding-bottom: 20px !important;
     border-bottom: 1px solid #e2e8f0 !important;
     margin-bottom: 25px !important;
 }
 
-#singleEventWrapper .seamless-accordion-content a.elementor-button {
+#seamless-plugin-root .seamless-accordion-content a.elementor-button {
     background-color: var(--seamless-color-primary, #0c2e4e) !important;
     border: 1px solid var(--seamless-color-primary, #0c2e4e) !important;
     color: #ffffff !important;
@@ -78,7 +78,7 @@
     margin-top: 10px !important;
 }
 
-#singleEventWrapper .seamless-accordion-content a.elementor-button:hover {
+#seamless-plugin-root .seamless-accordion-content a.elementor-button:hover {
     background-color: #ffffff !important;
     color: var(--seamless-color-primary, #0c2e4e) !important;
     border: 1px solid var(--seamless-color-primary, #0c2e4e) !important;
@@ -89,29 +89,29 @@
     margin-top: 10px !important;
 }
 
-#singleEventWrapper .seamless-accordion-content table td {
+#seamless-plugin-root .seamless-accordion-content table td {
     border: 1px solid #E0E0E0 !important;
 }
 
-#singleEventWrapper .seamless-accordion-content table.event-schedule-table td{
+#seamless-plugin-root .seamless-accordion-content table.event-schedule-table td{
     border: none !important;
 }
 
-#singleEventWrapper .seamless-accordion-content table a * , #singleEventWrapper .seamless-accordion-content table strong {
+#seamless-plugin-root .seamless-accordion-content table a *, #seamless-plugin-root .seamless-accordion-content table strong {
     display: inline !important;
  }
 
- #singleEventWrapper .seamless-accordion-content p{
+ #seamless-plugin-root .seamless-accordion-content p{
     color: #282828 !important;
     margin-bottom: 10px !important;
  }
 
  @media screen and (max-width: 768px) {
-    #singleEventWrapper .seamless-event-header-group {
+    #seamless-plugin-root .seamless-event-header-group {
         flex-direction: column !important;
     }
 
-   #singleEventWrapper .seamless-accordion-content {
+   #seamless-plugin-root .seamless-accordion-content {
         padding: 0 0 25px 0 !important;
     }
 }

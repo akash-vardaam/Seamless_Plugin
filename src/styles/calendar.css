@@ -2,7 +2,7 @@
    SEAMLESS EVENT DISPLAY - CALENDAR STYLES
    ============================================ */
 
-.seamless-calendar {
+#seamless-plugin-root .seamless-calendar {
   background-color: var(--seamless-color-white) !important;
   border-radius: var(--seamless-radius-lg) !important;
   padding: var(--seamless-spacing-3) var(--seamless-spacing-4) !important;
@@ -10,19 +10,19 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar {
+  #seamless-plugin-root .seamless-calendar {
     padding: var(--seamless-spacing-4) var(--seamless-spacing-6) !important;
   }
 }
 
 @media (min-width: 768px) {
-  .seamless-calendar {
+  #seamless-plugin-root .seamless-calendar {
     padding: var(--seamless-spacing-6) !important;
   }
 }
 
 /* Calendar header */
-.seamless-calendar-header {
+#seamless-plugin-root .seamless-calendar-header {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -30,31 +30,31 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-header {
+  #seamless-plugin-root .seamless-calendar-header {
     margin-bottom: var(--seamless-spacing-6) !important;
   }
 }
 
-.seamless-calendar-title {
+#seamless-plugin-root .seamless-calendar-title {
   font-size: var(--seamless-font-size-xl) !important;
   font-weight: 700 !important;
   color: var(--seamless-color-primary) !important;
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-title {
+  #seamless-plugin-root .seamless-calendar-title {
     font-size: var(--seamless-font-size-2xl) !important;
   }
 }
 
 @media (min-width: 768px) {
-  .seamless-calendar-title {
+  #seamless-plugin-root .seamless-calendar-title {
     font-size: var(--seamless-font-size-3xl) !important;
   }
 }
 
 /* Day headers */
-.seamless-calendar-day-headers {
+#seamless-plugin-root .seamless-calendar-day-headers {
   display: grid !important;
   grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
   gap: var(--seamless-spacing-1) !important;
@@ -62,13 +62,13 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-day-headers {
+  #seamless-plugin-root .seamless-calendar-day-headers {
     gap: var(--seamless-spacing-1) !important;
     margin-bottom: var(--seamless-spacing-3) !important;
   }
 }
 
-.seamless-calendar-day-header {
+#seamless-plugin-root .seamless-calendar-day-header {
   text-align: center !important;
   font-weight: 700 !important;
   color: var(--seamless-color-primary) !important;
@@ -79,13 +79,13 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-day-header {
+  #seamless-plugin-root .seamless-calendar-day-header {
     font-size: var(--seamless-font-size-sm) !important;
   }
 }
 
 /* Calendar grid */
-.seamless-calendar-grid {
+#seamless-plugin-root .seamless-calendar-grid {
   display: grid !important;
   grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
   gap: var(--seamless-spacing-1) !important;
@@ -94,13 +94,13 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-grid {
+  #seamless-plugin-root .seamless-calendar-grid {
     gap: var(--seamless-spacing-1) !important;
   }
 }
 
 /* Calendar cell */
-.seamless-calendar-cell {
+#seamless-plugin-root .seamless-calendar-cell {
   min-height: 6rem !important;
   padding: var(--seamless-spacing-1) var(--seamless-spacing-2) !important;
   border-radius: var(--seamless-radius-md) !important;
@@ -112,57 +112,57 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-cell {
+  #seamless-plugin-root .seamless-calendar-cell {
     min-height: 8rem !important;
     padding: var(--seamless-spacing-2) !important;
   }
 }
 
-.seamless-calendar-cell-empty {
+#seamless-plugin-root .seamless-calendar-cell-empty {
   background-color: var(--seamless-color-gray-50) !important;
   border-color: var(--seamless-color-gray-100) !important;
 }
 
-.seamless-calendar-cell-today {
+#seamless-plugin-root .seamless-calendar-cell-today {
   background-color: var(--seamless-color-teal-100) !important;
   border-color: var(--seamless-color-secondary) !important;
 }
 
-.seamless-calendar-cell:not(.seamless-calendar-cell-empty):hover {
+#seamless-plugin-root .seamless-calendar-cell:not(.seamless-calendar-cell-empty):hover {
   border-color: var(--seamless-color-gray-300) !important;
 }
 
-.seamless-calendar-cell-day {
+#seamless-plugin-root .seamless-calendar-cell-day {
   font-weight: 700 !important;
   font-size: var(--seamless-font-size-sm) !important;
   margin-bottom: var(--seamless-spacing-1) !important;
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-cell-day {
+  #seamless-plugin-root .seamless-calendar-cell-day {
     font-size: var(--seamless-font-size-base) !important;
     margin-bottom: var(--seamless-spacing-2) !important;
   }
 }
 
-.seamless-calendar-cell-day-today {
+#seamless-plugin-root .seamless-calendar-cell-day-today {
   color: var(--seamless-color-secondary) !important;
 }
 
-.seamless-calendar-cell-day-other {
+#seamless-plugin-root .seamless-calendar-cell-day-other {
   color: var(--seamless-color-primary) !important;
 }
 
-.seamless-calendar-cell-events {
+#seamless-plugin-root .seamless-calendar-cell-events {
   display: block !important;
 }
 
-.seamless-calendar-cell-events > .seamless-calendar-event-bar:hover {
+#seamless-plugin-root .seamless-calendar-cell-events > .seamless-calendar-event-bar:hover {
   box-shadow: var(--seamless-shadow-lg) !important;
 }
 
 /* Calendar event bar */
-.seamless-calendar-event-bar {
+#seamless-plugin-root .seamless-calendar-event-bar {
   font-size: var(--seamless-font-size-xs) !important;
   font-weight: 600 !important;
   padding: var(--seamless-spacing-1) var(--seamless-spacing-2) !important;
@@ -177,25 +177,25 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-event-bar {
+  #seamless-plugin-root .seamless-calendar-event-bar {
     font-size: var(--seamless-font-size-sm) !important;
   }
 }
 
-.seamless-calendar-event-bar-continues-from {
+#seamless-plugin-root .seamless-calendar-event-bar-continues-from {
   flex-shrink: 0 !important;
   font-size: 0.75rem !important;
   opacity: 0.7 !important;
 }
 
-.seamless-calendar-event-bar-continues-to {
+#seamless-plugin-root .seamless-calendar-event-bar-continues-to {
   margin-left: auto !important;
   flex-shrink: 0 !important;
   font-size: 0.75rem !important;
   opacity: 0.7 !important;
 }
 
-.seamless-calendar-event-bar-text {
+#seamless-plugin-root .seamless-calendar-event-bar-text {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
@@ -205,13 +205,13 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-event-bar-text {
+  #seamless-plugin-root .seamless-calendar-event-bar-text {
     font-size: var(--seamless-font-size-sm) !important;
   }
 }
 
 /* Tooltip for calendar events */
-.seamless-calendar-event-tooltip {
+#seamless-plugin-root .seamless-calendar-event-tooltip {
   position: absolute !important;
   z-index: var(--seamless-z-modal) !important;
   display: none !important;
@@ -231,35 +231,35 @@
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-event-tooltip {
+  #seamless-plugin-root .seamless-calendar-event-tooltip {
     padding: var(--seamless-spacing-2) var(--seamless-spacing-3) !important;
   }
 }
 
-.seamless-calendar-event-bar:hover .seamless-calendar-event-tooltip {
+#seamless-plugin-root .seamless-calendar-event-bar:hover .seamless-calendar-event-tooltip {
   display: block !important;
 }
 
-.seamless-calendar-event-tooltip-title {
+#seamless-plugin-root .seamless-calendar-event-tooltip-title {
   font-weight: 600 !important;
   font-size: var(--seamless-font-size-xs) !important;
   margin-bottom: var(--seamless-spacing-1) !important;
 }
 
 @media (min-width: 640px) {
-  .seamless-calendar-event-tooltip-title {
+  #seamless-plugin-root .seamless-calendar-event-tooltip-title {
     font-size: var(--seamless-font-size-sm) !important;
   }
 }
 
-.seamless-calendar-event-tooltip-date {
+#seamless-plugin-root .seamless-calendar-event-tooltip-date {
   color: var(--seamless-color-gray-300) !important;
   font-size: var(--seamless-font-size-xs) !important;
   margin-bottom: var(--seamless-spacing-1) !important;
   line-height: 1.4 !important;
 }
 
-.seamless-calendar-event-tooltip-time {
+#seamless-plugin-root .seamless-calendar-event-tooltip-time {
   color: var(--seamless-color-gray-300) !important;
   font-size: var(--seamless-font-size-xs) !important;
 }

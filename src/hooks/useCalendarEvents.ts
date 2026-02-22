@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import api from '../services/api';
+import { fetchEvents, fetchGroupEvents } from '../services/eventService';
 import type { Event, FilterState } from '../types/event';
 
 function formatError(err: unknown): string {
@@ -80,53 +80,82 @@ export const useCalendarEvents = (
             const params = buildParams();
             const cacheKey = `seamless_calendar_${JSON.stringify(params)}`;
 
-            // Check In-Memory Cache first
-            if (calendarCache.has(cacheKey)) {
-                setEvents(calendarCache.get(cacheKey)!);
-                setLoading(false);
-                return;
-            }
+            let initialDataLoaded = false;
 
-            setLoading(true);
-            setError(null);
-
-            // Check SessionStorage Cache Next
+            // Check In-Memory / LocalStorage Cache first for instant load
             try {
-                const cached = sessionStorage.getItem(cacheKey);
+                const cached = localStorage.getItem(cacheKey);
                 if (cached) {
                     const data = JSON.parse(cached);
-                    calendarCache.set(cacheKey, data); // Pop into memory
+                    calendarCache.set(cacheKey, data); 
                     setEvents(data);
-                    setLoading(false);
-                    return;
+                    initialDataLoaded = true;
+                    setLoading(false); // Can show UI immediately
                 }
             } catch (e) {
                 console.log(e);
             }
 
+            if (!initialDataLoaded) {
+                setLoading(true);
+            }
+            setError(null);
+
+            // Fetch fresh data unconditionally (Stale-While-Revalidate)
             try {
-                const response = await api.get<any>('/events', { params });
+                const [response, groupResponse] = await Promise.all([
+                    fetchEvents(params),
+                    fetchGroupEvents({ per_page: 100 }).catch(e => { console.error("Calendar fetch group error:", e); return null; })
+                ]);
 
                 if (cancelled) return;
 
                 const rawEvents = (response.data.data?.events || []) as Event[];
+                const groupEventsRaw = groupResponse?.data?.data?.group_events || [];
 
-                // Save to caches
-                calendarCache.set(cacheKey, rawEvents);
-                setEvents(rawEvents);
+                const hiddenSubEvents = new Set<string>();
+                const groupEventBySubId: Record<string, Event> = {};
+
+                groupEventsRaw.forEach((ge: any) => {
+                    const mappedGe = { ...ge, start_date: ge.event_date_range?.start || ge.formatted_start_date || '', end_date: ge.event_date_range?.end || ge.formatted_end_date || '', is_group_event: true } as Event;
+                    (ge.associated_events || []).forEach((sub: any) => {
+                        hiddenSubEvents.add(sub.id);
+                        groupEventBySubId[sub.id] = mappedGe;
+                    });
+                });
+
+                const finalEvents: Event[] = [];
+                const seenGroups = new Set<string>();
+
+                for (const e of rawEvents) {
+                    if (hiddenSubEvents.has(e.id)) {
+                        const ge = groupEventBySubId[e.id];
+                        if (ge && !seenGroups.has(ge.id)) {
+                            finalEvents.push(ge);
+                            seenGroups.add(ge.id);
+                        }
+                    } else {
+                        finalEvents.push(e);
+                    }
+                }
+
+                // Save to caches and update UI with fresh server data
+                calendarCache.set(cacheKey, finalEvents);
+                setEvents(finalEvents);
+                setLoading(false);
 
                 try {
-                    sessionStorage.setItem(cacheKey, JSON.stringify(rawEvents));
+                    localStorage.setItem(cacheKey, JSON.stringify(finalEvents));
                 } catch (e) {
                     console.log(e);
                 }
 
-
             } catch (err) {
-                if (!cancelled) {
+                if (!cancelled && !initialDataLoaded) {
                     setError(formatError(err));
                     console.error('Calendar fetch error:', err);
                 }
+                // If we failed but had initial data, silently fail or we could log it.
             } finally {
                 if (!cancelled) {
                     setLoading(false);

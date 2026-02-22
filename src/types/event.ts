@@ -40,11 +40,28 @@ export interface Ticket {
   formatted_registration_end_date: string;
 }
 
+export interface AssociatedEvent {
+  id: string;
+  title: string;
+  slug: string;
+  start_date: string;
+  end_date: string;
+  formatted_start_date: string;
+  formatted_end_date: string;
+  venue: Venue | null;
+  price?: number | string;
+  capacity?: number | string;
+}
+
 export interface Event {
   id: string;
   title: string;
   slug: string;
   type: string;
+  is_group_event?: boolean; // Indicates if this event is actually a group event
+  event_date_range?: { start: string, end: string };
+  associated_events?: AssociatedEvent[];
+  all_day?: boolean; // Indicates if this is an all-day event
   description: string; // Detail description
   excerpt: boolean; // Correcting typo 'except' -> 'excerpt' if possible, but keeping 'except' if API is really 'except'
   except_description: string;

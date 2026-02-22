@@ -1,6 +1,13 @@
-
 /* Single Event Page Container - Specificity: 0-1-0 -> 1-0-0 (ID) */
-#singleEventWrapper.seamless-single-event-container {
+#seamless-plugin-root.seamless-single-event-container {
+    max-width: 1300px !important;
+    margin: 0 auto !important;
+    padding: 20px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    color: #333 !important;
+}
+
+#seamless-plugin-root .seamless-single-event-container {
     max-width: 1300px !important;
     margin: 0 auto !important;
     padding: 20px !important;
@@ -9,26 +16,26 @@
 }
 
 /* Breadcrumbs */
-#singleEventWrapper .seamless-breadcrumbs {
+#seamless-plugin-root .seamless-breadcrumbs {
     font-size: 0.9rem !important;
     color: #666 !important;
     margin-bottom: 20px !important;
 }
 
-#singleEventWrapper .seamless-breadcrumb-current {
+#seamless-plugin-root .seamless-breadcrumb-current {
     font-weight: 600 !important;
     color: #333 !important;
 }
 
 /* Grid Layout */
-#singleEventWrapper .seamless-single-event-grid {
+#seamless-plugin-root .seamless-single-event-grid {
     display: grid !important;
     grid-template-columns: 1fr 390px !important;
     gap: 40px !important;
 }
 
 @media (max-width: 900px) {
-    #singleEventWrapper .seamless-single-event-grid {
+    #seamless-plugin-root .seamless-single-event-grid {
         display: flex !important;
         flex-direction: column !important;
         gap: 20px !important;
@@ -36,13 +43,13 @@
 }
 
 /* Left Content Wrapper (containing desc + accordion) */
-#singleEventWrapper .seamless-single-event-content {
+#seamless-plugin-root .seamless-single-event-content {
     grid-column: 1 !important;
     grid-row: 2 !important;
 }
 
 /* Header Group - Desktop: Col 1, Row 1 */
-#singleEventWrapper .seamless-event-header-group {
+#seamless-plugin-root .seamless-event-header-group {
     display: flex !important;
     align-items: start !important;
     gap: 20px !important;
@@ -55,33 +62,37 @@
 
 /* Specific Flex Orders for Mobile/Tab */
 @media (max-width: 900px) {
-    #singleEventWrapper .seamless-event-header-group {
+    #seamless-plugin-root .seamless-event-header-group {
         order: 1 !important;
     }
-    #singleEventWrapper .seamless-single-event-sidebar { /* Sidebar */
+
+    #seamless-plugin-root .seamless-single-event-sidebar {
+        /* Sidebar */
         order: 2 !important;
     }
-    #singleEventWrapper .seamless-single-event-content { /* Description + Accordion */
+
+    #seamless-plugin-root .seamless-single-event-content {
+        /* Description + Accordion */
         order: 3 !important;
     }
 }
 
 
 
-#singleEventWrapper .seamless-event-icon-circle img {
+#seamless-plugin-root .seamless-event-icon-circle img {
     width: 150px !important;
     height: 120px !important;
     object-fit: contain !important;
 }
 
-#singleEventWrapper .seamless-event-title {
+#seamless-plugin-root .seamless-event-title {
     font-size: 32px !important;
     font-weight: 600 !important;
     color: #1a365d !important;
     margin: 0 0 10px 0 !important;
 }
 
-#singleEventWrapper .seamless-event-subtitle {
+#seamless-plugin-root .seamless-event-subtitle {
     font-size: 1.2rem !important;
     font-weight: 600 !important;
     color: #2d3748 !important;
@@ -90,12 +101,12 @@
     padding-bottom: 10px !important;
 }
 
-#singleEventWrapper .seamless-event-description {
+#seamless-plugin-root .seamless-event-description {
     line-height: 1.6 !important;
     margin-bottom: 30px !important;
 }
 
-#singleEventWrapper .seamless-event-description h3 {
+#seamless-plugin-root .seamless-event-description h3 {
     font-family: 'Montserrat', sans-serif !important;
     font-size: 26px !important;
     line-height: 39px !important;
@@ -104,7 +115,7 @@
 }
 
 /* Using existing ID + Wrapper ID for max specificity */
-#singleEventWrapper #seamless-single-event-description p {
+#seamless-plugin-root p {
     font-family: 'Montserrat', sans-serif !important;
     font-size: 16px !important;
     line-height: 30px !important;
@@ -112,35 +123,35 @@
     margin-block-end: 15px !important;
 }
 
-#singleEventWrapper * a {
+#seamless-plugin-root * a {
     color: var(--seamless-color-secondary, #319795) !important;
     text-decoration: underline !important;
 }
 
-#singleEventWrapper * a:hover {
+#seamless-plugin-root * a:hover {
     color: var(--seamless-color-primary, #0070f3) !important;
     text-decoration: underline !important;
 }
 
-#singleEventWrapper #seamless-single-event-description * a {
+#seamless-plugin-root * a {
     color: var(--seamless-color-secondary, #319795) !important;
     text-decoration: underline !important;
 }
 
-#singleEventWrapper #seamless-single-event-description * a:hover {
+#seamless-plugin-root * a:hover {
     color: var(--seamless-color-primary, #0070f3) !important;
     text-decoration: underline !important;
 }
 
 /* Schedule Table */
-#singleEventWrapper table {
+#seamless-plugin-root table {
     width: 100% !important;
     border-collapse: collapse !important;
     margin-top: 10px !important;
     font-family: 'Montserrat', sans-serif !important;
 }
 
-#singleEventWrapper table thead th {
+#seamless-plugin-root table thead th {
     background-color: #0c2e4e !important;
     color: #ffffff !important;
     text-transform: uppercase !important;
@@ -151,35 +162,35 @@
     border: none !important;
 }
 
-#singleEventWrapper table thead tr th:first-child{
+#seamless-plugin-root table thead tr th:first-child {
     border-radius: 8px 0 0 0 !important;
 }
 
-#singleEventWrapper table thead tr th:last-child{
+#seamless-plugin-root table thead tr th:last-child {
     border-radius: 0 8px 0 0 !important;
 }
 
-#singleEventWrapper table tbody tr:last-child td:first-child{
+#seamless-plugin-root table tbody tr:last-child td:first-child {
     border-radius: 0 0 0 8px !important;
 }
 
-#singleEventWrapper table tbody tr:last-child td:last-child{
+#seamless-plugin-root table tbody tr:last-child td:last-child {
     border-radius: 0 0 8px 0 !important;
 }
 
-#singleEventWrapper table tbody tr:nth-child(odd) {
+#seamless-plugin-root table tbody tr:nth-child(odd) {
     background-color: #f6f6f6 !important;
 }
 
-#singleEventWrapper table tbody tr:nth-child(even) {
+#seamless-plugin-root table tbody tr:nth-child(even) {
     background-color: #ffffff !important;
 }
 
-#singleEventWrapper table tbody tr:hover {
+#seamless-plugin-root table tbody tr:hover {
     background-color: #EFF7F9 !important;
 }
 
-#singleEventWrapper table td {
+#seamless-plugin-root table td {
     padding: 5px 10px !important;
     vertical-align: top !important;
     border: none !important;
@@ -187,7 +198,7 @@
     line-height: 1.6 !important;
 }
 
-#singleEventWrapper table td:first-child {
+#seamless-plugin-root table td:first-child {
     font-weight: 700 !important;
     white-space: nowrap !important;
     width: 180px !important;
@@ -195,9 +206,9 @@
 }
 
 /* Enhancing description content styles */
-#singleEventWrapper table td strong,
-#singleEventWrapper table td b,
-#singleEventWrapper table td h4 {
+#seamless-plugin-root table td strong,
+#seamless-plugin-root table td b,
+#seamless-plugin-root table td h4 {
     color: #000000 !important;
     display: block !important;
     margin-bottom: 4px !important;
@@ -205,25 +216,25 @@
     line-height: 21px !important;
 }
 
-#singleEventWrapper table td a strong{
+#seamless-plugin-root table td a strong {
     color: var(--seamless-color-secondary, #319795) !important;
 }
 
-#singleEventWrapper table td a strong:hover{
+#seamless-plugin-root table td a strong:hover {
     color: var(--seamless-color-primary, #0c2e4e) !important;
 }
 
-#singleEventWrapper table * {
+#seamless-plugin-root table * {
     font-size: 14px !important;
     line-height: 21px !important;
 }
 
-#singleEventWrapper table br {
+#seamless-plugin-root table br {
     display: none !important;
 }
 
-#singleEventWrapper table td em,
-#singleEventWrapper table td i {
+#seamless-plugin-root table td em,
+#seamless-plugin-root table td i {
     color: #718096 !important;
     font-style: italic !important;
     display: block !important;
@@ -232,7 +243,7 @@
 }
 
 /* Sidebar */
-#singleEventWrapper .seamless-single-event-sidebar {
+#seamless-plugin-root .seamless-single-event-sidebar {
     position: sticky !important;
     top: 30px !important;
     display: flex !important;
@@ -243,7 +254,7 @@
     align-self: start !important;
 }
 
-#singleEventWrapper .seamless-sidebar-box {
+#seamless-plugin-root .seamless-sidebar-box {
     display: flex !important;
     flex-direction: column !important;
     gap: 20px !important;
@@ -257,7 +268,7 @@
 
 /* Calendar Button and Dropdown */
 
-#singleEventWrapper .seamless_single_page_calendar_button {
+#seamless-plugin-root .seamless_single_page_calendar_button {
     background-color: var(--seamless-background-color) !important;
     border: 1px solid var(--seamless-color-secondary, #319795) !important;
     border-radius: 10px !important;
@@ -276,18 +287,19 @@
     overflow: visible !important;
 }
 
-#singleEventWrapper .seamless_single_page_calendar_button:hover {
+#seamless-plugin-root .seamless_single_page_calendar_button:hover {
     background-color: var(--seamless-color-secondary, #319795) !important;
     border: 1px solid var(--seamless-color-secondary, #319795) !important;
     color: var(--seamless-background-color, #f7fafc) !important;
 }
 
-#singleEventWrapper .seamless-calendar-check-icon {
+#seamless-plugin-root .seamless-calendar-check-icon {
     position: absolute !important;
     top: -8px !important;
     right: -8px !important;
     background-color: var(--seamless-background-color) !important;
-    color: #4CAF50 !important; /* Green Checkmark */
+    color: #4CAF50 !important;
+    /* Green Checkmark */
     border-radius: 50% !important;
     width: 24px !important;
     height: 24px !important;
@@ -298,9 +310,10 @@
 }
 
 /* Dropdown Menu */
-#singleEventWrapper .seamless-calendar-dropdown {
+#seamless-plugin-root .seamless-calendar-dropdown {
     position: absolute !important;
-    bottom: 110% !important; /* Show above the button */
+    bottom: 110% !important;
+    /* Show above the button */
     left: 0 !important;
     width: 200px !important;
     background-color: white !important;
@@ -313,7 +326,7 @@
     flex-direction: column !important;
 }
 
-#singleEventWrapper .seamless-calendar-option {
+#seamless-plugin-root .seamless-calendar-option {
     display: flex !important;
     align-items: center !important;
     padding: 10px 20px !important;
@@ -327,31 +340,31 @@
     cursor: pointer !important;
 }
 
-#singleEventWrapper .seamless-calendar-option:hover {
+#seamless-plugin-root .seamless-calendar-option:hover {
     background-color: #f7fafc !important;
     color: #2d3748 !important;
 }
 
-#singleEventWrapper .seamless-cal-icon {
+#seamless-plugin-root .seamless-cal-icon {
     margin-right: 12px !important;
     color: inherit !important;
 }
 
-#singleEventWrapper .seamless-detail-row {
+#seamless-plugin-root .seamless-detail-row {
     display: flex !important;
     align-items: flex-start !important;
     margin-bottom: 16px !important;
     gap: 12px !important;
 }
 
-#singleEventWrapper .seamless-detail-icon {
+#seamless-plugin-root .seamless-detail-icon {
     width: 20px !important;
     height: 20px !important;
-    color: var(--seamless-color-secondary, #319795) !important; 
+    color: var(--seamless-color-secondary, #319795) !important;
     margin-top: 2px !important;
 }
 
-#singleEventWrapper .seamless-detail-label {
+#seamless-plugin-root .seamless-detail-label {
     display: block !important;
     font-size: 0.85rem !important;
     font-weight: 600 !important;
@@ -359,58 +372,75 @@
     margin-bottom: 2px !important;
 }
 
-#singleEventWrapper .seamless-detail-value {
+#seamless-plugin-root .seamless-detail-value {
     font-size: 0.95rem !important;
     color: #2d3748 !important;
     margin: 0 !important;
 }
 
-#singleEventWrapper .seamless-detail-subvalue {
+#seamless-plugin-root .seamless-detail-subvalue {
     font-size: 0.85rem !important;
     color: #718096 !important;
     margin: 0 !important;
 }
 
 /* Tickets Box */
-#singleEventWrapper .seamless-tickets-title {
+#seamless-plugin-root .seamless-tickets-title {
     font-size: 1.25rem !important;
     font-weight: 600 !important;
     margin-bottom: 16px !important;
     color: #2d3748 !important;
 }
 
-#singleEventWrapper .seamless-ticket-row {
+#seamless-plugin-root .seamless-ticket-item {
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding-bottom: 16px !important;
+    margin-bottom: 16px !important;
+}
+
+#seamless-plugin-root .seamless-ticket-row {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    margin-bottom: 12px !important;
-    padding-bottom: 12px !important;
-    border-bottom: 1px solid #cccccc !important;
+    margin-bottom: 8px !important;
 }
 
-#singleEventWrapper .seamless-ticket-name {
-    font-size: 14px !important;
+#seamless-plugin-root .seamless-ticket-name {
+    font-size: 15px !important;
     font-weight: 500 !important;
-    color: #2d3748 !important;
+    color: #1e293b !important;
     flex: 1 !important;
+    padding-right: 12px !important;
 }
 
-#singleEventWrapper .seamless-ticket-price {
-    font-weight: 700 !important;
-    color: #1a365d !important;
-    margin-left: 10px !important;
+#seamless-plugin-root .seamless-ticket-price {
+    font-weight: 600 !important;
+    color: #0369a1 !important;
+    font-size: 16px !important;
 }
 
-#singleEventWrapper .seamless-ticket-deadline {
-    font-size: 0.75rem !important;
-    text-align: center !important;
-    color: #000000 !important;
+#seamless-plugin-root .seamless-ticket-deadline {
+    font-size: 13px !important;
+    text-align: left !important;
+    color: #64748b !important;
     font-style: italic !important;
     display: block !important;
 }
 
+/* Event Passed Box */
+#seamless-plugin-root .seamless-event-passed-box {
+    text-align: center !important;
+    padding: 16px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    color: #64748b !important;
+    background-color: #f8fafc !important;
+    font-weight: 500 !important;
+    margin-top: 16px !important;
+}
+
 /* Register Button */
-#singleEventWrapper .event-register-btn {
+#seamless-plugin-root .event-register-btn {
     background-color: var(--seamless-color-secondary, #319795) !important;
     color: white !important;
     padding: 12px 20px !important;
@@ -423,22 +453,23 @@
     display: block !important;
     text-decoration: none !important;
     width: 100% !important;
+    margin-top: 16px !important;
 }
 
-#singleEventWrapper .event-register-btn:hover {
+#seamless-plugin-root .event-register-btn:hover {
     background-color: var(--seamless-color-primary, #0070f3) !important;
     color: white !important;
     text-decoration: none !important;
 }
 
-#singleEventWrapper .event-register-btn[disabled] {
+#seamless-plugin-root .event-register-btn[disabled] {
     opacity: 0.6 !important;
     cursor: not-allowed !important;
     background-color: #a0aec0 !important;
 }
 
 /* Buttons */
-#singleEventWrapper .seamless-btn-outline-primary {
+#seamless-plugin-root .seamless-btn-outline-primary {
     background-color: transparent !important;
     color: var(--seamless-color-secondary, #319795) !important;
     padding: 10px 20px !important;
@@ -452,13 +483,13 @@
     text-decoration: none !important;
 }
 
-#singleEventWrapper .seamless-btn-outline-primary:hover {
+#seamless-plugin-root .seamless-btn-outline-primary:hover {
     background-color: #e6fffa !important;
 }
 
 /* Force static positioning on mobile/tablet sidebar (override sticky) */
 @media (max-width: 900px) {
-    #singleEventWrapper .seamless-single-event-sidebar {
+    #seamless-plugin-root .seamless-single-event-sidebar {
         position: static !important;
     }
 }

@@ -11,6 +11,7 @@ import { CalendarView } from './CalendarView';
 import { Pagination } from './Pagination';
 import type { ViewType, Event } from '../types/event';
 import { useCalendarEvents } from '../hooks/useCalendarEvents';
+import { LoadingSpinner } from './LoadingSpinner';
 // ... defaults
 
 export const EventListView: React.FC = () => {
@@ -122,7 +123,7 @@ export const EventListView: React.FC = () => {
     // ── Render ─────────────────────────────────────────────────────
     if (error) {
         return (
-            <div id="seamless-event-container" className="seamless-page-wrapper">
+            <div  className="seamless-page-wrapper">
                 <div className="seamless-error-container">
                     <p className="seamless-error-title">Error loading items</p>
                     <p className="seamless-error-message">{error}</p>
@@ -156,9 +157,11 @@ export const EventListView: React.FC = () => {
             </aside>
 
             <header className="seamless-results-info">
-                <p className="seamless-results-text">
+                <span className="seamless-results-text">
                     {loading ? (
-                        <span>Loading items...</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <span className="seamless-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px', margin: 0, display: 'inline-block' }} />
+                        </span>
                     ) : (
                         <>
                             Showing{' '}
@@ -171,7 +174,7 @@ export const EventListView: React.FC = () => {
                             )}
                         </>
                     )}
-                </p>
+                </span>
                 <ViewSwitcher currentView={currentView} onViewChange={handleViewChange} />
             </header>
 
@@ -179,12 +182,9 @@ export const EventListView: React.FC = () => {
                 {loading && (
                     <div className="seamless-loading-overlay" style={{
                         position: 'absolute', inset: 0,
-                        display: 'flex', justifyContent: 'center', alignItems: 'center',
                         backgroundColor: 'rgba(255,255,255,0.7)', zIndex: 10
                     }}>
-                        <div className="seamless-loading-content">
-                            <div className="seamless-spinner" />
-                        </div>
+                        <LoadingSpinner />
                     </div>
                 )}
 
@@ -196,13 +196,13 @@ export const EventListView: React.FC = () => {
                     <CalendarView
                         events={filteredItems}
                         currentDate={calendarDate}
-                        onMonthChange={handleMonthChange}
+                        onDateChange={handleMonthChange}
                     />
                 ) : !loading && currentView === 'grid' ? (
                     <>
                         <div className="seamless-items-grid">
                             {filteredItems.map(item => (
-                                <Card key={item.id} item={item} layout="grid" />
+                                <Card key={item?.id} item={item} layout="grid" />
                             ))}
                         </div>
                         <Pagination
@@ -216,7 +216,7 @@ export const EventListView: React.FC = () => {
                     <>
                         <div className="seamless-items-list">
                             {filteredItems.map(item => (
-                                <Card key={item.id} item={item} layout="list" />
+                                <Card key={item?.id} item={item} layout="list" />
                             ))}
                         </div>
                         <Pagination

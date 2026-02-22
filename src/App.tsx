@@ -10,12 +10,13 @@ import { UserDashboardView } from './components/UserDashboardView';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <div id="seamless-event-container" className="seamless-page-wrapper">
+      <div id="seamless-plugin-root" className="seamless-page-wrapper">
         <Routes>
           <Route path="/" element={<EventListView />} />
           <Route path="/events" element={<EventListView />} />
-          <Route path="/event/:slug" element={<SingleEventPage />} />
-          <Route path="/membership-plans" element={<MembershipListView />} />
+          <Route path="/events/:slug" element={<SingleEventPage />} />
+          <Route path="/group-event/:slug" element={<SingleEventPage />} />
+          <Route path="/memberships" element={<MembershipListView />} />
           <Route path="/courses" element={<CoursesView />} />
           <Route path="/dashboard" element={<UserDashboardView />} />
           {/* Fallback for unknown routes */}

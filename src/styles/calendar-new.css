@@ -1,0 +1,779 @@
+/* CALENDAR MODERN CSS V2 */
+
+#seamless-plugin-root .seamless-calendar-container {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    font-family: var(--seamless-font-family-default) !important;
+}
+
+/* Header */
+#seamless-plugin-root .seamless-calendar-header-modern {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+    padding-bottom: 24px !important;
+}
+
+#seamless-plugin-root .seamless-calendar-header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+
+#seamless-plugin-root .seamless-calendar-today-box {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    min-width: 60px !important;
+    cursor: pointer !important;
+}
+
+#seamless-plugin-root .seamless-calendar-today-month {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+}
+
+#seamless-plugin-root .seamless-calendar-today-date {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: var(--seamless-color-primary) !important;
+}
+
+#seamless-plugin-root .seamless-calendar-title-stack {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#seamless-plugin-root .seamless-calendar-main-title {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--seamless-color-primary) !important;
+    margin: 0 !important;
+}
+
+#seamless-plugin-root .seamless-calendar-subtitle {
+    font-size: 13px !important;
+    color: #94a3b8 !important;
+}
+
+#seamless-plugin-root .seamless-calendar-header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 24px !important;
+}
+
+#seamless-plugin-root .seamless-calendar-nav-buttons {
+    display: flex !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    gap: 8px !important;
+    padding: 0px 12px !important;
+}
+
+#seamless-plugin-root .seamless-calendar-nav-btn {
+    background: white !important;
+    border: none !important;
+    padding-bottom: 4px !important;
+    font-size: 24px !important;
+    cursor: pointer !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+
+}
+
+#seamless-plugin-root .seamless-calendar-nav-btn:hover {
+    background: #f8fafc !important;
+}
+
+#seamless-plugin-root .seamless-calendar-today-btn {
+    border-left: 1px solid #e2e8f0 !important;
+    border-right: 1px solid #e2e8f0 !important;
+    color: var(--seamless-color-primary) !important;
+    font-size: 18px !important;
+}
+
+#seamless-plugin-root .seamless-calendar-view-toggle {
+    display: flex !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 2px !important;
+    gap: 20px !important;
+    padding: 8px 12px !important;
+}
+
+#seamless-plugin-root .seamless-calendar-view-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 8px 14px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    border-radius: 18px !important;
+    cursor: pointer !important;
+}
+
+#seamless-plugin-root .seamless-calendar-view-btn.active {
+    color: #000000 !important;
+}
+
+/* MONTH GRID FIX */
+#seamless-plugin-root .seamless-month-rows-container {
+    display: flex !important;
+    flex-direction: column !important;
+    border-top: 1px solid #e2e8f0 !important;
+    border-left: 1px solid #e2e8f0 !important;
+    box-sizing: border-box !important;
+}
+
+#seamless-plugin-root .seamless-month-header-row {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+}
+
+#seamless-plugin-root .seamless-month-week-row {
+    position: relative !important;
+    min-height: 120px !important;
+}
+
+#seamless-plugin-root .seamless-month-week-bg {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    position: absolute !important;
+    inset: 0 !important;
+}
+
+#seamless-plugin-root .seamless-month-events-layer {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    grid-auto-rows: 22px !important;
+    position: relative !important;
+    padding-top: 32px !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+    gap: 2px 0 !important;
+}
+
+#seamless-plugin-root .seamless-month-abs-event {
+    pointer-events: auto !important;
+    transition: filter 0.2s !important;
+    font-family: var(--seamless-font-family-default) !important;
+}
+
+#seamless-plugin-root .seamless-month-abs-event:hover {
+    filter: brightness(0.95) !important;
+    z-index: 20 !important;
+}
+
+#seamless-plugin-root .seamless-month-header-cell {
+    border-right: 1px solid #e2e8f0 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    background: #fcfcfc !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #000000 !important;
+    text-align: center !important;
+    padding: 12px 6px !important;
+    box-sizing: border-box !important;
+}
+
+#seamless-plugin-root .seamless-month-cell {
+    border-right: 1px solid #e2e8f0 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 8px !important;
+    cursor: pointer !important;
+    transition: background 0.2s !important;
+    box-sizing: border-box !important;
+}
+
+#seamless-plugin-root .seamless-month-cell:hover {
+    background: #f8fafc !important;
+}
+
+#seamless-plugin-root .seamless-month-cell.inactive {
+    background: #fcfcfc !important;
+}
+
+#seamless-plugin-root .seamless-month-cell.inactive .seamless-month-date-num {
+    color: #cbd5e1 !important;
+}
+
+#seamless-plugin-root .seamless-month-date-num {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #000000 !important;
+}
+
+#seamless-plugin-root .seamless-month-cell.sunday-col .seamless-month-date-num {
+    color: #ef4444 !important;
+}
+
+#seamless-plugin-root .seamless-month-cell.today .seamless-month-date-num {
+    background: #000000 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#seamless-plugin-root .seamless-month-cell-header {
+    margin-bottom: 8px !important;
+}
+
+#seamless-plugin-root .seamless-month-events-mobile {
+    display: none !important;
+}
+
+/* Popup */
+#seamless-plugin-root .seamless-month-popup {
+    position: absolute !important;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    z-index: 50 !important;
+    width: 240px !important;
+    border: 1px solid #e2e8f0 !important;
+
+}
+
+#seamless-plugin-root .seamless-popup-header {
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    color: var(--seamless-color-primary) !important;
+    padding: 12px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+#seamless-plugin-root .seamless-popup-body {
+    padding: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+}
+
+#seamless-plugin-root .seamless-popup-event {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 11px !important;
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+    cursor: pointer !important;
+}
+
+#seamless-plugin-root .seamless-popup-event:hover {
+    background-color: #f8fafc !important;
+}
+
+#seamless-plugin-root .seamless-popup-dot {
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+}
+
+#seamless-plugin-root .seamless-popup-time {
+    margin-left: auto !important;
+}
+
+/* WEEK / DAY VIEW GRID SYSTEM */
+#seamless-plugin-root .seamless-week-view {
+    display: flex !important;
+    flex-direction: column !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+}
+
+/* Header Row for Day columns */
+#seamless-plugin-root .seamless-week-header-row {
+    display: flex !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+#seamless-plugin-root .seamless-week-time-gutter {
+    width: 60px !important;
+    flex-shrink: 0 !important;
+    border-right: 1px solid #e2e8f0 !important;
+    position: relative !important;
+    background: #fbfbfb !important;
+}
+
+#seamless-plugin-root .seamless-week-allday-label {
+    position: absolute !important;
+    bottom: 8px !important;
+    right: 8px !important;
+    font-size: 10px !important;
+    color: #64748b !important;
+}
+
+#seamless-plugin-root .seamless-week-days {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    flex-grow: 1 !important;
+}
+
+#seamless-plugin-root .seamless-week-day-header {
+    text-align: center !important;
+    padding: 12px 8px !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+
+#seamless-plugin-root .seamless-week-day-header:last-child {
+    border-right: none !important;
+}
+
+#seamless-plugin-root .seamless-week-date-num {
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    margin-right: 8px !important;
+}
+
+#seamless-plugin-root .seamless-week-day-name {
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    color: #64748b !important;
+}
+
+#seamless-plugin-root .seamless-week-day-header.today .seamless-week-date-num,
+#seamless-plugin-root .seamless-week-day-header.today .seamless-week-day-name {
+    color: #000000 !important;
+    font-weight: 700 !important;
+}
+
+#seamless-plugin-root .seamless-week-day-header.sunday .seamless-week-date-num,
+#seamless-plugin-root .seamless-week-day-header.sunday .seamless-week-day-name {
+    color: #ef4444 !important;
+}
+
+/* All day row */
+#seamless-plugin-root .seamless-week-allday-row {
+    display: flex !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    min-height: 30px !important;
+}
+
+#seamless-plugin-root .seamless-week-allday-content {
+    flex-grow: 1 !important;
+    padding: 4px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+}
+
+#seamless-plugin-root .seamless-week-allday-event {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    border-left: 2px solid !important;
+    cursor: pointer !important;
+    font-weight: 600 !important;
+}
+
+/* Grid Body */
+#seamless-plugin-root .seamless-week-grid-body {
+    display: flex !important;
+    height: 600px !important;
+    overflow-y: auto !important;
+    position: relative !important;
+    scrollbar-width: none !important;
+    /* Firefox */
+    -ms-overflow-style: none !important;
+    /* IE/Edge */
+}
+
+#seamless-plugin-root .seamless-week-grid-body::-webkit-scrollbar {
+    display: none !important;
+    /* Chrome/Safari/Edge */
+}
+
+#seamless-plugin-root .seamless-week-hour-label {
+    height: 60px !important;
+    text-align: right !important;
+    padding-right: 8px !important;
+    font-size: 10px !important;
+    color: #94a3b8 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: flex-start !important;
+    transform: translateY(-5px) !important;
+    /* center on the line */
+}
+
+#seamless-plugin-root .seamless-week-hour-label.empty {
+    height: 60px !important;
+}
+
+#seamless-plugin-root .seamless-week-columns-container {
+    flex-grow: 1 !important;
+    position: relative !important;
+}
+
+#seamless-plugin-root .seamless-week-bg-lines {
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    pointer-events: none !important;
+}
+
+#seamless-plugin-root .seamless-week-bg-line {
+    height: 60px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+#seamless-plugin-root .seamless-week-columns {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    height: 100% !important;
+    position: absolute !important;
+    inset: 0 !important;
+}
+
+#seamless-plugin-root .seamless-week-day-col {
+    border-right: 1px solid #e2e8f0 !important;
+    position: relative !important;
+    height: 1440px !important;
+    /* 24 * 60px */
+}
+
+#seamless-plugin-root .seamless-week-day-col:last-child {
+    border-right: none !important;
+}
+
+#seamless-plugin-root .seamless-week-event-block {
+    position: absolute !important;
+    left: 2px !important;
+    right: 2px !important;
+    border-radius: 4px !important;
+    border-left: 3px solid !important;
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+    cursor: pointer !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    z-index: 10 !important;
+}
+
+#seamless-plugin-root .seamless-week-event-block:hover {
+    filter: brightness(0.95) !important;
+    z-index: 20 !important;
+}
+
+#seamless-plugin-root .seamless-week-event-title-span {
+    font-weight: 700 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    line-height: 1.2 !important;
+}
+
+
+@media(max-width: 768px) {
+    #seamless-plugin-root .seamless-month-events-desktop {
+        display: none !important;
+    }
+
+    #seamless-plugin-root .seamless-month-events-mobile {
+        display: flex !important;
+        gap: 4px !important;
+        flex-wrap: wrap !important;
+        margin-top: 4px !important;
+        justify-content: center !important;
+    }
+
+    #seamless-plugin-root .seamless-mobile-dot {
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 50% !important;
+    }
+
+    #seamless-plugin-root .seamless-calendar-header-modern {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 16px !important;
+    }
+
+    #seamless-plugin-root .seamless-calendar-header-right {
+        flex-direction: column-reverse !important;
+    }
+}
+
+#seamless-plugin-root .seamless-month-week-row {
+    position: relative !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#seamless-plugin-root .seamless-month-week-bg {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+#seamless-plugin-root .seamless-month-week-events {
+    position: absolute !important;
+    top: 36px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    grid-auto-rows: 24px !important;
+    gap: 4px 0 !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+    overflow: hidden !important;
+}
+
+#seamless-plugin-root .seamless-month-cell-more {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    margin-top: auto !important;
+    text-align: left !important;
+    padding-left: 2px !important;
+}
+
+#seamless-plugin-root .seamless-month-event-bar {
+    pointer-events: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 10px !important;
+    padding: 2px 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    gap: 4px !important;
+    cursor: pointer !important;
+    font-family: var(--seamless-font-family-default) !important;
+    box-sizing: border-box !important;
+}
+
+#seamless-plugin-root .seamless-month-event-bar:hover {
+    filter: brightness(0.95) !important;
+    z-index: 10 !important;
+    font-weight: 700 !important;
+}
+
+#seamless-plugin-root .seamless-month-event-time.span-time {
+    font-size: 9px !important;
+    opacity: 0.6 !important;
+}
+
+#seamless-plugin-root .seamless-week-day-columns-bg {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    height: 100% !important;
+    position: absolute !important;
+    inset: 0 !important;
+}
+
+#seamless-plugin-root .seamless-week-events-overlay {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    height: 100% !important;
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+}
+
+/* 
+===========================================
+DYNAMIC THEME CLASSES
+Provides pure CSS coloring for categories 
+=========================================== 
+*/
+#seamless-plugin-root .seamless-color-amber-bg {
+    background-color: #fef3c7 !important;
+    border-color: #f59e0b !important;
+    color: #92400e !important;
+}
+
+#seamless-plugin-root .seamless-color-amber-border {
+    background-color: #f59e0b !important;
+    border-color: #f59e0b !important;
+}
+
+#seamless-plugin-root .seamless-color-red-bg {
+    background-color: #fee2e2 !important;
+    border-color: #ef4444 !important;
+    color: #991b1b !important;
+}
+
+#seamless-plugin-root .seamless-color-red-border {
+    background-color: #ef4444 !important;
+    border-color: #ef4444 !important;
+}
+
+#seamless-plugin-root .seamless-color-indigo-bg {
+    background-color: #e0e7ff !important;
+    border-color: #6366f1 !important;
+    color: #3730a3 !important;
+}
+
+#seamless-plugin-root .seamless-color-indigo-border {
+    background-color: #6366f1 !important;
+    border-color: #6366f1 !important;
+}
+
+#seamless-plugin-root .seamless-color-green-bg {
+    background-color: #dcfce7 !important;
+    border-color: #22c55e !important;
+    color: #166534 !important;
+}
+
+#seamless-plugin-root .seamless-color-green-border {
+    background-color: #22c55e !important;
+    border-color: #22c55e !important;
+}
+
+#seamless-plugin-root .seamless-color-purple-bg {
+    background-color: #f3e8ff !important;
+    border-color: #a855f7 !important;
+    color: #6b21a8 !important;
+}
+
+#seamless-plugin-root .seamless-color-purple-border {
+    background-color: #a855f7 !important;
+    border-color: #a855f7 !important;
+}
+
+#seamless-plugin-root .seamless-color-orange-bg {
+    background-color: #ffedd5 !important;
+    border-color: #f97316 !important;
+    color: #9a3412 !important;
+}
+
+#seamless-plugin-root .seamless-color-orange-border {
+    background-color: #f97316 !important;
+    border-color: #f97316 !important;
+}
+
+#seamless-plugin-root .seamless-color-pink-bg {
+    background-color: #fce7f3 !important;
+    border-color: #ec4899 !important;
+    color: #9d174d !important;
+}
+
+#seamless-plugin-root .seamless-color-pink-border {
+    background-color: #ec4899 !important;
+    border-color: #ec4899 !important;
+}
+
+#seamless-plugin-root .seamless-color-blue-bg {
+    background-color: #dbeafe !important;
+    border-color: #3b82f6 !important;
+    color: #1e40af !important;
+}
+
+#seamless-plugin-root .seamless-color-blue-border {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+}
+
+#seamless-plugin-root .seamless-color-teal-bg {
+    background-color: #ccfbf1 !important;
+    border-color: #14b8a6 !important;
+    color: #115e59 !important;
+}
+
+#seamless-plugin-root .seamless-color-teal-border {
+    background-color: #14b8a6 !important;
+    border-color: #14b8a6 !important;
+}
+
+#seamless-plugin-root .seamless-color-slate-bg {
+    background-color: #f1f5f9 !important;
+    border-color: #64748b !important;
+    color: #334155 !important;
+}
+
+#seamless-plugin-root .seamless-color-slate-border {
+    background-color: #64748b !important;
+    border-color: #64748b !important;
+}
+
+#seamless-plugin-root .seamless-week-event-block {
+    pointer-events: auto !important;
+    position: absolute !important;
+    border-radius: 4px !important;
+    border-left: 3px solid !important;
+    padding: 2px 4px !important;
+    font-size: 10px !important;
+    cursor: pointer !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+}
+
+#seamless-plugin-root .seamless-week-event-block:hover {
+    z-index: 50 !important;
+    filter: brightness(0.95) !important;
+}
+
+#seamless-plugin-root .desktop-only {
+    display: block !important;
+}
+
+#seamless-plugin-root .seamless-month-grid-mobile {
+    display: none !important;
+}
+
+@media(max-width: 768px) {
+    #seamless-plugin-root .desktop-only {
+        display: none !important;
+    }
+
+    #seamless-plugin-root .seamless-month-grid-mobile {
+        display: grid !important;
+        grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+        border-top: 1px solid #e2e8f0 !important;
+        border-left: 1px solid #e2e8f0 !important;
+    }
+
+    #seamless-plugin-root .hidden-mobile {
+        display: none !important;
+    }
+
+    #seamless-plugin-root .seamless-month-events-layer {
+        display: none !important;
+    }
+
+    #seamless-plugin-root .seamless-month-events-mobile {
+        display: flex !important;
+        gap: 4px !important;
+        flex-wrap: wrap !important;
+        margin-top: 4px !important;
+        justify-content: center !important;
+    }
+
+    #seamless-plugin-root .seamless-mobile-dot {
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 50% !important;
+        display: inline-block !important;
+    }
+}

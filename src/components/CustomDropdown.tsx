@@ -19,7 +19,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (containerRef.current && !containerRef.current.contains(event?.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -36,8 +36,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
       {/* Button/Trigger */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="seamless-dropdown-trigger"
-        style={{ fontFamily: 'Montserrat' }}
+        className="seamless-dropdown-trigger seamless-font-montserrat"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -54,7 +53,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
       {isOpen && (
         <div className="seamless-dropdown-menu">
           {/* Header with selected value */}
-          <div className="seamless-dropdown-header" style={{ fontFamily: 'Montserrat' }}>
+          <div className="seamless-dropdown-header seamless-font-montserrat">
             {displayValue}
           </div>
 
@@ -67,8 +66,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
                   onChange(option.value);
                   setIsOpen(false);
                 }}
-                className="seamless-dropdown-item"
-                style={{ fontFamily: 'Montserrat' }}
+                className="seamless-dropdown-item seamless-font-montserrat"
                 role="option"
                 tabIndex={0}
                 onKeyDown={(e) => {

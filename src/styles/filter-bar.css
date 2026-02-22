@@ -2,7 +2,7 @@
    SEAMLESS EVENT DISPLAY - FILTER BAR STYLES
    ============================================ */
 
-.seamless-filter-bar {
+#seamless-plugin-root .seamless-filter-bar {
   position: relative !important;
   width: 99.5vw !important;
   left: 50% !important;
@@ -15,7 +15,7 @@
   box-sizing: border-box !important;
 }
 
-.seamless-filter-bar-content {
+#seamless-plugin-root .seamless-filter-bar-content {
   max-width: 80rem !important;
   width: 100% !important;
   margin: 0 auto !important;
@@ -25,23 +25,23 @@
   justify-content: center !important;
 }
 
-.seamless-filter-bar-inner {
+#seamless-plugin-root .seamless-filter-bar-inner {
   width: 100% !important;
 }
 
 /* Filter bar desktop layout */
-.seamless-filter-bar-desktop {
+#seamless-plugin-root .seamless-filter-bar-desktop {
   display: none !important;
 }
 
 @media (min-width: 768px) {
-  .seamless-filter-bar-desktop {
+  #seamless-plugin-root .seamless-filter-bar-desktop {
     display: block !important;
   }
 }
 
 /* Filter bar header row */
-.seamless-filter-header-row {
+#seamless-plugin-root .seamless-filter-header-row {
   display: flex !important;
   align-items: center !important;
   gap: var(--seamless-spacing-6) !important;
@@ -49,7 +49,7 @@
   flex-wrap: wrap !important;
 }
 
-.seamless-filter-label {
+#seamless-plugin-root .seamless-filter-label {
   font-size: var(--seamless-font-size-base) !important;
   font-weight: 400 !important;
   line-height: 1.5 !important;
@@ -60,13 +60,13 @@
   letter-spacing: 0.5px !important;
 }
 
-.seamless-filter-search-wrapper {
+#seamless-plugin-root .seamless-filter-search-wrapper {
   flex: 1 !important;
   min-width: 200px !important;
 }
 
 /* Filter controls row */
-.seamless-filter-controls-row {
+#seamless-plugin-root .seamless-filter-controls-row {
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
   gap: 25px !important;
@@ -74,41 +74,41 @@
   width: 100% !important;
 }
 
-.seamless-filter-control {
+#seamless-plugin-root .seamless-filter-control {
   min-width: 0 !important;
   min-height: 44px !important;
 }
 
 /* Filter bar mobile layout */
-.seamless-filter-bar-mobile {
+#seamless-plugin-root .seamless-filter-bar-mobile {
   display: block !important;
 }
 
 @media (min-width: 768px) {
-  .seamless-filter-bar-mobile {
+  #seamless-plugin-root .seamless-filter-bar-mobile {
     display: none !important;
   }
 }
 
-.seamless-filter-mobile-controls {
+#seamless-plugin-root .seamless-filter-mobile-controls {
   display: flex !important;
   flex-direction: column !important;
   gap: var(--seamless-spacing-2) !important;
   width: 100% !important;
 }
 
-.seamless-filter-mobile-control {
+#seamless-plugin-root .seamless-filter-mobile-control {
   width: 100% !important;
 }
 
-.seamless-dropdown-trigger {
+#seamless-plugin-root .seamless-dropdown-trigger {
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
 }
 
 /* TEXT truncates */
-.seamless-dropdown-trigger .truncate {
+#seamless-plugin-root .seamless-dropdown-trigger .truncate {
   flex: 1 !important;
   min-width: 0 !important;
   white-space: nowrap !important;
@@ -117,17 +117,17 @@
 }
 
 /* ARROW always visible */
-.seamless-dropdown-arrow {
+#seamless-plugin-root .seamless-dropdown-arrow {
   flex-shrink: 0 !important;
 }
 
 /* Responsive adjustments for smaller screens */
 @media (max-width: 640px) {
-  .seamless-filter-bar {
+  #seamless-plugin-root .seamless-filter-bar {
     padding: var(--seamless-spacing-4) 0 !important;
   }
 
-  .seamless-filter-bar-content {
+  #seamless-plugin-root .seamless-filter-bar-content {
     padding-left: var(--seamless-spacing-3) !important;
     padding-right: var(--seamless-spacing-3) !important;
   }

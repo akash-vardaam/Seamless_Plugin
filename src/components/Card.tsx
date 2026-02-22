@@ -54,13 +54,14 @@ const createItemSlug = (title: string, id: string): string => {
 
 const getItemLink = (item: Event): string => {
   // Use API slug if available, otherwise create one
-  if (item.slug) {
+  const endpoint = item?.is_group_event ? 'group-event' : 'events';
+  if (item?.slug) {
     // If in development/standalone mode, return relative path for router
     // In production/WP, we might want full URL, but here we prioritize app navigation
-    return `/event/${item.slug}`;
+    return `/${endpoint}/${item?.slug}`;
   }
-  const slug = createItemSlug(item.title, item.id);
-  return `/event/${slug}`;
+  const slug = createItemSlug(item?.title, item?.id);
+  return `/${endpoint}/${slug}`;
 };
 
 const stripHtmlTags = (html: string): string => {
@@ -74,10 +75,10 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
       <article className="seamless-card">
         {/* Image Container */}
         <div className="seamless-card-image-container">
-          {item.featured_image && (
+          {item?.featured_image && (
             <img
-              src={item.featured_image}
-              alt={item.title}
+              src={item?.featured_image}
+              alt={item?.title}
               className="seamless-card-image"
             />
           )}
@@ -88,20 +89,19 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           {/* Title */}
           <Link
             to={getItemLink(item)}
-            className="seamless-card-title"
-            style={{ fontFamily: 'Merriweather' }}
+            className="seamless-card-title seamless-font-merriweather"
           >
-            {item.title}
+            {item?.title}
           </Link>
 
           {/* Date Range */}
           <p className="seamless-card-date">
-            {formatDateRange(item.start_date, item.end_date || item.start_date)}
+            {formatDateRange(item?.start_date, item?.end_date || item?.start_date)}
           </p>
 
           {/* Time */}
           <p className="seamless-card-time">
-            {formatTimeRange(item.start_date, item.end_date || item.start_date)}
+            {formatTimeRange(item?.start_date, item?.end_date || item?.start_date)}
           </p>
 
           {/* SEE DETAILS Button */}
@@ -122,11 +122,11 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
       <div className="seamless-card-list-content">
         {/* Image Container */}
         <div className="seamless-card-list-image">
-          {item.featured_image ? (
+          {item?.featured_image ? (
             <div className="seamless-card-list-image-wrapper">
               <img
-                src={item.featured_image}
-                alt={item.title}
+                src={item?.featured_image}
+                alt={item?.title}
                 className="seamless-card-list-image-img"
               />
             </div>
@@ -142,28 +142,27 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           {/* Title */}
           <Link
             to={getItemLink(item)}
-            className="seamless-card-list-title"
-            style={{ fontFamily: 'Merriweather' }}
+            className="seamless-card-list-title seamless-font-merriweather"
           >
-            {item.title}
+            {item?.title}
           </Link>
 
           {/* Item Meta Information */}
           <div className="seamless-card-list-meta">
             {/* Date Range */}
             <p className="seamless-card-list-meta-item seamless-card-list-meta-date">
-              {formatDateRange(item.start_date, item.end_date || item.start_date)}
+              {formatDateRange(item?.start_date, item?.end_date || item?.start_date)}
             </p>
 
             {/* Time */}
             <p className="seamless-card-list-meta-item">
-              {formatTimeRange(item.start_date, item.end_date || item.start_date)}
+              {formatTimeRange(item?.start_date, item?.end_date || item?.start_date)}
             </p>
 
             {/* Location */}
-            {item.venue ? (
+            {item?.venue ? (
               <p className="seamless-card-list-meta-item">
-                {item.venue.name || 'Online'}
+                {item?.venue.name || 'Online'}
               </p>
             ) : (
               <p className="seamless-card-list-meta-item">
@@ -173,9 +172,9 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           </div>
 
           {/* Description */}
-          {item.description && (
+          {item?.description && (
             <p className="seamless-card-list-description">
-              {stripHtmlTags(item.description)}
+              {stripHtmlTags(item?.description)}
             </p>
           )}
 

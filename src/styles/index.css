@@ -46,21 +46,21 @@
    ============================================ */
 
 /* Utility class for text truncation */
-.seamless-line-clamp-1 {
+#seamless-plugin-root .seamless-line-clamp-1 {
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 1 !important;
   -webkit-box-orient: vertical !important;
 }
 
-.seamless-line-clamp-2 {
+#seamless-plugin-root .seamless-line-clamp-2 {
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important;
   -webkit-box-orient: vertical !important;
 }
 
-.seamless-line-clamp-3 {
+#seamless-plugin-root .seamless-line-clamp-3 {
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-line-clamp: 3 !important;
@@ -68,146 +68,146 @@
 }
 
 /* Responsive utility classes */
-.seamless-hidden-mobile {
+#seamless-plugin-root .seamless-hidden-mobile {
   display: none !important;
 }
 
 @media (min-width: 768px) {
-  .seamless-hidden-mobile {
+  #seamless-plugin-root .seamless-hidden-mobile {
     display: block !important;
   }
 
-  .seamless-hidden-desktop {
+  #seamless-plugin-root .seamless-hidden-desktop {
     display: none !important;
   }
 }
 
 /* Flex utilities */
-.seamless-flex {
+#seamless-plugin-root .seamless-flex {
   display: flex !important;
 }
 
-.seamless-flex-between {
+#seamless-plugin-root .seamless-flex-between {
   display: flex !important;
   justify-content: space-between !important;
 }
 
-.seamless-flex-center {
+#seamless-plugin-root .seamless-flex-center {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-.seamless-flex-col {
+#seamless-plugin-root .seamless-flex-col {
   display: flex !important;
   flex-direction: column !important;
 }
 
-.seamless-flex-wrap {
+#seamless-plugin-root .seamless-flex-wrap {
   display: flex !important;
   flex-wrap: wrap !important;
 }
 
 /* Spacing utilities */
-.seamless-mb-4 {
+#seamless-plugin-root .seamless-mb-4 {
   margin-bottom: var(--seamless-spacing-4) !important;
 }
 
-.seamless-mb-6 {
+#seamless-plugin-root .seamless-mb-6 {
   margin-bottom: var(--seamless-spacing-6) !important;
 }
 
-.seamless-mb-8 {
+#seamless-plugin-root .seamless-mb-8 {
   margin-bottom: var(--seamless-spacing-8) !important;
 }
 
-.seamless-mt-4 {
+#seamless-plugin-root .seamless-mt-4 {
   margin-top: var(--seamless-spacing-4) !important;
 }
 
-.seamless-mt-6 {
+#seamless-plugin-root .seamless-mt-6 {
   margin-top: var(--seamless-spacing-6) !important;
 }
 
-.seamless-gap-4 {
+#seamless-plugin-root .seamless-gap-4 {
   gap: var(--seamless-spacing-4) !important;
 }
 
-.seamless-gap-6 {
+#seamless-plugin-root .seamless-gap-6 {
   gap: var(--seamless-spacing-6) !important;
 }
 
 /* Display utilities */
-.seamless-block {
+#seamless-plugin-root .seamless-block {
   display: block !important;
 }
 
-.seamless-inline-block {
+#seamless-plugin-root .seamless-inline-block {
   display: inline-block !important;
 }
 
-.seamless-hidden {
+#seamless-plugin-root .seamless-hidden {
   display: none !important;
 }
 
 /* Width utilities */
-.seamless-w-full {
+#seamless-plugin-root .seamless-w-full {
   width: 100% !important;
 }
 
-.seamless-w-32 {
+#seamless-plugin-root .seamless-w-32 {
   width: 8rem !important;
 }
 
 /* Text utilities */
-.seamless-text-center {
+#seamless-plugin-root .seamless-text-center {
   text-align: center !important;
 }
 
-.seamless-font-bold {
+#seamless-plugin-root .seamless-font-bold {
   font-weight: 700 !important;
 }
 
-.seamless-font-semibold {
+#seamless-plugin-root .seamless-font-semibold {
   font-weight: 600 !important;
 }
 
-.seamless-text-gray-600 {
+#seamless-plugin-root .seamless-text-gray-600 {
   color: var(--seamless-color-gray-600) !important;
 }
 
-.seamless-text-primary {
+#seamless-plugin-root .seamless-text-primary {
   color: var(--seamless-color-primary) !important;
 }
 
-.seamless-text-secondary {
+#seamless-plugin-root .seamless-text-secondary {
   color: var(--seamless-color-secondary) !important;
 }
 
 /* Rounded utilities */
-.seamless-rounded-lg {
+#seamless-plugin-root .seamless-rounded-lg {
   border-radius: var(--seamless-radius-lg) !important;
 }
 
-.seamless-rounded-full {
+#seamless-plugin-root .seamless-rounded-full {
   border-radius: var(--seamless-radius-full) !important;
 }
 
 /* Shadow utilities */
-.seamless-shadow-md {
+#seamless-plugin-root .seamless-shadow-md {
   box-shadow: var(--seamless-shadow-md) !important;
 }
 
-.seamless-shadow-lg {
+#seamless-plugin-root .seamless-shadow-lg {
   box-shadow: var(--seamless-shadow-lg) !important;
 }
 
 /* Transition utilities */
-.seamless-transition-colors {
+#seamless-plugin-root .seamless-transition-colors {
   transition: color var(--seamless-transition-normal), background-color var(--seamless-transition-normal) !important;
 }
 
-.seamless-transition-all {
+#seamless-plugin-root .seamless-transition-all {
   transition: all var(--seamless-transition-normal) !important;
 }
 
@@ -215,7 +215,7 @@
    ACCESSIBILITY UTILITIES
    ============================================ */
 
-.seamless-sr-only {
+#seamless-plugin-root .seamless-sr-only {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -228,14 +228,14 @@
 }
 
 /* Focus visible for keyboard navigation */
-.seamless-focus-visible:focus-visible {
+#seamless-plugin-root .seamless-focus-visible:focus-visible {
   outline: 2px solid var(--seamless-color-secondary) !important;
   outline-offset: 2px !important;
 }
 
 /* Print utilities */
 @media print {
-  .seamless-no-print {
+  #seamless-plugin-root .seamless-no-print {
     display: none !important;
   }
 }

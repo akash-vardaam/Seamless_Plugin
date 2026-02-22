@@ -47,7 +47,7 @@ export const getSeamlessConfig = (): EventURLConfig | null => {
   if (siteUrl) {
     return {
       siteUrl,
-      singleEventEndpoint: 'event',
+      singleEventEndpoint: 'events',
       eventListEndpoint: 'events'
     };
   }
@@ -64,31 +64,33 @@ export const createEventSlug = (title: string, id: string): string => {
     .trim() || id;
 };
 
-export const getEventPageURL = (eventSlug: string): string => {
+export const getEventPageURL = (eventSlug: string, isGroupEvent: boolean = false): string => {
   const config = getSeamlessConfig();
 
   if (config && config.siteUrl) {
     // Ensure site URL doesn't have trailing slash
     const baseUrl = config.siteUrl.replace(/\/$/, '');
-    // Use WordPress single event endpoint
-    return `${baseUrl}/${config.singleEventEndpoint}/${eventSlug}/`;
+    // Use WordPress single event endpoint or group event endpoint
+    const endpoint = isGroupEvent ? 'group-event' : config.singleEventEndpoint;
+    return `${baseUrl}/${endpoint}/${eventSlug}/`;
   }
 
   // Fallback for development
-  return `/event/${eventSlug}`;
+  return isGroupEvent ? `/group-event/${eventSlug}` : `/events/${eventSlug}`;
 };
 
 export const getEventURL = (
   eventTitle: string,
   eventId: string,
-  eventSlug?: string
+  eventSlug?: string,
+  isGroupEvent?: boolean
 ): string => {
   const slug = eventSlug || createEventSlug(eventTitle, eventId);
-  return getEventPageURL(slug);
+  return getEventPageURL(slug, isGroupEvent);
 };
 
-export const navigateToEvent = (eventSlug: string): void => {
-  const url = getEventPageURL(eventSlug);
+export const navigateToEvent = (eventSlug: string, isGroupEvent?: boolean): void => {
+  const url = getEventPageURL(eventSlug, isGroupEvent);
   window.location.href = url;
 };
 

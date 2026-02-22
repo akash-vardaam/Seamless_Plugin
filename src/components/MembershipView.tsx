@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { useMembershipPlans } from '../hooks/useMembershipPlans';
+import { LoadingSpinner } from './LoadingSpinner';
 import '../styles/membership.css';
 
 // Helper to get site URL
@@ -26,11 +27,7 @@ export const MembershipListView: React.FC = () => {
     }, [plans]);
 
     if (loading) {
-        return (
-            <div className="seamless-loading-overlay" style={{ minHeight: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <div className="seamless-spinner" />
-            </div>
-        );
+        return <LoadingSpinner />;
     }
 
     if (error) {
@@ -45,12 +42,7 @@ export const MembershipListView: React.FC = () => {
     const siteUrl = getSiteUrl();
 
     return (
-        <div id="seamless-membership-section" className="seamless-membership-container">
-            <header className="seamless-membership-header">
-                <h1 className="seamless-membership-title">Start your Membership</h1>
-                <p className="seamless-membership-subtitle">Choose a plan that fits your needs.</p>
-            </header>
-
+        <div  className="seamless-membership-container">
             {/* Plans Grid */}
             <div className="seamless-plans-grid">
                 {plans.map(plan => (
@@ -59,7 +51,7 @@ export const MembershipListView: React.FC = () => {
                             <div className="seamless-plan-header-left">
                                 <h3 className="seamless-plan-label">{plan.label}</h3>
                                 <div className="seamless-plan-badge">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="seamless-membership-plan-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                     Subscription plan
                                 </div>
                             </div>
@@ -118,7 +110,7 @@ export const MembershipListView: React.FC = () => {
             {comparisonKeys.length > 0 && (
                 <div className="seamless-comparison-section">
                     <h2 className="seamless-comparison-title">Compare Plans</h2>
-                    <div style={{ overflowX: 'auto' }}>
+                    <div className="seamless-comparison-table-wrapper">
                         <table className="seamless-comparison-table">
                             <thead>
                                 <tr>

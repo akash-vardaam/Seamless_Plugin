@@ -54,14 +54,13 @@ export const useCourses = () => {
             console.log("Cache Key:", cacheKey);
 
             try {
-                // 1. Check Cache first
-                const cachedData = sessionStorage.getItem(cacheKey);
+                let initialDataLoaded = false;
+                // 1. Check LocalStorage Cache first for instant load
+                const cachedData = localStorage.getItem(cacheKey);
                 if (cachedData) {
                     try {
                         const parsed = JSON.parse(cachedData);
                         if (parsed && parsed.courses) {
-                            console.log("Cache HIT for:", cacheKey);
-
                             let sortedCachedCourses = [...parsed.courses];
                             switch (sortParam) {
                                 case 'oldest':
@@ -84,18 +83,20 @@ export const useCourses = () => {
                             if (parsed.availableYears) {
                                 setAvailableYears(parsed.availableYears);
                             }
-                            setLoading(false);
-                            return;
+                            initialDataLoaded = true;
+                            setLoading(false); // Enable immediate interaction
                         }
                     } catch (e) {
                         console.warn("Failed to parse cached data", e);
-                        sessionStorage.removeItem(cacheKey);
+                        localStorage.removeItem(cacheKey);
                     }
                 }
 
-                console.log("Cache MISS. Fetching API...");
+                if (!initialDataLoaded) {
+                    setLoading(true);
+                }
 
-                // 2. Fetch if not cached
+                // 2. Fetch fresh API data unconditionally for bg sync
                 const data = await fetchCourses(pageParam, {
                     search: searchParam,
                     access_type: accessParam,
@@ -103,20 +104,16 @@ export const useCourses = () => {
                     year: yearParam
                 });
 
-                console.log("API Response:", data);
-
                 const newCourses = data.data || [];
                 let newAvailableYears: string[] = [];
 
-                // Determine available years
                 if (data.available_years && Array.isArray(data.available_years)) {
                     newAvailableYears = data.available_years;
                 } else if (data.filters_applied?.years) {
                     newAvailableYears = data.filters_applied.years;
                 } else {
-                    // Fallback: Derive years from the courses in the current response
                     const yearsSet = new Set<string>();
-                    newCourses.forEach(course => {
+                    newCourses.forEach((course: any) => {
                         const dateStr = course.created_at || course.published_at;
                         if (dateStr) {
                             const y = new Date(dateStr).getFullYear().toString();
@@ -146,23 +143,25 @@ export const useCourses = () => {
                 setCourses(sortedCourses);
                 setPagination(data.pagination);
                 setAvailableYears(newAvailableYears);
+                setLoading(false);
 
-                // 3. Save to Cache
+                // 3. Save fresh data to LocalStorage
                 try {
-                    console.log("Saving to Session Storage:", cacheKey);
-                    sessionStorage.setItem(cacheKey, JSON.stringify({
+                    localStorage.setItem(cacheKey, JSON.stringify({
                         courses: newCourses,
                         pagination: data.pagination,
                         availableYears: newAvailableYears
                     }));
-                    console.log("Saved successfully.");
                 } catch (e) {
-                    console.warn("Failed to save to session storage", e);
+                    console.warn("Failed to save to local storage", e);
                 }
 
             } catch (err: any) {
                 console.error("Failed to fetch courses", err);
-                setError(err.message || 'Failed to load courses.');
+                // Only throw error visible if we had NO initial data
+                if (courses.length === 0) {
+                    setError(err.message || 'Failed to load courses.');
+                }
             } finally {
                 setLoading(false);
             }

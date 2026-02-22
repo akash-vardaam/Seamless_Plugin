@@ -1,228 +1,79 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import type { Event } from '../types/event';
 import { CalendarHeader } from './calendar/CalendarHeader';
-import { CalendarDayHeaders } from './calendar/CalendarDayHeaders';
-import { CalendarCell } from './calendar/CalendarCell';
-import {
-  getCategoryColor,
-  getStartTime,
-  extractDateOnly,
-  getDateParts,
-} from './calendar/utils';
+import { MonthView } from './calendar/MonthView';
+import { WeekView } from './calendar/WeekView';
+import '../styles/calendar-new.css';
 
 interface CalendarViewProps {
   events: Event[];
   currentDate?: Date;
-  onMonthChange?: (date: Date) => void;
+  onDateChange?: (date: Date) => void;
 }
 
-interface EventBar {
-  event: Event;
-  row: number;
-  startCol: number;
-  endCol: number;
-  color: string;
-  textColor: string;
-  borderColor: string;
-  daysSpanned: number;
-  isFirstDay: boolean;
-  spanLength: number;
-  continuesFromPreviousMonth: boolean;
-  continuesToNextMonth: boolean;
-}
-
-export const CalendarView: React.FC<CalendarViewProps> = ({ events, currentDate: propDate, onMonthChange }) => {
+export const CalendarView: React.FC<CalendarViewProps> = ({ events, currentDate: propDate, onDateChange }) => {
   const [internalDate, setInternalDate] = useState(new Date());
+  const activeDate = propDate || internalDate;
+  
+  const [viewMode, setViewMode] = useState<'MONTH' | 'WEEK'>('MONTH');
 
-  // Use prop if provided, otherwise internal state
-  const currentDate = propDate || internalDate;
-
-  // Debug logging
-  React.useEffect(() => {
-    console.log('CalendarView received events:', events.length);
-  }, [events]);
-
-  const getDaysInMonth = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  const updateDate = (d: Date) => {
+    if (onDateChange) onDateChange(d);
+    else setInternalDate(d);
   };
 
-  const getFirstDayOfMonth = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  const handlePrev = () => {
+    const d = new Date(activeDate);
+    if (viewMode === 'MONTH') d.setMonth(d.getMonth() - 1);
+    else d.setDate(d.getDate() - 7);
+    updateDate(d);
   };
 
-  // Create a map of events by day for easier lookup
-  const eventsByDay = useMemo(() => {
-    const dayMap = new Map<number, EventBar[]>();
+  const handleNext = () => {
+    const d = new Date(activeDate);
+    if (viewMode === 'MONTH') d.setMonth(d.getMonth() + 1);
+    else d.setDate(d.getDate() + 7);
+    updateDate(d);
+  };
 
-    // Get the first and last day of the current month
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const monthStart = new Date(year, month, 1);
-    const monthEnd = new Date(year, month + 1, 0);
-    const daysInMonth = monthEnd.getDate();
+  const handleToday = () => {
+    updateDate(new Date());
+  };
 
-    // Initialize dayMap with empty arrays for each day
-    for (let day = 1; day <= daysInMonth; day++) {
-      dayMap.set(day, []);
-    }
+  let title = '';
+  let subtitle = '';
 
-    // Filter and process events
-    events.forEach((event) => {
-      try {
-        const startDateOnly = extractDateOnly(event.start_date);
-        const endDateOnly = extractDateOnly(event.end_date || event.start_date);
-
-        const startParts = getDateParts(startDateOnly);
-        const endParts = getDateParts(endDateOnly);
-
-        // Check if event overlaps with current month
-        const eventStartDate = new Date(
-          startParts.year,
-          startParts.month - 1,
-          startParts.day
-        );
-        const eventEndDate = new Date(
-          endParts.year,
-          endParts.month - 1,
-          endParts.day
-        );
-
-        if (eventEndDate >= monthStart && eventStartDate <= monthEnd) {
-
-          // Determine if event continues from previous month
-          const continuesFromPreviousMonth = eventStartDate < monthStart;
-          // Determine if event continues to next month
-          const continuesToNextMonth = eventEndDate > monthEnd;
-
-          // Add event to all days it spans in this month
-          let currentDay = Math.max(startParts.day, 1);
-          let endDay = Math.min(endParts.day, daysInMonth);
-
-          // Adjust start day if event starts before this month
-          if (
-            startParts.year < year ||
-            (startParts.year === year && startParts.month < month + 1)
-          ) {
-            currentDay = 1;
-          }
-
-          // Adjust end day if event ends after this month
-          if (
-            endParts.year > year ||
-            (endParts.year === year && endParts.month > month + 1)
-          ) {
-            endDay = daysInMonth;
-          }
-
-          const color = getCategoryColor(event);
-          const spanLength = endDay - currentDay + 1;
-          const eventBar: EventBar = {
-            event,
-            row: 0,
-            startCol: currentDay,
-            endCol: endDay + 1,
-            color: color.bg,
-            textColor: color.text,
-            borderColor: color.border,
-            daysSpanned: spanLength,
-            isFirstDay: !continuesFromPreviousMonth,
-            spanLength: spanLength,
-            continuesFromPreviousMonth,
-            continuesToNextMonth,
-          };
-
-          // Add to first day only for multi-day events
-          const firstDayEvents = dayMap.get(currentDay) || [];
-          firstDayEvents.push(eventBar);
-          dayMap.set(currentDay, firstDayEvents);
-        }
-      } catch (err) {
-        console.error('Error processing event:', event, err);
-      }
-    });
-
-    return dayMap;
-  }, [currentDate, events]);
-
-  const daysInMonth = getDaysInMonth(currentDate);
-  const firstDay = getFirstDayOfMonth(currentDate);
-  const days: (number | null)[] = [];
-
-  for (let i = 0; i < firstDay; i++) {
-    days.push(null);
+  if (viewMode === 'MONTH') {
+    title = activeDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const firstDay = new Date(activeDate.getFullYear(), activeDate.getMonth(), 1);
+    const lastDay = new Date(activeDate.getFullYear(), activeDate.getMonth() + 1, 0);
+    subtitle = `${firstDay.toLocaleDateString('en-US', {month:'short', day:'numeric'})} — ${lastDay.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`;
+  } else if (viewMode === 'WEEK') {
+    title = 'Week View';
+    const day = activeDate.getDay();
+    const diff = activeDate.getDate() - day; 
+    const sunday = new Date(activeDate);
+    sunday.setDate(diff);
+    const saturday = new Date(sunday);
+    saturday.setDate(sunday.getDate() + 6);
+    subtitle = `${sunday.toLocaleDateString('en-US', {month:'short', day:'numeric'})} — ${saturday.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`;
   }
-
-  for (let day = 1; day <= daysInMonth; day++) {
-    days.push(day);
-  }
-
-  const monthName = currentDate.toLocaleString('default', {
-    month: 'long',
-    year: 'numeric',
-  });
-
-  const handlePrevMonth = () => {
-    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
-    if (onMonthChange) {
-      onMonthChange(newDate);
-    } else {
-      setInternalDate(newDate);
-    }
-  };
-
-  const handleNextMonth = () => {
-    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
-    if (onMonthChange) {
-      onMonthChange(newDate);
-    } else {
-      setInternalDate(newDate);
-    }
-  };
 
   return (
-    <div className="seamless-calendar">
-      {/* Header */}
+    <div className="seamless-calendar-container">
       <CalendarHeader
-        monthName={monthName}
-        onPrevMonth={handlePrevMonth}
-        onNextMonth={handleNextMonth}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        title={title}
+        subtitle={subtitle}
+        onPrev={handlePrev}
+        onNext={handleNext}
+        onToday={handleToday}
       />
 
-      {/* Day Headers */}
-      <CalendarDayHeaders abbreviated={true} />
-
-      {/* Calendar Grid - Responsive */}
-      <div className="seamless-calendar-grid">
-        {days.map((day, idx) => {
-          const isToday =
-            day &&
-            day === new Date().getDate() &&
-            currentDate.getMonth() === new Date().getMonth() &&
-            currentDate.getFullYear() === new Date().getFullYear();
-
-          // Get events for this day from the map
-          const cellEvents = (day ? eventsByDay.get(day) : []) || [];
-
-          const mappedEvents = cellEvents.map((bar) => ({
-            event: bar.event,
-            color: bar.color,
-            textColor: bar.textColor,
-            borderColor: bar.borderColor,
-            startTime: getStartTime(bar.event.start_date),
-            spanLength: bar.spanLength,
-            continuesFromPreviousMonth: bar.continuesFromPreviousMonth,
-            continuesToNextMonth: bar.continuesToNextMonth,
-          }));
-
-          return (
-            <CalendarCell
-              key={idx}
-              day={day}
-              isToday={isToday || false}
-              events={mappedEvents}
-            />
-          );
-        })}
+      <div className="seamless-calendar-body">
+        {viewMode === 'MONTH' && <MonthView currentDate={activeDate} events={events} />}
+        {viewMode === 'WEEK' && <WeekView currentDate={activeDate} events={events} />}
       </div>
     </div>
   );

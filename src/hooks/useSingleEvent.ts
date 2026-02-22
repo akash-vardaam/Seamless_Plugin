@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import api from '../services/api';
+import { fetchEventBySlug, fetchGroupEventBySlug } from '../services/eventService';
 import type { Event } from '../types/event';
 
 interface SingleEventState {
@@ -9,7 +9,7 @@ interface SingleEventState {
     error: string | null;
 }
 
-export const useSingleEvent = (slug: string) => {
+export const useSingleEvent = (slug: string, isGroupEvent: boolean = false) => {
     const [state, setState] = useState<SingleEventState>({
         event: null,
         loading: true,
@@ -27,7 +27,8 @@ export const useSingleEvent = (slug: string) => {
                 // Let's rely on standard REST practices or the helper.
                 // urlHelper says `singleEventEndpoint: 'event'`
 
-                const response = await api.get(`/events/${slug}`);
+                // Try to fetch normal event or group event depending on the flag
+                const response = isGroupEvent ? await fetchGroupEventBySlug(slug) : await fetchEventBySlug(slug);
 
                 // Check if data is wrapped in 'data'
                 const eventData = response.data.data || response.data;
@@ -47,7 +48,7 @@ export const useSingleEvent = (slug: string) => {
         };
 
         fetchEvent();
-    }, [slug]);
+    }, [slug, isGroupEvent]);
 
     return state;
 };
