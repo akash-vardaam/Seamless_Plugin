@@ -50,16 +50,32 @@ const App: React.FC<AppProps> = ({ initialView, initialSlug, siteUrl: _siteUrl }
 
     // Build the initial entry for MemoryRouter so the route matches immediately.
     let initialEntry = route.path;
-    
-    // Check URL query parameters for deep linking (avoids 404s in WordPress)
+
+    // Read ALL query params from the real browser URL.
+    // This makes filter state sharable: opening a URL with ?status=past&audience=xxx
+    // will correctly initialise the MemoryRouter with those params so useSearchParams()
+    // returns the right values on first render.
     const searchParams = new URLSearchParams(window.location.search);
     const eventParam = searchParams.get('seamless_event');
     const typeParam = searchParams.get('type') || 'events';
 
     if (initialView === 'events' && eventParam) {
-      initialEntry = `/${typeParam}/${eventParam}`;
+      // Deep-link to a specific event — route group events differently
+      if (typeParam === 'group-event') {
+        initialEntry = `/group-event/${eventParam}`;
+      } else {
+        initialEntry = `/events/${eventParam}`;
+      }
+      // Keep any extra params (they won't affect SingleEventPage but won't break it)
+      const qs = searchParams.toString();
+      if (qs) initialEntry += `?${qs}`;
     } else if (initialView === 'single-event' && initialSlug) {
       initialEntry = `/events/${initialSlug}`;
+    } else {
+      // Normal list/dashboard/etc. view — pass through the full query string so that
+      // filter params, pagination, and view-mode are all restored from the URL.
+      const qs = searchParams.toString();
+      if (qs) initialEntry += `?${qs}`;
     }
 
     return (
@@ -81,6 +97,7 @@ const App: React.FC<AppProps> = ({ initialView, initialSlug, siteUrl: _siteUrl }
       </MemoryRouter>
     );
   }
+
 
   // ── Standalone / development mode ──────────────────────────────────────────
   return (

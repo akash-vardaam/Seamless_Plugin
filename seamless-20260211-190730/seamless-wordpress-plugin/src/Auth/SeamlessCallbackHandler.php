@@ -41,18 +41,18 @@ class SeamlessCallbackHandler
         }
 
         list($nonce, $encoded_return_to) = explode('|', $state) + [null, null];
-        if (!$nonce || !wp_verify_nonce($nonce, self::NONCE_ACTION)) {
-            Helper::log("Invalid nonce in state: {$nonce}");
-            return new WP_Error('invalid_state', 'Invalid or expired state.');
+
+        // Retrieve PKCE verifier from transient, bypassing problematic $_SESSION or stripped cookies
+        $transient_name = 'seamless_pkce_' . $nonce;
+        $pkce_verifier = get_transient($transient_name);
+
+        if (empty($pkce_verifier)) {
+            Helper::log('Expired or missing PKCE verifier transient for state: ' . $nonce);
+            return new WP_Error('missing_verifier', 'Invalid session or login expired. Please try again.');
         }
 
-        if (empty($_SESSION[self::SSO_PREFIX]['pkce'][$nonce]['verifier'])) {
-            Helper::log('Expired or missing PKCE verifier for state');
-            return new WP_Error('missing_verifier', 'Expired or missing PKCE verifier.');
-        }
-
-        $pkce_verifier = $_SESSION[self::SSO_PREFIX]['pkce'][$nonce]['verifier'];
-        unset($_SESSION[self::SSO_PREFIX]['pkce'][$nonce]);
+        // Clear the transient now that we're using it
+        delete_transient($transient_name);
 
         $return_to = $encoded_return_to ? base64_decode($encoded_return_to) : home_url('/');
 
@@ -74,6 +74,16 @@ class SeamlessCallbackHandler
 
             wp_set_current_user($wp_user->ID);
             wp_set_auth_cookie($wp_user->ID, true);
+
+            // Set cookie for React app to read the token directly, bypassing HTML caching
+            if (!empty($tokens['access_token'])) {
+                $expires_in = (int)($tokens['expires_in'] ?? 3600);
+                $cookie_path = defined('COOKIEPATH') && COOKIEPATH ? COOKIEPATH : '/';
+                $cookie_domain = defined('COOKIE_DOMAIN') ? COOKIE_DOMAIN : '';
+                setcookie('seamless_user_token', $tokens['access_token'], time() + $expires_in, $cookie_path, $cookie_domain, is_ssl(), true);
+                // Also set an accessible one for JavaScript
+                setcookie('seamless_token_js', $tokens['access_token'], time() + $expires_in, $cookie_path, $cookie_domain, is_ssl(), false);
+            }
 
             // Helper::log('SeamlessCallbackHandler | handle | User logged in successfully, redirecting to: ' . $return_to);
             wp_safe_redirect($return_to);

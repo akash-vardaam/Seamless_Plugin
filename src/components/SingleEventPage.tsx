@@ -48,7 +48,10 @@ export const SingleEventPage: React.FC = () => {
         };
     }, [calendarDropdownOpen]);
 
-    const isGroupEvent = window.location.pathname.includes('/group-event/');
+    // Detect group events via the 'type' query param (set by Card.tsx link, and by App.tsx deep-link logic)
+    const searchParams = new URLSearchParams(window.location.search);
+    const eventType = searchParams.get('type') || '';
+    const isGroupEvent = eventType === 'group-event' || window.location.pathname.includes('/group-event/');
     const { event, loading, error } = useSingleEvent(slug, isGroupEvent);
 
     // Date/Time Formatters
@@ -69,7 +72,7 @@ export const SingleEventPage: React.FC = () => {
             }
 
             const endWeekday = end.toLocaleDateString('en-US', { weekday: 'long' });
-            
+
             // Check if same month
             if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
                 const endDay = end.getDate();
@@ -77,17 +80,17 @@ export const SingleEventPage: React.FC = () => {
             }
             // If different month but same year
             if (start.getFullYear() === end.getFullYear()) {
-                 const endMonth = end.toLocaleDateString('en-US', { month: 'long' });
-                 const endDay = end.getDate();
-                 return `${startWeekday} - ${endWeekday}, ${startMonth} ${startDay} - ${endMonth} ${endDay}, ${startYear}`;
+                const endMonth = end.toLocaleDateString('en-US', { month: 'long' });
+                const endDay = end.getDate();
+                return `${startWeekday} - ${endWeekday}, ${startMonth} ${startDay} - ${endMonth} ${endDay}, ${startYear}`;
             }
-            
-            return `${start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'})} - ${end.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'})}`;
+
+            return `${start.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`;
         } catch {
             return startStr;
         }
     };
-    
+
     // For specific date mapping logic later on in schedule where we just need "Mar 04, 2026"
     const getFormattedDate = (dateStr: string) => {
         if (!dateStr) return '';
@@ -304,7 +307,7 @@ export const SingleEventPage: React.FC = () => {
     // I will rely on the explicit instruction.
 
     const computedCapacity = event?.capacity || (event?.tickets && event?.tickets.length > 0 ? event?.tickets[0].inventory : null);
-    
+
     // Choose which date boundaries to use
     const startDateToUse = isGroupEvent && event?.event_date_range?.start ? event?.event_date_range.start : event?.start_date;
     const endDateToUse = isGroupEvent && event?.event_date_range?.end ? event?.event_date_range.end : event?.end_date;
@@ -320,31 +323,31 @@ export const SingleEventPage: React.FC = () => {
             <div className="seamless-single-event-grid">
                 {/* Header - Moved out for mobile/tab ordering */}
                 <div className="seamless-event-header-wrapper">
-                <header className="seamless-event-header-group">
-                    <div className="seamless-event-icon-circle">
-                        {event?.featured_image ? (
-                            <img src={event?.featured_image} alt="Event Icon" />
-                        ) : (
-                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a365d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                                <line x1="12" y1="19" x2="12" y2="23"></line>
-                                <line x1="8" y1="23" x2="16" y2="23"></line>
-                            </svg>
-                        )}
-                    </div>
-                    <h1 className="seamless-event-title">{event?.title}</h1>
-                </header>
+                    <header className="seamless-event-header-group">
+                        <div className="seamless-event-icon-circle">
+                            {event?.featured_image ? (
+                                <img src={event?.featured_image} alt="Event Icon" />
+                            ) : (
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a365d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                                </svg>
+                            )}
+                        </div>
+                        <h1 className="seamless-event-title">{event?.title}</h1>
+                    </header>
 
-                {/* Left Column Content (Description + Accordions) */}
-                <section className="seamless-single-event-content">
-                    {/* Description */}
-                    <div  className="seamless-event-description" dangerouslySetInnerHTML={{ __html: event?.description }}></div>
+                    {/* Left Column Content (Description + Accordions) */}
+                    <section className="seamless-single-event-content">
+                        {/* Description */}
+                        <div className="seamless-event-description" dangerouslySetInnerHTML={{ __html: event?.description }}></div>
 
 
-                    {/* Accordions */}
-                    <SeamlessAccordion items={sections} />
-                </section>
+                        {/* Accordions */}
+                        <SeamlessAccordion items={sections} />
+                    </section>
                 </div>
 
                 {/* Right Column: Sidebar */}
@@ -450,7 +453,7 @@ export const SingleEventPage: React.FC = () => {
                     <section className="seamless-sidebar-box seamless-tickets-box">
 
                         <h3 className="seamless-tickets-title">Tickets</h3>
-                        
+
                         {/* Normal Event Tickets */}
                         {!isGroupEvent && event?.tickets && event?.tickets.map(ticket => (
                             <div key={ticket?.id} className="seamless-ticket-item">

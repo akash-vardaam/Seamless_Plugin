@@ -52,13 +52,14 @@ const createItemSlug = (title: string, id: string): string => {
 };
 
 const getItemLink = (item: Event): string => {
-  const endpoint = item?.is_group_event ? 'group-event' : 'events';
-  let slug = item?.slug || createItemSlug(item?.title, item?.id);
-  
-  // Use query parameter deep-linking for WordPress compatibility.
-  // This allows the browser URL to update naturally, avoiding 404s
-  // when refreshing or opening in a new tab.
-  return `?seamless_event=${encodeURIComponent(slug)}&type=${endpoint}`;
+  const isGroup = item?.is_group_event;
+  const slug = item?.slug || createItemSlug(item?.title, item?.id);
+
+  // In WordPress mode, the events page is the current page (shortcode).
+  // We stay on the same page and signal via query param which event to show.
+  // The URL structure will be: domain.com/events-page/?seamless_event=SLUG&type=events|group-event
+  const type = isGroup ? 'group-event' : 'events';
+  return `?seamless_event=${encodeURIComponent(slug)}&type=${type}`;
 };
 
 const stripHtmlTags = (html: string): string => {

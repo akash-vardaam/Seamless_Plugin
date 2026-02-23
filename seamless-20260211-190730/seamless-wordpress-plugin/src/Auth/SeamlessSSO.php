@@ -92,13 +92,6 @@ class SeamlessSSO
             : home_url('/');
     }
 
-    /**
-     * Generates the SSO login URL with PKCE and stores PKCE verifier + return URL in PHP session keyed by state.
-     *
-     * @param string|null $return_to Optional return URL.
-     * @return string
-     * @throws RandomException
-     */
     public function get_login_url(?string $return_to = null): string
     {
         $scope = '';
@@ -114,17 +107,13 @@ class SeamlessSSO
 
         $encoded_return_to = base64_encode($return_to);
 
-        $nonce = wp_create_nonce(self::NONCE_ACTION);
-        $state = $nonce . '|' . $encoded_return_to;
+        // Generate a random string instead of a nonce because WP nonces rely on user session state which breaks on redirect
+        $state_hash = wp_generate_password(16, false);
+        $state = $state_hash . '|' . $encoded_return_to;
 
-        // Helper::log('SeamlessSSO | get_login_url | State nonce=' . $nonce . ', return_to=' . $return_to);
-
-        $_SESSION[self::SSO_PREFIX]['pkce'][$nonce] = [
-            'verifier'   => $code_verifier,
-            'created_at' => time(),
-        ];
-
-        // Helper::log('SeamlessSSO | get_login_url | Stored PKCE in session with nonce=' . $nonce . ', session_id=' . session_id());
+        // Store PKCE using WordPress Transient API instead of sessions or cookies.
+        // Transients are perfectly safe on managed hosts and bypass all caching/session/cookie stripping issues!
+        set_transient('seamless_pkce_' . $state_hash, $code_verifier, 1800);
 
         // Build the URL
         $redirect_uri = rest_url(self::REST_NAMESPACE . '/callback');
@@ -247,6 +236,11 @@ class SeamlessSSO
         }
         $expires_in = (int)($data['expires_in'] ?? 3600);
         update_user_meta($user_id, 'seamless_token_expires', time() + $expires_in);
+
+        $cookie_path = defined('COOKIEPATH') && COOKIEPATH ? COOKIEPATH : '/';
+        $cookie_domain = defined('COOKIE_DOMAIN') ? COOKIE_DOMAIN : '';
+        setcookie('seamless_user_token', $data['access_token'], time() + $expires_in, $cookie_path, $cookie_domain, is_ssl(), true);
+        setcookie('seamless_token_js', $data['access_token'], time() + $expires_in, $cookie_path, $cookie_domain, is_ssl(), false);
 
         return $data['access_token'];
     }

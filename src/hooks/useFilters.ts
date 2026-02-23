@@ -41,6 +41,21 @@ export const useFilterState = (): UseFilterStateReturn => {
       }
       // Reset page to 1 when filters change (common pattern)
       newParams.set('page', '1');
+
+      // Sync to real browser URL — MemoryRouter never touches window.location
+      try {
+        const realParams = new URLSearchParams(window.location.search);
+        newParams.forEach((val, k) => {
+          if (k !== 'seamless_event') realParams.set(k, val);
+        });
+        // Clear any filter keys that were removed
+        Array.from(realParams.keys()).forEach(k => {
+          if (!newParams.has(k) && k !== 'seamless_event' && k !== 'type') realParams.delete(k);
+        });
+        const qs = realParams.toString();
+        history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+      } catch { /* ignore */ }
+
       return newParams;
     });
   };
@@ -53,6 +68,16 @@ export const useFilterState = (): UseFilterStateReturn => {
         newParams.delete(key);
       });
       newParams.set('page', '1');
+
+      // Sync cleared filters to real browser URL
+      try {
+        const realParams = new URLSearchParams(window.location.search);
+        Object.keys(DEFAULT_FILTERS).forEach(k => realParams.delete(k));
+        realParams.set('page', '1');
+        const qs = realParams.toString();
+        history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+      } catch { /* ignore */ }
+
       return newParams;
     });
   };

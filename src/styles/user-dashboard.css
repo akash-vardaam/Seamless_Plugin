@@ -97,6 +97,7 @@
     flex: 1 !important;
     min-width: 0 !important;
     padding: 0px !important;
+    border-radius: 8px !important;
 }
 
 #seamless-plugin-root .seamless-user-dashboard-main .seamless-user-dashboard-view {
@@ -1839,11 +1840,6 @@
     border: 1px solid #fecaca !important;
 }
 
-#seamless-plugin-root .seamless-user-dashboard-btn-primary {
-    background: #2563eb !important;
-    color: #fff !important;
-    border-color: #2563eb !important;
-}
 
 #seamless-plugin-root .seamless-user-dashboard-btn-primary:disabled {
     opacity: 0.6 !important;
@@ -2877,7 +2873,7 @@
 }
 
 #seamless-plugin-root .seamless-user-dashboard-react-layout {
-    padding: 40px 20px !important;
+    padding: 20px 0px !important;
     max-width: 1300px !important;
     margin: 0 auto !important;
 }
@@ -2960,13 +2956,20 @@
 }
 
 #seamless-plugin-root .seamless-user-dashboard-btn-primary {
-    background: var(--seamless-primary-color) !important;
-    color: #1a1a1a !important;
+    background: var(--seamless-color-primary) !important;
+    color: #ffffff !important;
     padding: 10px 20px !important;
     border: none !important;
     border-radius: 6px !important;
     cursor: pointer !important;
     font-weight: bold !important;
+    border: 1px solid var(--seamless-color-primary) !important;
+}
+
+#seamless-plugin-root .seamless-user-dashboard-btn-primary:hover {
+    background: #ffffff !important;
+    color: var(--seamless-color-primary) !important;
+    border: 1px solid var(--seamless-color-primary) !important;
 }
 
 #seamless-plugin-root .seamless-user-dashboard-btn-secondary {
@@ -3583,6 +3586,7 @@
     background: #f8fafc !important;
     border: 1px solid #e2e8f0 !important;
     font-weight: 500 !important;
+    color: var(--seamless-color-font) !important;
 }
 
 #seamless-plugin-root .seamless-grid-2-col {
@@ -3749,6 +3753,7 @@
     width: 100% !important;
     text-align: left !important;
     cursor: pointer !important;
+    color: var(--seamless-color-primary) !important;
 }
 
 #seamless-plugin-root .seamless-menu-item-cancel {
@@ -3766,6 +3771,7 @@
 #seamless-plugin-root .seamless-menu-item-downgrade:hover,
 #seamless-plugin-root .seamless-menu-item-cancel:hover {
     background: #f8fafc !important;
+    color: var(--seamless-color-primary) !important;
 }
 
 #seamless-plugin-root .seamless-menu-divider {
@@ -4287,10 +4293,10 @@
 }
 
 #seamless-plugin-root .seamless-styled-tr td {
-    padding: 24px !important;
+    padding: 5px 2px !important;
     border-bottom: 1px solid #f1f5f9 !important;
     color: var(--seamless-color-heading) !important;
-    font-size: 14.5px !important;
+    font-size: 14px !important;
     vertical-align: middle !important;
 }
 
@@ -4302,7 +4308,7 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 6px 12px !important;
+    padding: 3px 8px !important;
     border-radius: 9999px !important;
     font-size: 12px !important;
     font-weight: 600 !important;
@@ -4338,7 +4344,7 @@
 #seamless-plugin-root .seamless-btn-invoice {
     background: var(--seamless-color-primary) !important;
     color: #fff !important;
-    padding: 8px 16px !important;
+    padding: 3px 13px !important;
     border-radius: 6px !important;
     font-size: 13px !important;
     font-weight: 600 !important;

@@ -46,6 +46,26 @@ export const EventListView: React.FC = () => {
                     newParams.set(key, value);
                 }
             });
+
+            // In WordPress mode we use MemoryRouter which keeps its state in memory only.
+            // Sync the updated params back to the real browser URL so that filters are
+            // reflected in the address bar and can be bookmarked / shared.
+            try {
+                const realParams = new URLSearchParams(window.location.search);
+                newParams.forEach((val, key) => {
+                    // Never overwrite the seamless_event deep-link param
+                    if (key !== 'seamless_event') realParams.set(key, val);
+                });
+                // Remove any filter keys that were cleared
+                Array.from(realParams.keys()).forEach(key => {
+                    if (!newParams.has(key) && key !== 'seamless_event') realParams.delete(key);
+                });
+                const qs = realParams.toString();
+                history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+            } catch {
+                // Silently skip if history API is not available
+            }
+
             return newParams;
         });
     };
@@ -123,7 +143,7 @@ export const EventListView: React.FC = () => {
     // ── Render ─────────────────────────────────────────────────────
     if (error) {
         return (
-            <div  className="seamless-page-wrapper">
+            <div className="seamless-page-wrapper">
                 <div className="seamless-error-container">
                     <p className="seamless-error-title">Error loading items</p>
                     <p className="seamless-error-message">{error}</p>

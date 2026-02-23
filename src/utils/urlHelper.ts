@@ -65,18 +65,13 @@ export const createEventSlug = (title: string, id: string): string => {
 };
 
 export const getEventPageURL = (eventSlug: string, isGroupEvent: boolean = false): string => {
-  const config = getSeamlessConfig();
-
-  if (config && config.siteUrl) {
-    // Ensure site URL doesn't have trailing slash
-    const baseUrl = config.siteUrl.replace(/\/$/, '');
-    // Use WordPress single event endpoint or group event endpoint
-    const endpoint = isGroupEvent ? 'group-event' : config.singleEventEndpoint;
-    return `${baseUrl}/${endpoint}/${eventSlug}/`;
-  }
-
-  // Fallback for development
-  return isGroupEvent ? `/group-event/${eventSlug}` : `/events/${eventSlug}`;
+  // Use query-parameter deep-linking — the same strategy as Card.tsx —
+  // so calendar clicks produce identical URLs to grid/list card clicks.
+  // Format: ?seamless_event=SLUG&type=events|group-event
+  // This stays on the current WordPress page (where the shortcode is mounted)
+  // and signals to the React MemoryRouter which event to show.
+  const type = isGroupEvent ? 'group-event' : 'events';
+  return `?seamless_event=${encodeURIComponent(eventSlug)}&type=${type}`;
 };
 
 export const getEventURL = (
@@ -91,8 +86,21 @@ export const getEventURL = (
 
 export const navigateToEvent = (eventSlug: string, isGroupEvent?: boolean): void => {
   const url = getEventPageURL(eventSlug, isGroupEvent);
+  // Update the real browser URL bar (MemoryRouter won't do it itself)
+  try {
+    const realParams = new URLSearchParams(window.location.search);
+    realParams.set('seamless_event', eventSlug);
+    realParams.set('type', isGroupEvent ? 'group-event' : 'events');
+    history.pushState(null, '', `?${realParams.toString()}`);
+  } catch {
+    // Fallback: direct navigate
+    window.location.href = url;
+    return;
+  }
+  // Trigger a same-page navigation so React picks up the new query params
   window.location.href = url;
 };
+
 
 export const getEventsListURL = (): string => {
   const config = getSeamlessConfig();

@@ -339,6 +339,18 @@ class SeamlessRender
 
 	public function add_wordpress_config_meta_tags(): void
 	{
+		$access_token = '';
+		if (is_user_logged_in()) {
+			$uid = get_current_user_id();
+			if (class_exists('Seamless\\Auth\\SeamlessSSO')) {
+				$sso          = new \Seamless\Auth\SeamlessSSO();
+				$access_token = $sso->seamless_refresh_token_if_needed($uid) ?: '';
+			}
+			if (empty($access_token)) {
+				$access_token = get_user_meta($uid, 'seamless_access_token', true) ?: '';
+			}
+		}
+
 		?>
 		<meta name="wordpress-site-url" content="<?php echo esc_url(home_url()); ?>" />
 		<meta name="rest-api-base-url" content="<?php echo esc_url(rest_url()); ?>" />
@@ -346,7 +358,14 @@ class SeamlessRender
 			window.seamlessReactConfig = {
 				siteUrl: '<?php echo esc_url(home_url()); ?>',
 				restUrl: '<?php echo esc_url(rest_url()); ?>',
-				nonce: '<?php echo wp_create_nonce('seamless'); ?>'
+				nonce: '<?php echo wp_create_nonce('seamless'); ?>',
+				ajaxUrl: '<?php echo esc_url(admin_url('admin-ajax.php')); ?>',
+				ajaxNonce: '<?php echo wp_create_nonce('seamless_nonce'); ?>',
+				clientDomain: '<?php echo esc_js(rtrim(get_option('seamless_client_domain', ''), '/')); ?>',
+				isLoggedIn: <?php echo is_user_logged_in() ? 'true' : 'false'; ?>,
+				userEmail: '<?php echo is_user_logged_in() ? esc_js(wp_get_current_user()->user_email) : ''; ?>',
+				accessToken: '<?php echo esc_js($access_token); ?>',
+				logoutUrl: '<?php echo is_user_logged_in() ? esc_js(wp_logout_url(home_url())) : ''; ?>'
 			};
 		</script>
 		<?php
@@ -467,6 +486,7 @@ class SeamlessRender
 			'isLoggedIn'   => is_user_logged_in(),
 			'userEmail'    => is_user_logged_in() ? wp_get_current_user()->user_email : '',
 			'accessToken'  => $access_token,
+			'logoutUrl'    => is_user_logged_in() ? wp_logout_url(home_url()) : '',
 		]);
 	}
 

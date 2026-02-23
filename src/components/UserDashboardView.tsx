@@ -74,7 +74,7 @@ export const UserDashboardView: React.FC = () => {
     const [activeMembershipTab, setActiveMembershipTab] = useState<'active' | 'history'>('active');
     const [activeCourseTab, setActiveCourseTab] = useState<'enrolled' | 'included'>('enrolled');
     const [openDropdownId, setOpenDropdownId] = useState<string | number | null>(null);
-    
+
     // Action States
     const [actionModal, setActionModal] = useState<'upgrade' | 'downgrade' | 'cancel' | null>(null);
     const [selectedMembershipId, setSelectedMembershipId] = useState<string | null>(null);
@@ -101,21 +101,25 @@ export const UserDashboardView: React.FC = () => {
     const fetchApiEndpoint = async (endpoint: string, stateSetter: React.Dispatch<React.SetStateAction<any>>, isArray: boolean = true, method: string = 'GET', bodyPayload?: any) => {
         setIsLoading(true);
         try {
+            const token = getAuthToken();
             const config: import('axios').AxiosRequestConfig = {
                 method,
                 url: endpoint,
+                headers: {
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 ...(bodyPayload && Object.keys(bodyPayload).length > 0 && { data: bodyPayload })
             };
             const response = await api.request(config);
             const data = response.data;
-            
+
             if (data && data.message && !data.data) {
                 stateSetter(isArray ? [] : null);
                 return;
             }
 
             const parsedData = data?.data || data;
-            
+
             stateSetter((prev: any) => {
                 if (!isArray && prev && typeof prev === 'object') {
                     return { ...prev, ...parsedData };
@@ -141,7 +145,7 @@ export const UserDashboardView: React.FC = () => {
         if (savedView && ['profile', 'memberships', 'courses', 'orders'].includes(savedView)) {
             setActiveView(savedView as any);
         } else {
-            savedView = 'profile'; 
+            savedView = 'profile';
         }
         // Always fetch the quick sidebar info using GET
         if (!profile) fetchApiEndpoint('/dashboard/profile', setProfile, false);
@@ -191,7 +195,7 @@ export const UserDashboardView: React.FC = () => {
 
         if (courses && Array.isArray(courses)) courses.forEach(fetchProgress);
         if (includedCourses && Array.isArray(includedCourses)) includedCourses.forEach(fetchProgress);
-        
+
     }, [courses, includedCourses]);
 
 
@@ -263,9 +267,13 @@ export const UserDashboardView: React.FC = () => {
     const triggerSystemAction = async (endpoint: string, method: string = 'POST', payload: any = {}, successMsg: string = 'Action successful.') => {
         setIsSubmitting(true);
         try {
+            const token = getAuthToken();
             const config: import('axios').AxiosRequestConfig = {
                 method,
                 url: endpoint,
+                headers: {
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
                 data: payload
             };
             const response = await api.request(config);
@@ -313,7 +321,7 @@ export const UserDashboardView: React.FC = () => {
 
         const sp = selectedPlanForSwap;
         const currentMem = memberships?.find(m => m.id === selectedMembershipId);
-        
+
         let proration = null;
         if (sp && currentMem) {
             const remainingDays = Math.max(0, Math.ceil(parseFloat(currentMem.remaining_days || 0)));
@@ -325,16 +333,16 @@ export const UserDashboardView: React.FC = () => {
                 if (p === 'year') return 365 * (num || 1);
                 if (p === 'week') return 7 * (num || 1);
                 if (p === 'day') return 1 * (num || 1);
-                return 30 * (num || 1); 
+                return 30 * (num || 1);
             };
-            
+
             const currentDailyRate = currentPrice / getDays(currentMem.plan?.period || 'month', currentMem.plan?.period_number || 1);
             const newDailyRate = newPrice / getDays(sp.period || 'month', sp.period_number || 1);
 
             const currentPlanCredit = currentDailyRate * remainingDays;
-            
+
             const isRefundMode = type === 'downgrade';
-            
+
             // For upgrades, we charge the full new plan price minus credit from current.
             // For downgrades, we use the prorated difference of remaining days.
             const newPlanCharge = isRefundMode ? (newDailyRate * remainingDays) : newPrice;
@@ -356,8 +364,8 @@ export const UserDashboardView: React.FC = () => {
                     <h4 className="seamless-modal-subheader">Available Plans</h4>
                     <div className="seamless-plan-list">
                         {plans.map(plan => (
-                            <div 
-                                key={plan.id} 
+                            <div
+                                key={plan.id}
                                 className={`seamless-plan-select-item ${sp?.id === plan.id ? 'selected' : ''}`}
                                 onClick={() => setSelectedPlanForSwap(plan)}
                             >
@@ -370,7 +378,7 @@ export const UserDashboardView: React.FC = () => {
                     {sp && proration && (
                         <div className="seamless-pricing-breakdown">
                             <h4 className="seamless-modal-subheader seamless-pricing-breakdown-hdr">Pricing Breakdown</h4>
-                            
+
                             <div className="seamless-pricing-row">
                                 <span>New Plan Charge:</span>
                                 <span>{proration.isRefund ? '-' : ''}${proration.charge}</span>
@@ -379,7 +387,7 @@ export const UserDashboardView: React.FC = () => {
                                 <span>Current Plan Credit:</span>
                                 <span>{proration.isRefund ? '' : '-'}${proration.credit}</span>
                             </div>
-                            
+
                             <div className="seamless-pricing-row total">
                                 <span>{type === 'upgrade' ? 'Estimated Additional Cost:' : 'Estimated Refund/Credit:'}</span>
                                 <span className={`seamless-pricing-diff ${type === "upgrade" ? "seamless-color-upgrade" : "seamless-color-downgrade"}`}>
@@ -414,8 +422,8 @@ export const UserDashboardView: React.FC = () => {
                 {/* Sticky Footer Area in body */}
                 <div className="seamless-modal-footer seamless-col-span-full seamless-modal-footer">
                     <button type="button" onClick={() => setActionModal(null)} className="seamless-user-dashboard-btn-secondary">Cancel</button>
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         disabled={isSubmitting || !sp}
                         onClick={handlePlanSwap}
                         className="seamless-user-dashboard-btn-primary"
@@ -432,14 +440,14 @@ export const UserDashboardView: React.FC = () => {
     }
 
     return (
-        <div  className="seamless-user-dashboard-section">
+        <div className="seamless-user-dashboard-section">
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
             {/* Modals */}
             <Modal isOpen={actionModal === 'upgrade'} onClose={() => setActionModal(null)} title="Upgrade Membership" className="seamless-modal-lg">
                 {renderPlanList(upgradePlans, 'upgrade')}
             </Modal>
-            
+
             <Modal isOpen={actionModal === 'downgrade'} onClose={() => setActionModal(null)} title="Downgrade Membership" className="seamless-modal-lg">
                 {renderPlanList(downgradePlans, 'downgrade')}
             </Modal>
@@ -447,7 +455,7 @@ export const UserDashboardView: React.FC = () => {
             <Modal isOpen={actionModal === 'cancel'} onClose={() => setActionModal(null)} title="Cancel Membership">
                 <div className="seamless-cancel-modal-body">
                     <div className="seamless-cancel-modal-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
                     </div>
                     <h4 className="seamless-cancel-modal-title">Are you sure you want to cancel?</h4>
                     <p className="seamless-cancel-modal-text">
@@ -474,10 +482,10 @@ export const UserDashboardView: React.FC = () => {
 
                     <nav className="seamless-user-dashboard-nav">
                         {['profile', 'memberships', 'courses', 'orders'].map(view => (
-                            <a 
-                                key={view} 
+                            <a
+                                key={view}
                                 href={`#${view}`}
-                                className={`seamless-user-dashboard-nav-item seamless-nav-link ${activeView === view ? 'active' : ''} seamless-no-underline`} 
+                                className={`seamless-user-dashboard-nav-item seamless-nav-link ${activeView === view ? 'active' : ''} seamless-no-underline`}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     switchView(view as any);
@@ -486,9 +494,10 @@ export const UserDashboardView: React.FC = () => {
                                 <span>{view}</span>
                             </a>
                         ))}
-                        <a 
-                            href={(window as any).seamless_logout_url || `/wp-login.php?action=logout&redirect_to=${encodeURIComponent(window.location.origin + '/dashboard')}`} 
+                        <a
+                            href={(window as any).seamless_logout_url || `/wp-login.php?action=logout&redirect_to=${encodeURIComponent(window.location.origin + '/dashboard')}`}
                             className="seamless-user-dashboard-nav-item seamless-user-dashboard-nav-logout seamless-nav-link seamless-no-underline"
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left', width: '100%' }}
                         >
                             <span>Logout</span>
                         </a>
@@ -496,7 +505,7 @@ export const UserDashboardView: React.FC = () => {
                 </aside>
 
                 <main className="seamless-user-dashboard-main">
-                    
+
                     {/* PROFILE VIEW */}
                     {activeView === 'profile' && (
                         <div className="seamless-user-dashboard-view active">
@@ -570,14 +579,14 @@ export const UserDashboardView: React.FC = () => {
                     {activeView === 'memberships' && (
                         <div className="seamless-user-dashboard-view active">
                             <div className="seamless-dashboard-content-container">
-                                
+
                                 {/* TOP SUMMARY SECTION */}
                                 <div className="seamless-summary-row seamless-mb-32">
                                     <div className="seamless-count-card">
                                         <h2 className="seamless-count-card-number">{memberships?.length || 0}</h2>
                                         <p className="seamless-count-card-label">Total Active Memberships</p>
                                     </div>
-                                    
+
                                     <div className="seamless-flex-col-gap-24">
                                         {memberships && memberships.length > 0 ? (
                                             <div className="seamless-blue-card seamless-padding-24-full-center">
@@ -591,7 +600,7 @@ export const UserDashboardView: React.FC = () => {
                                             </div>
                                         ) : (
                                             <div className="seamless-blue-card seamless-opacity-bg-card">
-                                                 <div className="seamless-blue-card-content seamless-justify-center">
+                                                <div className="seamless-blue-card-content seamless-justify-center">
                                                     <h3 className="seamless-blue-card-title">No Active Membership</h3>
                                                 </div>
                                             </div>
@@ -625,11 +634,11 @@ export const UserDashboardView: React.FC = () => {
                                                                 <div className="seamless-flex-col-gap-16-full">
                                                                     <div className="seamless-flex-between-center">
                                                                         <h3 className="seamless-card-title">{mem.plan?.label || mem.title || mem.name || 'Membership'}</h3>
-                                                                        
+
                                                                         {/* ACTIONS (Three dots menu) */}
                                                                         <div className={`seamless-user-dashboard-menu-container ${openDropdownId === mem.id ? "active" : ""} seamless-position-relative`}>
                                                                             <button onClick={() => setOpenDropdownId(openDropdownId === mem.id ? null : mem.id)} className="seamless-btn-transparent">
-                                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="19" r="1.5" /></svg>
                                                                             </button>
 
                                                                             <div className="seamless-user-dashboard-menu-dropdown seamless-menu-dropdown-styled seamless-menu-dropdown-pos">
@@ -692,7 +701,7 @@ export const UserDashboardView: React.FC = () => {
                                         <div className="seamless-course-stat-label">Completed</div>
                                     </div>
                                     <div className="seamless-course-progress-card">
-                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
                                         No courses in progress
                                     </div>
                                 </div>
@@ -721,11 +730,11 @@ export const UserDashboardView: React.FC = () => {
                                                                 <div className="seamless-course-card-body">
                                                                     <h4 className="seamless-course-card-title">{course?.title || course?.name}</h4>
                                                                     <div className="seamless-course-card-meta">
-                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> {p?.total_lessons || course?.lessons_count || 0} lessons</span>
-                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> {course?.duration_minutes || 0} minutes</span>
+                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg> {p?.total_lessons || course?.lessons_count || 0} lessons</span>
+                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg> {course?.duration_minutes || 0} minutes</span>
                                                                     </div>
                                                                     <a href={`${getClientDomain()}/courses/${course?.slug || course?.id}`} className="seamless-course-card-action">
-                                                                        Start Course <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                                                                        Start Course <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg>
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -749,11 +758,11 @@ export const UserDashboardView: React.FC = () => {
                                                                 <div className="seamless-course-card-body">
                                                                     <h4 className="seamless-course-card-title">{course?.title || course?.name}</h4>
                                                                     <div className="seamless-course-card-meta">
-                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> {p?.total_lessons || course?.lessons_count || 0} lessons</span>
-                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> {course?.duration_minutes || 0} minutes</span>
+                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg> {p?.total_lessons || course?.lessons_count || 0} lessons</span>
+                                                                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg> {course?.duration_minutes || 0} minutes</span>
                                                                     </div>
                                                                     <a href={`${getClientDomain()}/courses/${course?.slug || course?.id}`} className="seamless-course-card-action">
-                                                                        Start Course <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                                                                        Start Course <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14" /><path d="M12 5l7 7-7 7" /></svg>
                                                                     </a>
                                                                 </div>
                                                             </div>

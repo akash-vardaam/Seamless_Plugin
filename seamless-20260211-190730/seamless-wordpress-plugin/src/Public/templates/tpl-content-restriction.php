@@ -31,12 +31,14 @@ get_header();
                             <?php if ($is_logged_in): ?>
                                 <!-- Crown icon for membership upgrade -->
                                 <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M5 16L3 6l2.5 2L12 4l6.5 4L21 6l-2 10H5zm2.7-2h8.6l.9-4.4L12 12l-5.2-2.4L7.7 14z" />
+                                    <path
+                                        d="M5 16L3 6l2.5 2L12 4l6.5 4L21 6l-2 10H5zm2.7-2h8.6l.9-4.4L12 12l-5.2-2.4L7.7 14z" />
                                 </svg>
                             <?php else: ?>
                                 <!-- Lock icon for login required -->
                                 <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                                    <path
+                                        d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
                                 </svg>
                             <?php endif; ?>
                         </div>
@@ -65,7 +67,8 @@ get_header();
                     <?php if ($is_logged_in): ?>
                         <!-- Membership upgrade section -->
                         <div class="seamless-restriction-plans">
-                            <a href="<?php echo esc_url($purchase_url); ?>" class="seamless-premium-btn seamless-upgrade-btn">
+                            <a href="<?php echo esc_url($purchase_url); ?>"
+                                class="seamless-premium-btn seamless-upgrade-btn">
                                 Upgrade Your Membership Now
                             </a>
                         </div>
@@ -74,11 +77,13 @@ get_header();
                         <div class="seamless-restriction-actions">
                             <?php
                             $sso_client_id = get_option('seamless_sso_client_id');
-                            if (!empty($sso_client_id)) :
+                            if (!empty($sso_client_id)):
                                 echo do_shortcode('[seamless_login_button text="Sign In to Continue" class="seamless-premium-btn seamless-login-btn"]');
-                            else :
-                            ?>
-                                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="seamless-premium-btn seamless-login-btn">
+                            else:
+                                ?>
+                                <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>"
+                                    class="seamless-premium-btn seamless-login-btn"
+                                    style="width: 100%; display: block; background: #fafafa; border: 1px solid black; border-radius: 8px; padding: 5px 15px; text-align: center;">
                                     Sign In to Continue
                                 </a>
                             <?php endif; ?>

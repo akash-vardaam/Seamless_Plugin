@@ -100,6 +100,7 @@
     border-right: 1px solid #e2e8f0 !important;
     color: var(--seamless-color-primary) !important;
     font-size: 18px !important;
+    padding: 0px 6px !important;
 }
 
 #seamless-plugin-root .seamless-calendar-view-toggle {
@@ -605,113 +606,113 @@ Provides pure CSS coloring for categories
 =========================================== 
 */
 #seamless-plugin-root .seamless-color-amber-bg {
-    background-color: #fef3c7 !important;
-    border-color: #f59e0b !important;
+    background-color: #fef3c71c !important;
+    border-color: #f59e0b1c !important;
     color: #92400e !important;
 }
 
 #seamless-plugin-root .seamless-color-amber-border {
-    background-color: #f59e0b !important;
-    border-color: #f59e0b !important;
+    background-color: #f59f0b1c !important;
+    border-color: #f59e0b1c !important;
 }
 
 #seamless-plugin-root .seamless-color-red-bg {
-    background-color: #fee2e2 !important;
-    border-color: #ef4444 !important;
+    background-color: #fee2e21c !important;
+    border-color: #ef44441c !important;
     color: #991b1b !important;
 }
 
 #seamless-plugin-root .seamless-color-red-border {
-    background-color: #ef4444 !important;
-    border-color: #ef4444 !important;
+    background-color: #ef44441c !important;
+    border-color: #ef44441c !important;
 }
 
 #seamless-plugin-root .seamless-color-indigo-bg {
-    background-color: #e0e7ff !important;
-    border-color: #6366f1 !important;
+    background-color: #e0e7ff1c !important;
+    border-color: #6366f11c !important;
     color: #3730a3 !important;
 }
 
 #seamless-plugin-root .seamless-color-indigo-border {
-    background-color: #6366f1 !important;
-    border-color: #6366f1 !important;
+    background-color: #6366f11c !important;
+    border-color: #6366f11c !important;
 }
 
 #seamless-plugin-root .seamless-color-green-bg {
-    background-color: #dcfce7 !important;
-    border-color: #22c55e !important;
+    background-color: #dcfce71c !important;
+    border-color: #22c55e1c !important;
     color: #166534 !important;
 }
 
 #seamless-plugin-root .seamless-color-green-border {
-    background-color: #22c55e !important;
-    border-color: #22c55e !important;
+    background-color: #22c55e1c !important;
+    border-color: #22c55e1c !important;
 }
 
 #seamless-plugin-root .seamless-color-purple-bg {
-    background-color: #f3e8ff !important;
-    border-color: #a855f7 !important;
+    background-color: #f3e8ff1c !important;
+    border-color: #a855f71c !important;
     color: #6b21a8 !important;
 }
 
 #seamless-plugin-root .seamless-color-purple-border {
-    background-color: #a855f7 !important;
-    border-color: #a855f7 !important;
+    background-color: #a855f71c !important;
+    border-color: #a855f71c !important;
 }
 
 #seamless-plugin-root .seamless-color-orange-bg {
-    background-color: #ffedd5 !important;
-    border-color: #f97316 !important;
+    background-color: #ffedd51c !important;
+    border-color: #f973161c !important;
     color: #9a3412 !important;
 }
 
 #seamless-plugin-root .seamless-color-orange-border {
-    background-color: #f97316 !important;
-    border-color: #f97316 !important;
+    background-color: #f973161c !important;
+    border-color: #f973161c !important;
 }
 
 #seamless-plugin-root .seamless-color-pink-bg {
-    background-color: #fce7f3 !important;
-    border-color: #ec4899 !important;
+    background-color: #fce7f31c !important;
+    border-color: #ec48991c !important;
     color: #9d174d !important;
 }
 
 #seamless-plugin-root .seamless-color-pink-border {
-    background-color: #ec4899 !important;
-    border-color: #ec4899 !important;
+    background-color: #ec48991c !important;
+    border-color: #ec48991c !important;
 }
 
 #seamless-plugin-root .seamless-color-blue-bg {
-    background-color: #dbeafe !important;
-    border-color: #3b82f6 !important;
+    background-color: #dbeafe1c !important;
+    border-color: #3b82f61c !important;
     color: #1e40af !important;
 }
 
 #seamless-plugin-root .seamless-color-blue-border {
-    background-color: #3b82f6 !important;
-    border-color: #3b82f6 !important;
+    background-color: #3b82f61c !important;
+    border-color: #3b82f61c !important;
 }
 
 #seamless-plugin-root .seamless-color-teal-bg {
-    background-color: #ccfbf1 !important;
-    border-color: #14b8a6 !important;
+    background-color: #ccfbf11c !important;
+    border-color: #14b8a61c !important;
     color: #115e59 !important;
 }
 
 #seamless-plugin-root .seamless-color-teal-border {
-    background-color: #14b8a6 !important;
-    border-color: #14b8a6 !important;
+    background-color: #14b8a61c !important;
+    border-color: #14b8a61c !important;
 }
 
 #seamless-plugin-root .seamless-color-slate-bg {
-    background-color: #f1f5f9 !important;
-    border-color: #64748b !important;
+    background-color: #f1f5f91c !important;
+    border-color: #64748b1c !important;
     color: #334155 !important;
 }
 
 #seamless-plugin-root .seamless-color-slate-border {
-    background-color: #64748b !important;
-    border-color: #64748b !important;
+    background-color: #64748b1c !important;
+    border-color: #64748b1c !important;
 }
 
 #seamless-plugin-root .seamless-week-event-block {

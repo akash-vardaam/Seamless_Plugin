@@ -89,6 +89,7 @@
     padding: 4px 8px !important;
     border-radius: 20px !important;
     margin-top: 5px !important;
+    gap: 5px !important;
 }
 
 #seamless-plugin-root .seamless-plan-price-badge {
@@ -152,6 +153,7 @@
 
 #seamless-plugin-root .seamless-plan-footer {
     margin-top: auto !important;
+    width: 100% !important;
 }
 
 #seamless-plugin-root .seamless-plan-cta {

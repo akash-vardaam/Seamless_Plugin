@@ -108,6 +108,7 @@
     margin: 0 !important;
     font-size: 20px !important;
     font-weight: 600 !important;
+    text-align: start !important;
 }
 
 #seamless-plugin-root .seamless-position-relative {

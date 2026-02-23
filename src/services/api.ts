@@ -34,9 +34,20 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
   if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
+    if (!config.headers) config.headers = {} as any;
+    // Axios v1+ strongly types AxiosHeaders but setting via bracket notation mostly works.
+    // Adding via set() for maximum compatibility.
+    if (typeof config.headers.set === 'function') {
+      config.headers.set('Authorization', `Bearer ${token}`);
+    } else {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
   }
-  config.headers['Accept'] = 'application/json';
+  if (typeof config.headers.set === 'function') {
+    config.headers.set('Accept', 'application/json');
+  } else {
+    config.headers['Accept'] = 'application/json';
+  }
   return config;
 });
 
@@ -91,14 +102,16 @@ api.interceptors.response.use(
     } catch (refreshError) {
       refreshQueue = [];
       console.error('[Seamless] Token refresh failed:', refreshError);
-      
-      // If refresh explicitly failed and we are in the browser, redirect to login
+
+      // If refresh explicitly failed and we are in the browser, redirect to SSO login
       if (typeof window !== 'undefined') {
-          const cfg = (window as any).seamlessReactConfig;
-          const siteUrl = cfg?.siteUrl || window.location.origin;
-          window.location.href = (window as any).seamless_logout_url || `${siteUrl}/wp-login.php`;
+        const cfg = (window as any).seamlessReactConfig;
+        const siteUrl = cfg?.siteUrl || window.location.origin;
+        const currentUrl = encodeURIComponent(window.location.href);
+        // Using query parameter trigger to bypass potential WordPress permalink issues
+        window.location.href = `${siteUrl}/?sso_login_redirect=1&return_to=${currentUrl}`;
       }
-      
+
       return Promise.reject(error);
     } finally {
       isRefreshing = false;
@@ -108,18 +121,33 @@ api.interceptors.response.use(
 
 // ─── Token helpers ───────────────────────────────────────────────────────────
 
+function getCookie(name: string): string {
+  if (typeof document === 'undefined') return '';
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
+  return '';
+}
+
 /**
  * Get the best available access token.
- *  1. window.seamlessReactConfig.accessToken  (set on page load by PHP)
- *  2. localStorage                             (updated after a refresh)
+ *  1. Cookies (bypasses full-page caching like Flywheel)
+ *  2. window.seamlessReactConfig.accessToken  (set on page load by PHP)
+ *  3. localStorage                             (updated after a refresh)
  */
 export function getAccessToken(): string {
   if (typeof window !== 'undefined') {
+    // 1. Try to get it from our dedicated cookie
+    const cookieToken = getCookie('seamless_token_js');
+    if (cookieToken) return cookieToken;
+
+    // 2. Fallback to injected config
     const cfg = (window as any).seamlessReactConfig;
-    // After a mid-session refresh, localStorage will hold the newer token
+    if (cfg?.accessToken) return cfg.accessToken;
+
+    // 3. Fallback: localStorage
     const stored = localStorage.getItem('seamless_user_token');
     if (stored) return stored;
-    if (cfg?.accessToken) return cfg.accessToken;
   }
   return '';
 }
@@ -143,7 +171,7 @@ function storeAccessToken(token: string): void {
 async function refreshAccessToken(): Promise<string | null> {
   const cfg = (window as any).seamlessReactConfig;
   const ajaxUrl: string = cfg?.ajaxUrl || '/wp-admin/admin-ajax.php';
-  const nonce: string   = cfg?.ajaxNonce || '';
+  const nonce: string = cfg?.ajaxNonce || '';
 
   const body = new URLSearchParams({
     action: 'seamless_refresh_token',
