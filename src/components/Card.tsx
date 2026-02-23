@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import type { Event } from '../types/event';
 
 
@@ -53,15 +52,13 @@ const createItemSlug = (title: string, id: string): string => {
 };
 
 const getItemLink = (item: Event): string => {
-  // Use API slug if available, otherwise create one
   const endpoint = item?.is_group_event ? 'group-event' : 'events';
-  if (item?.slug) {
-    // If in development/standalone mode, return relative path for router
-    // In production/WP, we might want full URL, but here we prioritize app navigation
-    return `/${endpoint}/${item?.slug}`;
-  }
-  const slug = createItemSlug(item?.title, item?.id);
-  return `/${endpoint}/${slug}`;
+  let slug = item?.slug || createItemSlug(item?.title, item?.id);
+  
+  // Use query parameter deep-linking for WordPress compatibility.
+  // This allows the browser URL to update naturally, avoiding 404s
+  // when refreshing or opening in a new tab.
+  return `?seamless_event=${encodeURIComponent(slug)}&type=${endpoint}`;
 };
 
 const stripHtmlTags = (html: string): string => {
@@ -87,12 +84,12 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
         {/* Item Details */}
         <div className="seamless-card-content">
           {/* Title */}
-          <Link
-            to={getItemLink(item)}
+          <a
+            href={getItemLink(item)}
             className="seamless-card-title seamless-font-merriweather"
           >
             {item?.title}
-          </Link>
+          </a>
 
           {/* Date Range */}
           <p className="seamless-card-date">
@@ -105,12 +102,12 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           </p>
 
           {/* SEE DETAILS Button */}
-          <Link
-            to={getItemLink(item)}
+          <a
+            href={getItemLink(item)}
             className="seamless-card-see-details"
           >
             SEE DETAILS
-          </Link>
+          </a>
         </div>
       </article>
     );
@@ -140,12 +137,12 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
         {/* Item Details */}
         <div className="seamless-card-list-details">
           {/* Title */}
-          <Link
-            to={getItemLink(item)}
+          <a
+            href={getItemLink(item)}
             className="seamless-card-list-title seamless-font-merriweather"
           >
             {item?.title}
-          </Link>
+          </a>
 
           {/* Item Meta Information */}
           <div className="seamless-card-list-meta">
@@ -179,12 +176,12 @@ export const Card: React.FC<CardProps> = ({ item, layout = 'list' }) => {
           )}
 
           {/* SEE DETAILS Link */}
-          <Link
-            to={getItemLink(item)}
+          <a
+            href={getItemLink(item)}
             className="seamless-card-list-see-details"
           >
             SEE DETAILS
-          </Link>
+          </a>
         </div>
       </div>
     </article>

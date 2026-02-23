@@ -31,8 +31,10 @@ export const CoursesView: React.FC = () => {
     } = useCourses();
 
     const handleCourseClick = (slug: string) => {
-        // External redirect or specific site route
-        window.location.href = `/courses/${slug}`;
+        // Redirection to the Seamless AMS frontend
+        const clientDomain = typeof window !== 'undefined' ? ((window as any).seamlessReactConfig?.clientDomain || '') : '';
+        const baseUrl = clientDomain ? clientDomain.replace(/\/$/, '') : '';
+        window.location.href = `${baseUrl}/courses/${slug}`;
     };
 
     // Sort options updated: removed "All Years" from label concept, now just "Sort By" or specific

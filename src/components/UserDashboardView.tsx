@@ -3,6 +3,7 @@ import { LoadingSpinner } from './LoadingSpinner';
 import '../styles/user-dashboard.css';
 import '../styles/user-dashboard-utils.css';
 import '../styles/single-event.css';
+import api, { getAccessToken } from '../services/api';
 // Type definitions for our dashboard data
 interface UserProfile {
     first_name: string;
@@ -81,23 +82,32 @@ export const UserDashboardView: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-    // TEMPORARY DEVELOPMENT-ONLY LOGIC
-    const DEV_TEST_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTljMDQzZC05ZWYwLTcwMmQtYjkxOS1hMmM2MjRhNDExNzkiLCJqdGkiOiJjMzBhYTIwMmY5YjNjNDMzODgzNjgwMjM1ZGQ2ZTEwZWJmM2E3MzdhNmU5MmE3Y2M5YzVjZTNjNzU5MjcyNWMyZmE1NjQ5MDkzYjdlYjA1YSIsImlhdCI6MTc3MTczODY4NC4yMTg4MTEsIm5iZiI6MTc3MTczODY4NC4yMTg4MTIsImV4cCI6MTc3MzAzNDY4NC4yMTExMTYsInN1YiI6IjAxOTdjYWU1LWY4ZTctNzM1YS1iZDNiLWM0NWViMjY5N2JkMiIsInNjb3BlcyI6WyJyZWFkIl19.r5fZbX6bFlPD4hkmRwfPI8mX60JA2MIoV75QwBJoqgCItetIXzuHxegmCOjBGsKra4JZr_GrrO9chBoA_ZaPG6kfoJlK-87Ldjmr7U-1gAmxD9YtHKbycdpQLNDeh7WIbEV7bqFDh2wRjry4WjeX-xiEblmIUAdrkj4JW3-7rIa5pFI2It8PoN2dbILsDHwhC_jqJZABYXVyEaByOcxXb1G235Mjn6Ih7JN7Y-QZFLqykFJPhh2jUiLbg30qCVZL4H7nSaK0TEcd6AgEiP7xX9x_3IhzbFC_iVGotOlrOJbFSWEVpAFiORd0OHj7r2qt3ejq6EnKjhYZhODjy1JKndTqu5vntBOseCgAYqExmPZUXTzm8TCmdXRWxsK9-Zh60VjXpFs_24PAIIoI6ebTyTZJ-yhxBNjgKFMRal0AnU14N2d3VhO8PZj-1aa5x6eo3jKPMK1FB3PehNxFCu_UHzXmQt5WJ95kyDuefL3hktFjWP0vJce1I8h3HW8W0SmANJQUFg7soNK1WA27RyyzJReyUB1_6r87Tcdd7_m6fW-dk5stjfCyLMyKptw-mrpOIbbfyWavCv1oZawvzzVorkb0bM-StZk-xaQ4ZGHs9OrlwWuUFmWxCmRrLjt5C6VZi_Ouk1qYLWeLeJxFGjRWPy-LoSM4wMhTB8EJbf-P-HE";
+
+    const getApiBase = (): string => {
+        const cfg = (window as any).seamlessReactConfig;
+        if (cfg?.clientDomain) return cfg.clientDomain + '/api';
+        return '/api';
+    };
+
+    // Delegate token resolution to the shared api.ts helper (keeps logic in one place)
+    const getAuthToken = (): string => getAccessToken();
+
+    const getClientDomain = (): string => {
+        const cfg = (window as any).seamlessReactConfig;
+        if (cfg?.clientDomain) return cfg.clientDomain;
+        return '';
+    };
 
     const fetchApiEndpoint = async (endpoint: string, stateSetter: React.Dispatch<React.SetStateAction<any>>, isArray: boolean = true, method: string = 'GET', bodyPayload?: any) => {
         setIsLoading(true);
         try {
-            const options: RequestInit = { 
-                method, 
-                headers: {
-                    'Authorization': `Bearer ${DEV_TEST_TOKEN}`,
-                    'Accept': 'application/json',
-                    ...(method !== 'GET' && { 'Content-Type': 'application/json' })
-                },
-                ...(bodyPayload && { body: JSON.stringify(bodyPayload) })
+            const config: import('axios').AxiosRequestConfig = {
+                method,
+                url: endpoint,
+                ...(bodyPayload && Object.keys(bodyPayload).length > 0 && { data: bodyPayload })
             };
-            const response = await fetch(`/api${endpoint}`, options);
-            const data = await response.json();
+            const response = await api.request(config);
+            const data = response.data;
             
             if (data && data.message && !data.data) {
                 stateSetter(isArray ? [] : null);
@@ -106,7 +116,6 @@ export const UserDashboardView: React.FC = () => {
 
             const parsedData = data?.data || data;
             
-            // If we are replacing an existing state (like profile), merge it so Sidebar doesn't flash empty
             stateSetter((prev: any) => {
                 if (!isArray && prev && typeof prev === 'object') {
                     return { ...prev, ...parsedData };
@@ -120,12 +129,12 @@ export const UserDashboardView: React.FC = () => {
             });
         } catch (err: any) {
             console.error(`[Dashboard] Failed to fetch API data for ${endpoint}:`, err);
-            // Only set to null/empty if it's currently completely empty
             stateSetter((prev: any) => prev || (isArray ? [] : null));
         } finally {
             setIsLoading(false);
         }
     };
+
 
     useEffect(() => {
         let savedView = localStorage.getItem('seamless-user-dashboard-active-view-react');
@@ -163,8 +172,13 @@ export const UserDashboardView: React.FC = () => {
         const fetchProgress = async (c: any) => {
             if (!c?.id || courseProgressMap[c.id]) return;
             try {
-                const res = await fetch(`/api/dashboard/courses/${c.id}/progress`, {
-                    headers: { 'Authorization': `Bearer ${DEV_TEST_TOKEN}`, 'Accept': 'application/json' }
+                const token = getAuthToken();
+                const res = await fetch(`${getApiBase()}/dashboard/courses/${c.id}/progress`, {
+                    credentials: 'omit',
+                    headers: {
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                        'Accept': 'application/json'
+                    }
                 });
                 const data = await res.json();
                 if (data && data.success) {
@@ -179,6 +193,7 @@ export const UserDashboardView: React.FC = () => {
         if (includedCourses && Array.isArray(includedCourses)) includedCourses.forEach(fetchProgress);
         
     }, [courses, includedCourses]);
+
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -217,10 +232,12 @@ export const UserDashboardView: React.FC = () => {
                 country: profile?.country || ''
             };
 
-            const response = await fetch('/api/dashboard/profile/edit', {
+            const token = getAuthToken();
+            const response = await fetch(`${getApiBase()}/dashboard/profile/edit`, {
                 method: 'PUT',
+                credentials: 'omit',
                 headers: {
-                    'Authorization': `Bearer ${DEV_TEST_TOKEN}`,
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
@@ -229,7 +246,7 @@ export const UserDashboardView: React.FC = () => {
             if (!response.ok) throw new Error("Failed to save profile.");
             setToast({ type: 'success', message: 'Profile updated successfully!' });
             setIsEditingProfile(false);
-            fetchApiEndpoint('/dashboard/profile/edit', setProfile, false, 'PUT', {}); // refreshed synced state
+            fetchApiEndpoint('/dashboard/profile/edit', setProfile, false, 'PUT', {});
         } catch (error) {
             setToast({ type: 'error', message: 'Could not update profile.' });
         } finally {
@@ -237,32 +254,37 @@ export const UserDashboardView: React.FC = () => {
         }
     };
 
+
     const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         if (!profile) return;
         setProfile({ ...profile, [e.target.name]: e.target.value });
     };
 
-    const triggerSystemAction = async (endpoint: string, method: string, payload: any = {}, successMsg: string) => {
+    const triggerSystemAction = async (endpoint: string, method: string = 'POST', payload: any = {}, successMsg: string = 'Action successful.') => {
         setIsSubmitting(true);
         try {
-            const response = await fetch(`/api${endpoint}`, {
+            const config: import('axios').AxiosRequestConfig = {
                 method,
-                headers: {
-                    'Authorization': `Bearer ${DEV_TEST_TOKEN}`,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: Object.keys(payload).length > 0 ? JSON.stringify(payload) : undefined
-            });
-            const data = await response.json();
-            if (!response.ok || (data && data.success === false)) throw new Error(data?.message || 'Action failed.');
-            setToast({ type: 'success', message: successMsg });
-            fetchApiEndpoint('/dashboard/memberships', setMemberships); // Refresh memberships state immediately
-            setActionModal(null);
-        } catch (error: any) {
-            setToast({ type: 'error', message: error.message || 'An error occurred. Please try again.' });
+                url: endpoint,
+                data: payload
+            };
+            const response = await api.request(config);
+            const data = response.data;
+            if (data?.success || response.status === 200) {
+                setToast({ type: 'success', message: successMsg });
+                // force reload to get updated status
+                fetchApiEndpoint('/dashboard/memberships', setMemberships);
+                fetchApiEndpoint('/dashboard/memberships/history', setExpiredMemberships);
+            } else {
+                setToast({ type: 'error', message: data?.message || 'Failed to apply action.' });
+            }
+        } catch (err: any) {
+            setToast({ type: 'error', message: err?.response?.data?.message || 'An error occurred during action.' });
         } finally {
             setIsSubmitting(false);
+            const modal = document.getElementById('seamless-action-modal') as any;
+            if (modal) modal.close();
+            setSelectedPlanForSwap(null);
         }
     };
 
@@ -702,7 +724,7 @@ export const UserDashboardView: React.FC = () => {
                                                                         <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> {p?.total_lessons || course?.lessons_count || 0} lessons</span>
                                                                         <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> {course?.duration_minutes || 0} minutes</span>
                                                                     </div>
-                                                                    <a href={`/courses/${course?.slug || course?.id}`} className="seamless-course-card-action">
+                                                                    <a href={`${getClientDomain()}/courses/${course?.slug || course?.id}`} className="seamless-course-card-action">
                                                                         Start Course <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
                                                                     </a>
                                                                 </div>
@@ -730,7 +752,7 @@ export const UserDashboardView: React.FC = () => {
                                                                         <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> {p?.total_lessons || course?.lessons_count || 0} lessons</span>
                                                                         <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> {course?.duration_minutes || 0} minutes</span>
                                                                     </div>
-                                                                    <a href={`/courses/${course?.slug || course?.id}`} className="seamless-course-card-action">
+                                                                    <a href={`${getClientDomain()}/courses/${course?.slug || course?.id}`} className="seamless-course-card-action">
                                                                         Start Course <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
                                                                     </a>
                                                                 </div>

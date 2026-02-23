@@ -3,7 +3,7 @@ import type { Event } from '../../types/event';
 import { getCategoryColor, extractDateOnly } from './utils';
 import { navigateToEvent, createEventSlug } from '../../utils/urlHelper';
 
-const formatTimeRange = (startDate: string, endDate: string): string => {
+const formatTimeRange = (startDate: string): string => {
   try {
     const start = new Date(startDate);
     return start.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
@@ -185,7 +185,7 @@ export const MonthView: React.FC<MonthViewProps> = ({ currentDate, events }) => 
                                         onClick={() => navigateToEvent(pe.slug || createEventSlug(pe.title, pe.id), pe.is_group_event)}
                                       >
                                         <span className="seamless-popup-title">{pe.title}</span>
-                                        <span className="seamless-popup-time">{formatTimeRange(pe.start_date, pe.end_date || pe.start_date)}</span>
+                                        <span className="seamless-popup-time">{formatTimeRange(pe.start_date)}</span>
                                       </div>
                                     );
                                   })}

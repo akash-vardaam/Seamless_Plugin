@@ -4,12 +4,12 @@ import { useMembershipPlans } from '../hooks/useMembershipPlans';
 import { LoadingSpinner } from './LoadingSpinner';
 import '../styles/membership.css';
 
-// Helper to get site URL
-const getSiteUrl = () => {
-    if (typeof window !== 'undefined' && (window as any).seamlessReactConfig?.siteUrl) {
-        return (window as any).seamlessReactConfig.siteUrl;
+// Helper to get client domain for Seamless AMS linking
+const getClientDomain = () => {
+    if (typeof window !== 'undefined' && (window as any).seamlessReactConfig?.clientDomain) {
+        return (window as any).seamlessReactConfig.clientDomain;
     }
-    return ''; // Fallback or current origin
+    return ''; // Fallback
 };
 
 export const MembershipListView: React.FC = () => {
@@ -39,7 +39,7 @@ export const MembershipListView: React.FC = () => {
         );
     }
 
-    const siteUrl = getSiteUrl();
+    const clientDomain = getClientDomain();
 
     return (
         <div  className="seamless-membership-container">
@@ -96,7 +96,7 @@ export const MembershipListView: React.FC = () => {
 
                         <div className="seamless-plan-footer">
                             <a
-                                href={`${siteUrl.replace(/\/$/, '')}/memberships/${plan.id}`}
+                                href={`${clientDomain.replace(/\/$/, '')}/memberships/${plan.id}`}
                                 className="seamless-plan-cta"
                             >
                                 GET STARTED

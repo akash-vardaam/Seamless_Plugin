@@ -33,6 +33,8 @@ class SeamlessRender
 		add_action('wp_ajax_seamless_renew_membership', [$this, 'ajax_renew_membership']);
 		add_action('wp_ajax_seamless_cancel_scheduled_change', [$this, 'ajax_cancel_scheduled_change']);
 		add_action('wp_ajax_seamless_update_profile', [$this, 'ajax_update_profile']);
+		// React token-refresh endpoint: returns a fresh AMS access token for the logged-in user.
+		add_action('wp_ajax_seamless_refresh_token', [$this, 'ajax_refresh_token']);
 
 		// Dashboard Async Loading Hooks
 		add_action('wp_ajax_seamless_get_dashboard_profile', [$this, 'ajax_get_dashboard_profile']);
@@ -51,6 +53,49 @@ class SeamlessRender
 		});
 
 		$this->register_shortcodes();
+	}
+
+	/**
+	 * AJAX: Return a fresh AMS access token for the currently logged-in user.
+	 *
+	 * The React app calls this endpoint whenever it receives a 401 from the AMS
+	 * API, so that it can silently refresh the token and retry the original request
+	 * without redirecting the user.
+	 *
+	 * Request:  POST admin-ajax.php  action=seamless_refresh_token  nonce=<ajaxNonce>
+	 * Response: { success: true, data: { token: "..." } }
+	 *        or { success: false, data: { message: "..." } }
+	 */
+	public function ajax_refresh_token(): void
+	{
+		// Verify nonce (sent by the React app from window.seamlessReactConfig.ajaxNonce)
+		check_ajax_referer('seamless_nonce', 'nonce');
+
+		if (!is_user_logged_in()) {
+			wp_send_json_error(['message' => 'Not authenticated.'], 401);
+			return;
+		}
+
+		$uid   = get_current_user_id();
+		$token = '';
+
+		// Use the SSO helper: returns current token if still valid, otherwise calls
+		// the refresh_token OAuth grant and saves the new tokens to user meta.
+		if (class_exists('Seamless\\Auth\\SeamlessSSO')) {
+			$sso   = new \Seamless\Auth\SeamlessSSO();
+			$token = $sso->seamless_refresh_token_if_needed($uid) ?: '';
+		}
+
+		if (empty($token)) {
+            // Do NOT fallback to the old token if the refresh failed.
+            // If the SSO refresh fails, it means the refresh token is expired or invalid.
+            // Returning the old token causes a 401 loop on the frontend.
+            // Instead, tell the frontend the user needs to log in again.
+			wp_send_json_error(['message' => 'Your session has expired. Please log in again.'], 401);
+			return;
+		}
+
+		wp_send_json_success(['token' => $token]);
 	}
 
 	public function enqueue_dynamic_styles()
@@ -309,10 +354,17 @@ class SeamlessRender
 
 	private function register_shortcodes(): void
 	{
-		add_shortcode('seamless_event_list', [$this, 'shortcode_event_list']);
-		add_shortcode('seamless_single_event', [$this, 'shortcode_single_event']);
-		add_shortcode('seamless_user_dashboard', [$this, 'shortcode_user_dashboard']);
-		add_shortcode('seamless_events', [$this, 'shortcode_custom_events']);
+		// React-powered shortcodes (replace old JS view layer)
+		add_shortcode('seamless_events_list',   [$this, 'shortcode_react_events_list']);
+		add_shortcode('seamless_single_event',  [$this, 'shortcode_react_single_event']);
+		add_shortcode('seamless_memberships',   [$this, 'shortcode_react_memberships']);
+		add_shortcode('seamless_courses',       [$this, 'shortcode_react_courses']);
+		add_shortcode('seamless_dashboard',     [$this, 'shortcode_react_dashboard']);
+
+		// Legacy aliases kept for backward compatibility
+		add_shortcode('seamless_event_list',    [$this, 'shortcode_react_events_list']);
+		add_shortcode('seamless_user_dashboard',[$this, 'shortcode_react_dashboard']);
+		add_shortcode('seamless_events',        [$this, 'shortcode_react_events_list']);
 	}
 
 	private function seamless_get_template($template_name): string
@@ -320,373 +372,230 @@ class SeamlessRender
 		return locate_template($template_name) ?: plugin_dir_path(__FILE__) . 'templates/' . $template_name;
 	}
 
-	public function shortcode_event_list(): string
+	// ─────────────────────────────────────────────────────────────────────────────
+	// React Shortcode Renderers
+	// Each shortcode mounts one independent React root on the page.
+	// The React app detects `data-seamless-view` and renders the correct component.
+	// ─────────────────────────────────────────────────────────────────────────────
+
+	/**
+	 * Helper: enqueue the React build assets once per page load.
+	 * Called by every React shortcode renderer to ensure the JS/CSS are loaded.
+	 */
+	private function enqueue_react_assets(): void
 	{
-		if (!$this->auth->is_authenticated()) {
-			return $this->get_authentication_required_message();
+		static $react_assets_enqueued = false;
+		if ($react_assets_enqueued) {
+			return;
+		}
+		$react_assets_enqueued = true;
+
+		$plugin_dir = plugin_dir_path(dirname(__DIR__));
+		$plugin_url = plugin_dir_url(dirname(__DIR__));
+
+		$dist_folder = $plugin_dir . 'src/Public/assets/react-build/dist/';
+		$dist_url    = $plugin_url . 'src/Public/assets/react-build/dist/';
+
+		if (!is_dir($dist_folder)) {
+			error_log('Seamless React: build folder not found at ' . $dist_folder);
+			return;
 		}
 
-		ob_start();
-		include $this->seamless_get_template('tpl-event-wrapper.php');
-		return ob_get_clean();
+		$assets_folder = $dist_folder . 'assets/';
+		if (!is_dir($assets_folder)) {
+			error_log('Seamless React: assets sub-folder not found at ' . $assets_folder);
+			return;
+		}
+
+		$files = scandir($assets_folder);
+
+		// Enqueue CSS
+		foreach ($files as $file) {
+			if (strpos($file, 'index-') === 0 && str_ends_with($file, '.css')) {
+				$css_path = $assets_folder . $file;
+				wp_enqueue_style(
+					'seamless-react-css',
+					$dist_url . 'assets/' . $file,
+					[],
+					filemtime($css_path)
+				);
+				break;
+			}
+		}
+
+		// Enqueue JS (loaded as module so React 19 ESM bundles work)
+		foreach ($files as $file) {
+			if (strpos($file, 'index-') === 0 && str_ends_with($file, '.js')) {
+				$js_path = $assets_folder . $file;
+				wp_enqueue_script(
+					'seamless-react-js',
+					$dist_url . 'assets/' . $file,
+					[],
+					filemtime($js_path),
+					true
+				);
+				break;
+			}
+		}
+
+		// Resolve a fresh, valid access token to inject into the React app.
+		// Uses the existing SeamlessSSO refresh logic: if the stored token is
+		// still valid it is returned as-is; if it's missing or expired it is
+		// refreshed via the refresh_token grant and saved to user meta.
+		$access_token = '';
+		if (is_user_logged_in()) {
+			$uid = get_current_user_id();
+			// Try the SSO refresh helper first (handles expiry automatically).
+			if (class_exists('Seamless\\Auth\\SeamlessSSO')) {
+				$sso          = new \Seamless\Auth\SeamlessSSO();
+				$access_token = $sso->seamless_refresh_token_if_needed($uid) ?: '';
+			}
+			// Fallback: read whatever is stored in user meta if refresh failed.
+			if (empty($access_token)) {
+				$access_token = get_user_meta($uid, 'seamless_access_token', true) ?: '';
+			}
+		}
+
+		// Pass WordPress config to the React app
+		wp_localize_script('seamless-react-js', 'seamlessReactConfig', [
+			'siteUrl'      => esc_url(home_url()),
+			'restUrl'      => esc_url(rest_url()),
+			'nonce'        => wp_create_nonce('seamless'),
+			'ajaxUrl'      => admin_url('admin-ajax.php'),
+			'ajaxNonce'    => wp_create_nonce('seamless_nonce'),
+			'clientDomain' => rtrim(get_option('seamless_client_domain', ''), '/'),
+			'isLoggedIn'   => is_user_logged_in(),
+			'userEmail'    => is_user_logged_in() ? wp_get_current_user()->user_email : '',
+			'accessToken'  => $access_token,
+		]);
 	}
 
-	public function shortcode_single_event($atts): string
+	/**
+	 * Helper: generate the mount-point HTML for a React shortcode.
+	 *
+	 * @param string $view   The value of data-seamless-view (matches App.tsx VIEW_ROUTES keys).
+	 * @param array  $extras Extra data attributes to pass to the React app.
+	 * @return string
+	 */
+	private function react_mount_html(string $view, array $extras = []): string
+	{
+		$this->enqueue_react_assets();
+
+		$data_attrs  = 'data-seamless-view="' . esc_attr($view) . '"';
+		$data_attrs .= ' data-site-url="' . esc_url(home_url()) . '"';
+
+		foreach ($extras as $key => $value) {
+			$data_attrs .= ' data-' . esc_attr($key) . '="' . esc_attr($value) . '"';
+		}
+
+		// Each shortcode gets a unique ID so multiple can coexist on one page.
+		$uid = 'seamless-react-' . $view . '-' . uniqid();
+
+		return sprintf(
+			'<div id="%s" class="seamless-react-root" %s></div>',
+			esc_attr($uid),
+			$data_attrs
+		);
+	}
+
+	// ── Shortcode: Events Listing ────────────────────────────────────────────
+
+	/**
+	 * [seamless_events_list] / [seamless_event_list] / [seamless_events]
+	 * Renders the React-powered Events Listing page.
+	 */
+	public function shortcode_react_events_list($atts = []): string
 	{
 		if (!$this->auth->is_authenticated()) {
 			return $this->get_authentication_required_message();
 		}
+		return $this->react_mount_html('events');
+	}
+
+	// ── Shortcode: Single Event ──────────────────────────────────────────────
+
+	/**
+	 * [seamless_single_event slug="my-event-slug" type="event|group_event"]
+	 * Renders the React-powered Single Event page.
+	 *
+	 * Falls back gracefully: if the React build is not present the PHP renders
+	 * the original single-event shell (the previous behaviour), maintaining
+	 * backward compatibility.
+	 */
+	public function shortcode_react_single_event($atts = []): string
+	{
+		if (!$this->auth->is_authenticated()) {
+			return $this->get_authentication_required_message();
+		}
+
 		$atts = shortcode_atts([
 			'slug' => '',
-			'type' => 'event', // Default to 'event'
+			'type' => 'event',
 		], $atts, 'seamless_single_event');
 
-		$slug = $atts['slug'];
-		$type = $atts['type'];
+		$slug = sanitize_text_field($atts['slug']);
+		$type = sanitize_text_field($atts['type']);
 
-		$loader_html = '<div class="loader-container"><div id="Seamlessloader" class="three-body hidden"><div class="three-body__dot"></div><div class="three-body__dot"></div><div class="three-body__dot"></div></div></div>';
+		// Check if React build exists; fall back to legacy shell if not.
+		$plugin_dir  = plugin_dir_path(dirname(__DIR__));
+		$dist_folder = $plugin_dir . 'src/Public/assets/react-build/dist/';
 
-		return '<div id="singleEventWrapper" class="single_event_container">' . $loader_html . '<div id="event_detail" data-event-slug="' . esc_attr($slug) . '" data-event-type="' . esc_attr($type) . '"></div></div>';
+		if (!is_dir($dist_folder)) {
+			// Legacy fallback – preserves old behaviour
+			$loader_html = '<div class="loader-container"><div id="Seamlessloader" class="three-body hidden"><div class="three-body__dot"></div><div class="three-body__dot"></div><div class="three-body__dot"></div></div></div>';
+			return '<div id="singleEventWrapper" class="single_event_container">'
+				. $loader_html
+				. '<div id="event_detail" data-event-slug="' . esc_attr($slug) . '" data-event-type="' . esc_attr($type) . '"></div>'
+				. '</div>';
+		}
+
+		return $this->react_mount_html('single-event', [
+			'seamless-slug' => $slug,
+			'seamless-type' => $type,
+		]);
 	}
 
-	// Retired server-side fetching methods and pagination helpers
-
-
+	// ── Shortcode: Memberships ───────────────────────────────────────────────
 
 	/**
-	 * Shortcode: [seamless_events]
-	 * Displays events with customizable view types and filtering options.
-	 * @param array $atts Shortcode attributes
-	 * @return string HTML output
+	 * [seamless_memberships]
+	 * Renders the React-powered Membership plans page.
 	 */
-	public function shortcode_custom_events($atts = []): string
+	public function shortcode_react_memberships($atts = []): string
 	{
 		if (!$this->auth->is_authenticated()) {
 			return $this->get_authentication_required_message();
 		}
-
-		$atts = shortcode_atts([
-			'view' => 'list',
-			'category' => '',
-			'featured_image' => 'true',
-			'limit' => 0,
-			'sort' => 'all',
-		], $atts, 'seamless_events');
-
-		$view = in_array($atts['view'], ['list', 'grid']) ? $atts['view'] : 'list';
-		$show_featured_image = filter_var($atts['featured_image'], FILTER_VALIDATE_BOOLEAN);
-		$shortcode_atts = $atts;
-
-		// Build API URL for events
-		$client_domain = rtrim(get_option('seamless_client_domain', ''), '/');
-		$api_url = $client_domain . '/api/events';
-
-		$query_params = [
-			'per_page' => 1000, // Get all events
-		];
-
-		// Add query params to URL
-		$api_url = add_query_arg($query_params, $api_url);
-
-		// Fetch events from API
-		$response = wp_remote_get($api_url, [
-			'timeout' => 30,
-			'sslverify' => false,
-		]);
-
-		$events = [];
-		if (!is_wp_error($response)) {
-			$body = json_decode(wp_remote_retrieve_body($response), true);
-
-			if (is_array($body)) {
-				if (isset($body['data']['events']) && is_array($body['data']['events'])) {
-					$events = $body['data']['events'];
-				} elseif (isset($body['data']) && is_array($body['data'])) {
-					$events = $body['data'];
-				}
-			}
-		}
-
-		// Filter by status (published only)
-		$events = array_filter($events, function ($event) {
-			$status = strtolower($event['status'] ?? '');
-			return $status === 'published';
-		});
-
-		// Filter by category if specified
-		if (!empty($atts['category'])) {
-			$category_slug = $atts['category'];
-			$events = array_filter($events, function ($event) use ($category_slug) {
-				if (empty($event['categories']) || !is_array($event['categories'])) {
-					return false;
-				}
-				// Check if any event category matches the slug
-				foreach ($event['categories'] as $cat) {
-					if (isset($cat['slug']) && $cat['slug'] === $category_slug) {
-						return true;
-					}
-				}
-				return false;
-			});
-		}
-
-		// Filter by sort (upcoming/current/past)
-		if (!empty($atts['sort']) && $atts['sort'] !== 'all') {
-			$today = strtotime('today midnight');
-
-			$events = array_filter($events, function ($event) use ($atts, $today) {
-				$event_type = $event['event_type'] ?? 'event';
-
-				// Get start and end dates
-				if ($event_type === 'group_event') {
-					$start_str = $event['formatted_start_date'] ?? '';
-					$end_str = $event['formatted_end_date'] ?? '';
-				} else {
-					$start_str = $event['start_date'] ?? '';
-					$end_str = $event['end_date'] ?? '';
-				}
-
-				if (empty($start_str)) {
-					return false;
-				}
-
-				$event_start = strtotime($start_str);
-				$event_end = !empty($end_str) ? strtotime($end_str) : $event_start;
-
-				// Set to start of day for comparison
-				$event_start_day = strtotime(date('Y-m-d', $event_start) . ' midnight');
-				$event_end_day = strtotime(date('Y-m-d', $event_end) . ' 23:59:59');
-
-				switch ($atts['sort']) {
-					case 'upcoming':
-						return $event_start_day > $today;
-					case 'current':
-						return $event_start_day <= $today && $event_end_day >= $today;
-					case 'past':
-						return $event_end_day < $today;
-				}
-
-				return false;
-			});
-
-			// Sort the results
-			if ($atts['sort'] === 'upcoming') {
-				// Ascending by start date (soonest first)
-				usort($events, function ($a, $b) {
-					$a_type = $a['event_type'] ?? 'event';
-					$b_type = $b['event_type'] ?? 'event';
-
-					$a_start = $a_type === 'group_event'
-						? ($a['formatted_start_date'] ?? '')
-						: ($a['start_date'] ?? '');
-					$b_start = $b_type === 'group_event'
-						? ($b['formatted_start_date'] ?? '')
-						: ($b['start_date'] ?? '');
-
-					$a_time = !empty($a_start) ? strtotime($a_start) : PHP_INT_MAX;
-					$b_time = !empty($b_start) ? strtotime($b_start) : PHP_INT_MAX;
-
-					return $a_time - $b_time;
-				});
-			} elseif ($atts['sort'] === 'past') {
-				// Descending by end date (most recent first)
-				usort($events, function ($a, $b) {
-					$a_type = $a['event_type'] ?? 'event';
-					$b_type = $b['event_type'] ?? 'event';
-
-					$a_end = $a_type === 'group_event'
-						? ($a['formatted_end_date'] ?? $a['formatted_start_date'] ?? '')
-						: ($a['end_date'] ?? $a['start_date'] ?? '');
-					$b_end = $b_type === 'group_event'
-						? ($b['formatted_end_date'] ?? $b['formatted_start_date'] ?? '')
-						: ($b['end_date'] ?? $b['start_date'] ?? '');
-
-					$a_time = !empty($a_end) ? strtotime($a_end) : 0;
-					$b_time = !empty($b_end) ? strtotime($b_end) : 0;
-
-					return $b_time - $a_time;
-				});
-			}
-		}
-
-		// Apply limit after filtering
-		if ($atts['limit'] > 0) {
-			$events = array_slice($events, 0, (int)$atts['limit']);
-		}
-
-		// Re-index array
-		$events = array_values($events);
-
-		// Check if theme has override hook
-		$template_override_hook = 'seamless_events_shortcode_' . $view . '_template_override';
-
-		if (has_action($template_override_hook)) {
-			ob_start();
-			do_action($template_override_hook, $events, $atts);
-			return ob_get_clean();
-		}
-
-		// No override - use default template
-		$template_file = 'tpl-events-shortcode-' . $view . '.php';
-		$template_path = $this->seamless_get_template($template_file);
-
-		if (!file_exists($template_path)) {
-			return '<p class="seamless-error">Template file not found: ' . esc_html($template_file) . '</p>';
-		}
-
-		ob_start();
-		include $template_path;
-		return ob_get_clean();
+		return $this->react_mount_html('memberships');
 	}
 
+	// ── Shortcode: Courses ───────────────────────────────────────────────────
+
 	/**
-	 * Shortcode: [seamless_user_dashboard]
-	 * Displays a logged-in user's dashboard with Membership, Membership History,
-	 * Order History and Profile tabs.
+	 * [seamless_courses]
+	 * Renders the React-powered Courses page.
 	 */
-	public function shortcode_user_dashboard($atts = []): string
+	public function shortcode_react_courses($atts = []): string
 	{
-		// Require login
+		if (!$this->auth->is_authenticated()) {
+			return $this->get_authentication_required_message();
+		}
+		return $this->react_mount_html('courses');
+	}
+
+	// ── Shortcode: Dashboard ─────────────────────────────────────────────────
+
+	/**
+	 * [seamless_dashboard] / [seamless_user_dashboard]
+	 * Renders the React-powered User Dashboard.
+	 * Requires the user to be logged in; shows a login prompt otherwise.
+	 */
+	public function shortcode_react_dashboard($atts = []): string
+	{
 		if (!is_user_logged_in()) {
 			return do_shortcode('[seamless_login_button text="Sign in to view your dashboard" class="seamless-premium-btn seamless-login-btn"]');
 		}
-
-		$uid = get_current_user_id();
-		$access_token = get_user_meta($uid, 'seamless_access_token', true);
-		if (empty($access_token) && method_exists($this->sso, 'seamless_refresh_token_if_needed')) {
-			$access_token = $this->sso->seamless_refresh_token_if_needed($uid) ?: '';
-		}
-
-		$client_domain = rtrim(get_option('seamless_client_domain', ''), '/');
-		if (empty($client_domain)) {
-			return '<div class="seamless-user-dashboard-error">Client domain is not configured.</div>';
-		}
-
-		$headers = [
-			'headers' => [
-				'Accept'        => 'application/json',
-			],
-			'timeout' => 20,
-			'sslverify' => false,
-		];
-		if (!empty($access_token)) {
-			$headers['headers']['Authorization'] = 'Bearer ' . $access_token;
-		}
-
-		$user = wp_get_current_user();
-		$email = $user && !empty($user->user_email) ? $user->user_email : '';
-
-		// Prepare default containers
-		$profile = [
-			'name'  => wp_get_current_user()->display_name,
-			'email' => wp_get_current_user()->user_email,
-		];
-		$current_memberships = [];
-		$membership_history = [];
-		$orders = [];
-
-		// Profile/basic user info (only if we have an access token)
-		if (!empty($access_token)) {
-			$response = wp_remote_get($client_domain . '/api/user', $headers);
-			if (!is_wp_error($response)) {
-				$body = json_decode(wp_remote_retrieve_body($response), true);
-				if (is_array($body)) {
-					$profile = $body['data']['user'] ?? ($body['data'] ?? $body);
-				}
-			}
-
-
-			// Membership plans (current and historical if available) — prefer email filtered API
-			$memUrl = $client_domain . '/api/users/membership-plans' . ($email ? ('?email=' . rawurlencode($email)) : '');
-			$memRes = wp_remote_get($memUrl, $headers);
-			if (is_wp_error($memRes) && $email) {
-				// retry with alternate param key if server expects user_email
-				$memUrlAlt = $client_domain . '/api/users/membership-plans?user_email=' . rawurlencode($email);
-				$memRes = wp_remote_get($memUrlAlt, $headers);
-			}
-			if (!is_wp_error($memRes)) {
-				$memBody = json_decode(wp_remote_retrieve_body($memRes), true);
-				$memData = is_array($memBody) ? ($memBody['data'] ?? $memBody) : [];
-				// If API returned collection of users -> pick the matching email row
-				if (is_array($memData) && isset($memData[0]['user'])) {
-					foreach ($memData as $row) {
-						if (!empty($row['user']['email']) && $row['user']['email'] === $email) {
-							$memData = $row['memberships'] ?? [];
-							break;
-						}
-					}
-				}
-				// Try to detect common shapes
-				if (isset($memData['current'])) {
-					$current_memberships = $memData['current'];
-					$membership_history = $memData['history'] ?? [];
-				} elseif (isset($memData['active_memberships'])) {
-					$current_memberships = $memData['active_memberships'] ?? [];
-					$membership_history = $memData['membership_history'] ?? [];
-				} elseif (is_array($memData)) {
-					foreach ($memData as $m) {
-						if (!empty($m['status']) && $m['status'] === 'active') {
-							$current_memberships[] = $m;
-						} else {
-							$membership_history[] = $m;
-						}
-					}
-				}
-			}
-
-			$orderUrl = $client_domain . '/api/users/order-history' . ($email ? ('?email=' . rawurlencode($email)) : '');
-			$ordRes = wp_remote_get($orderUrl, $headers);
-			if (is_wp_error($ordRes) && $email) {
-				$orderUrlAlt = $client_domain . '/api/users/order-history?user_email=' . rawurlencode($email);
-				$ordRes = wp_remote_get($orderUrlAlt, $headers);
-			}
-			if (!is_wp_error($ordRes)) {
-				$data = wp_remote_retrieve_body($ordRes);
-				$ordBody = json_decode(wp_remote_retrieve_body($ordRes), true);
-				$ordersData = is_array($ordBody) ? ($ordBody['data'] ?? $ordBody) : [];
-				if (isset($ordersData[0]['user'])) {
-					foreach ($ordersData as $row) {
-						if (!empty($row['user']['email']) && $row['user']['email'] === $email) {
-							$orders = $row['orders'] ?? [];
-							break;
-						}
-					}
-				} else {
-					$orders = $ordersData;
-				}
-			}
-		}
-
-		$active_filtered = [];
-		$history_combined = is_array($membership_history) ? $membership_history : [];
-		$now = time();
-		foreach ((array) $current_memberships as $m) {
-			$status = $m['status'] ?? '';
-			$expiry = $m['expiry_date'] ?? ($m['expires_at'] ?? null);
-			$is_expired = false;
-			if (!empty($expiry)) {
-				$ts = strtotime((string)$expiry);
-				if ($ts !== false && $ts < $now) {
-					$is_expired = true;
-				}
-			}
-			if (strtolower((string)$status) === 'active' && !$is_expired) {
-				$active_filtered[] = $m;
-			} else {
-				$history_combined[] = $m;
-			}
-		}
-
-		// Render via template
-		ob_start();
-		$__seamless_client_domain = $client_domain;
-		$__seamless_profile = $profile;
-		$__seamless_current_memberships = $active_filtered;
-		$__seamless_membership_history = $history_combined;
-		$__seamless_orders = $orders;
-		include $this->seamless_get_template('tpl-user-dashboard.php');
-		return ob_get_clean();
-		// }
+		return $this->react_mount_html('dashboard');
 	}
 
 	/**

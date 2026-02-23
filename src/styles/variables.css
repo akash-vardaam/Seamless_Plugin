@@ -17,8 +17,6 @@
   --seamless-color-background: #f8fafc !important;
 
   /* Colors */
-  --seamless-color-primary: #0f3759 !important;
-  --seamless-color-secondary: #00b2ca !important;
   --seamless-color-white: #ffffff !important;
   --seamless-color-gray-50: #f9fafb !important;
   --seamless-color-gray-100: #f3f4f6 !important;
@@ -31,7 +29,7 @@
   --seamless-color-red-200: #fecaca !important;
   --seamless-color-red-600: #dc2626 !important;
   --seamless-color-red-800: #991b1b !important;
-  
+
   /* Teal/Cyan colors for backgrounds */
   --seamless-color-teal-100: #ccf2f6 !important;
   --seamless-color-teal-400: #14b8a6 !important;
@@ -52,7 +50,7 @@
   --seamless-font-family-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
   --seamless-font-family-serif: 'Merriweather', serif !important;
   --seamless-font-family-montserrat: 'Montserrat', sans-serif !important;
-  
+
   /* Font sizes */
   --seamless-font-size-xs: 0.75rem !important;
   --seamless-font-size-sm: 0.875rem !important;
