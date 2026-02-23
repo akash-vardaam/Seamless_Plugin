@@ -319,6 +319,7 @@ export const SingleEventPage: React.FC = () => {
 
             <div className="seamless-single-event-grid">
                 {/* Header - Moved out for mobile/tab ordering */}
+                <div className="seamless-event-header-wrapper">
                 <header className="seamless-event-header-group">
                     <div className="seamless-event-icon-circle">
                         {event?.featured_image ? (
@@ -344,6 +345,7 @@ export const SingleEventPage: React.FC = () => {
                     {/* Accordions */}
                     <SeamlessAccordion items={sections} />
                 </section>
+                </div>
 
                 {/* Right Column: Sidebar */}
                 <aside className="seamless-single-event-sidebar">

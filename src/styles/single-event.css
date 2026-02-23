@@ -34,6 +34,12 @@
     gap: 40px !important;
 }
 
+#seamless-plugin-root .seamless-event-header-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+}
+
 @media (max-width: 900px) {
     #seamless-plugin-root .seamless-single-event-grid {
         display: flex !important;

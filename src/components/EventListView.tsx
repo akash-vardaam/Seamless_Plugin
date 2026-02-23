@@ -159,9 +159,7 @@ export const EventListView: React.FC = () => {
             <header className="seamless-results-info">
                 <span className="seamless-results-text">
                     {loading ? (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            <span className="seamless-spinner" style={{ width: '20px', height: '20px', borderWidth: '2px', margin: 0, display: 'inline-block' }} />
-                        </span>
+                        <span>Loading Page count</span>
                     ) : (
                         <>
                             Showing{' '}

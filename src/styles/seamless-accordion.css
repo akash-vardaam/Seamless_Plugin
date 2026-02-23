@@ -93,25 +93,30 @@
     border: 1px solid #E0E0E0 !important;
 }
 
-#seamless-plugin-root .seamless-accordion-content table.event-schedule-table td{
+#seamless-plugin-root .seamless-accordion-content table.event-schedule-table td {
     border: none !important;
 }
 
-#seamless-plugin-root .seamless-accordion-content table a *, #seamless-plugin-root .seamless-accordion-content table strong {
+#seamless-plugin-root .seamless-accordion-content table a *,
+#seamless-plugin-root .seamless-accordion-content table strong {
     display: inline !important;
- }
+}
 
- #seamless-plugin-root .seamless-accordion-content p{
+#seamless-plugin-root .seamless-accordion-content p {
     color: #282828 !important;
     margin-bottom: 10px !important;
- }
+}
 
- @media screen and (max-width: 768px) {
+#seamless-plugin-root .seamless-accordion-content p br {
+    display: none !important;
+}
+
+@media screen and (max-width: 768px) {
     #seamless-plugin-root .seamless-event-header-group {
         flex-direction: column !important;
     }
 
-   #seamless-plugin-root .seamless-accordion-content {
+    #seamless-plugin-root .seamless-accordion-content {
         padding: 0 0 25px 0 !important;
     }
 }
