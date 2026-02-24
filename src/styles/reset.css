@@ -1,45 +1,63 @@
 /* ============================================
    SEAMLESS EVENT DISPLAY - RESET & BASE STYLES
+   ============================================
+   This file aggressively re-scopes CSS so that
+   WordPress theme styles cannot override plugin styles.
    ============================================ */
 
-#seamless-plugin-root * {
+/* Force all children to inherit the design system values from the root.
+   This prevents WordPress themes from bleeding into the plugin. */
+#seamless-plugin-root *,
+#seamless-plugin-root *::before,
+#seamless-plugin-root *::after {
   box-sizing: border-box !important;
+  /* Font variables — force inheritance from our design system */
+  font-family: inherit !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
+/* Root element: establish the design system baseline */
 #seamless-plugin-root {
-  min-height: 100vh !important;
+  all: initial !important;
+  /* Must re-declare display after all:initial resets it */
+  display: block !important;
+  box-sizing: border-box !important;
+  /* Typography */
   font-family: var(--seamless-font-family-default) !important;
-  background-color: var(--seamless-color-white) !important;
-  color: #333 !important;
   font-size: var(--seamless-font-size-base) !important;
+  font-weight: 400 !important;
   line-height: 1.5 !important;
+  letter-spacing: normal !important;
+  /* Colors — from variables.css */
+  color: var(--seamless-color-font) !important;
+  background-color: var(--seamless-color-white) !important;
+  /* Layout */
+  width: 100% !important;
+  position: relative !important;
 }
 
-#seamless-plugin-root a {
+/* Links: reset WordPress theme link colors */
+#seamless-plugin-root a,
+#seamless-plugin-root a:link,
+#seamless-plugin-root a:visited,
+#seamless-plugin-root a:hover,
+#seamless-plugin-root a:active {
   color: inherit !important;
   text-decoration: none !important;
-}
-
-#seamless-plugin-root button {
-  font-family: inherit !important;
-  cursor: pointer !important;
-  border: none !important;
-  background: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-#seamless-plugin-root input,
-#seamless-plugin-root select,
-#seamless-plugin-root textarea {
+  font-weight: inherit !important;
   font-family: inherit !important;
   font-size: inherit !important;
-}
-
-#seamless-plugin-root p {
+  line-height: inherit !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
   margin: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
+/* Headings: reset WordPress theme heading styles */
 #seamless-plugin-root h1,
 #seamless-plugin-root h2,
 #seamless-plugin-root h3,
@@ -47,4 +65,109 @@
 #seamless-plugin-root h5,
 #seamless-plugin-root h6 {
   margin: 0 !important;
+  padding: 0 !important;
+  font-weight: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  color: var(--seamless-color-heading) !important;
+  font-family: inherit !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  border: none !important;
+}
+
+/* Paragraphs */
+#seamless-plugin-root p {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: inherit !important;
+  font-family: inherit !important;
+}
+
+/* Lists */
+#seamless-plugin-root ul,
+#seamless-plugin-root ol {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+#seamless-plugin-root li {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Buttons: reset WordPress / theme button styles completely */
+#seamless-plugin-root button,
+#seamless-plugin-root input[type="button"],
+#seamless-plugin-root input[type="submit"],
+#seamless-plugin-root input[type="reset"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: normal !important;
+  cursor: pointer !important;
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: inherit !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  border-radius: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+/* Form elements */
+#seamless-plugin-root input,
+#seamless-plugin-root select,
+#seamless-plugin-root textarea {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: normal !important;
+  margin: 0 !important;
+}
+
+/* Images */
+#seamless-plugin-root img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: inline-block !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Tables */
+#seamless-plugin-root table {
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  width: 100% !important;
+}
+
+#seamless-plugin-root th,
+#seamless-plugin-root td {
+  padding: 0 !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  border: none !important;
+  font-weight: inherit !important;
+}
+
+/* SVG icons — don't let theme color them unless explicit */
+#seamless-plugin-root svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
 }

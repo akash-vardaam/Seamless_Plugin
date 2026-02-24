@@ -6,12 +6,15 @@ import type { Course, CoursePagination } from '../types/course';
 export const useCourses = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    // Parse URL params
-    const pageParam = parseInt(searchParams.get('page') || '1', 10);
+    // Parse URL params.
+    // IMPORTANT: We use 'pg' instead of 'page' and 'yr' instead of 'year'
+    // because 'page' and 'year' are WordPress reserved query variables.
+    // WordPress intercepts them before our React app loads, causing 404s.
+    const pageParam = parseInt(searchParams.get('pg') || '1', 10);
     const searchParam = searchParams.get('search') || '';
     const accessParam = (searchParams.get('access') as 'free' | 'paid' | '') || '';
     const sortParam = (searchParams.get('sort') as any) || 'newest';
-    const yearParam = searchParams.get('year') || '';
+    const yearParam = searchParams.get('yr') || '';
 
     const [courses, setCourses] = useState<Course[]>([]);
     const [pagination, setPagination] = useState<CoursePagination | null>(null);
@@ -21,7 +24,20 @@ export const useCourses = () => {
     // Available years from API
     const [availableYears, setAvailableYears] = useState<string[]>([]);
 
-    // Update URL helper
+    // The keys that belong to courses filters (used when syncing / clearing real URL)
+    // Uses 'pg' and 'yr' to avoid WordPress reserved query vars
+    const COURSE_FILTER_KEYS = ['search', 'access', 'sort', 'yr', 'pg'];
+
+    /**
+     * Sync MemoryRouter search params AND the real browser URL.
+     * MemoryRouter (used in WordPress shortcode mode) keeps its own in-memory
+     * copy of the URL — it never reflects in window.location. We call
+     * history.replaceState so:
+     *  1. The address bar shows the current filter state.
+     *  2. The URL can be copied / bookmarked / shared.
+     *  3. On a fresh load, App.tsx passes window.location.search as the
+     *     MemoryRouter initialEntry, so filters are pre-restored.
+     */
     const updateUrl = useCallback((updates: Record<string, string | null>) => {
         setSearchParams(prev => {
             const newParams = new URLSearchParams(prev);
@@ -32,6 +48,21 @@ export const useCourses = () => {
                     newParams.set(key, value);
                 }
             });
+
+            // ── Sync to real browser URL ──────────────────────────────────
+            try {
+                const realParams = new URLSearchParams(window.location.search);
+                newParams.forEach((val, key) => {
+                    realParams.set(key, val);
+                });
+                // Remove course filter keys that are no longer set
+                COURSE_FILTER_KEYS.forEach(key => {
+                    if (!newParams.has(key)) realParams.delete(key);
+                });
+                const qs = realParams.toString();
+                history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+            } catch { /* ignore — history API not available */ }
+
             return newParams;
         });
     }, [setSearchParams]);
@@ -170,29 +201,36 @@ export const useCourses = () => {
         loadCourses();
     }, [pageParam, searchParam, accessParam, sortParam, yearParam]);
 
-    // Handlers
+    // Handlers — use 'pg' and 'yr' as URL param keys (WordPress-safe)
     const handleSearch = (text: string) => {
-        updateUrl({ search: text || null, page: '1' });
+        updateUrl({ search: text || null, pg: '1' });
     };
 
     const handleAccessFilter = (access: string) => {
-        updateUrl({ access: access === 'all' ? null : access, page: '1' });
+        updateUrl({ access: access === 'all' ? null : access, pg: '1' });
     };
 
     const handleSortChange = (sort: string) => {
-        updateUrl({ sort, page: '1' });
+        updateUrl({ sort, pg: '1' });
     };
 
     const handleYearChange = (year: string) => {
-        updateUrl({ year: year === 'all' ? null : year, page: '1' });
+        updateUrl({ yr: year === 'all' ? null : year, pg: '1' });
     };
 
     const handlePageChange = (page: number) => {
-        updateUrl({ page: page.toString() });
+        updateUrl({ pg: page.toString() });
     };
 
     const resetFilters = useCallback(() => {
         setSearchParams(new URLSearchParams());
+        // Also clear the real browser URL filter params
+        try {
+            const realParams = new URLSearchParams(window.location.search);
+            COURSE_FILTER_KEYS.forEach(key => realParams.delete(key));
+            const qs = realParams.toString();
+            history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+        } catch { /* ignore */ }
     }, [setSearchParams]);
 
     return {

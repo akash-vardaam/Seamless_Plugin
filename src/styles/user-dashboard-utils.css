@@ -104,7 +104,7 @@
     align-items: center !important;
 }
 
-#seamless-plugin-root .seamless-card-title {
+#seamless-plugin-root .seamless-card-content .seamless-card-title {
     margin: 0 !important;
     font-size: 20px !important;
     font-weight: 600 !important;

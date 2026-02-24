@@ -27,13 +27,21 @@ interface AppProps {
  * Route map – maps `data-seamless-view` values to the component that should render.
  * In WordPress mode each shortcode only ever shows one view, so we render it
  * directly inside a MemoryRouter locked to the matching path.
+ *
+ * IMPORTANT: All non-event routes use `path: '/'` deliberately.
+ * MemoryRouter is isolated per shortcode — it never touches window.location.
+ * Using '/' means the initialEntry is always `/?filter=value` (pure query
+ * string), so history.replaceState only ever touches the search part of the
+ * real browser URL. If we used `path: '/courses'`, the initialEntry would be
+ * `/courses?filter=value`, which could cause WordPress to return a 404 if
+ * `/courses/` is a reserved permalink or CPT archive.
  */
 const VIEW_ROUTES: Record<string, { path: string; element: React.ReactNode }> = {
-  events: { path: '/', element: <EventListView /> },
-  'single-event': { path: '/events/:slug', element: <SingleEventPage /> },
-  memberships: { path: '/memberships', element: <MembershipListView /> },
-  courses: { path: '/courses', element: <CoursesView /> },
-  dashboard: { path: '/dashboard', element: <UserDashboardView /> },
+  events:        { path: '/',  element: <EventListView /> },
+  'single-event':{ path: '/events/:slug', element: <SingleEventPage /> },
+  memberships:   { path: '/',  element: <MembershipListView /> },
+  courses:       { path: '/',  element: <CoursesView /> },
+  dashboard:     { path: '/',  element: <UserDashboardView /> },
 };
 
 const App: React.FC<AppProps> = ({ initialView, initialSlug, siteUrl: _siteUrl }) => {

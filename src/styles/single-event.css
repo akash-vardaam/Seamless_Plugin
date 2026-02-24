@@ -170,6 +170,7 @@
 
 #seamless-plugin-root table thead tr th:first-child {
     border-radius: 8px 0 0 0 !important;
+    text-align: center !important;
 }
 
 #seamless-plugin-root table thead tr th:last-child {
@@ -210,6 +211,7 @@
     width: 180px !important;
     color: #1a202c !important;
     padding: 0px 0px 0px 15px !important;
+    text-align: center !important;
 }
 
 /* Enhancing description content styles */

@@ -47,7 +47,7 @@
   flex-grow: 1 !important;
 }
 
-#seamless-plugin-root .seamless-card-title {
+#seamless-plugin-root .seamless-card-content .seamless-card-title {
   margin-bottom: var(--seamless-spacing-4) !important;
   display: block !important;
   font-weight: 500 !important;
@@ -140,7 +140,7 @@
   min-width: 0 !important;
 }
 
-#seamless-plugin-root .seamless-card-list-title {
+#seamless-plugin-root .seamless-card-list-details .seamless-card-list-title {
   display: block !important;
   margin-bottom: var(--seamless-spacing-3) !important;
   font-size: 20px !important;
@@ -157,7 +157,7 @@
   width: 100% !important;
 }
 
-#seamless-plugin-root .seamless-card-list-title:hover {
+#seamless-plugin-root .seamless-card-list-details .seamless-card-list-title:hover {
   text-decoration: underline !important;
 }
 

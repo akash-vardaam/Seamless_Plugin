@@ -3501,12 +3501,14 @@
 #seamless-plugin-root .seamless-cancel-modal-title {
     margin: 0 0 12px !important;
     font-size: 20px !important;
+    text-align: center !important;
 }
 
 #seamless-plugin-root .seamless-cancel-modal-text {
     color: #666 !important;
     margin: 0 0 32px !important;
     line-height: 1.5 !important;
+    text-align: justify !important;
 }
 
 #seamless-plugin-root .seamless-cancel-actions {
@@ -3577,6 +3579,7 @@
     margin: 0 !important;
     font-size: 24px !important;
     font-weight: 600 !important;
+    color: var(--seamless-color-heading) !important;
 }
 
 #seamless-plugin-root .seamless-edit-btn {
@@ -3916,6 +3919,7 @@
     font-size: 24px !important;
     font-weight: 600 !important;
     letter-spacing: -0.5px !important;
+    color: #ffffff !important;
 }
 
 #seamless-plugin-root .seamless-blue-card-expiry {
@@ -4290,6 +4294,7 @@
     font-weight: 600 !important;
     color: var(--seamless-color-font) !important;
     border-bottom: 1px solid #e2e8f0 !important;
+    text-align: center !important;
 }
 
 #seamless-plugin-root .seamless-styled-tr td {
@@ -4298,6 +4303,7 @@
     color: var(--seamless-color-heading) !important;
     font-size: 14px !important;
     vertical-align: middle !important;
+    text-align: center !important;
 }
 
 #seamless-plugin-root .seamless-styled-tr:last-child td {
